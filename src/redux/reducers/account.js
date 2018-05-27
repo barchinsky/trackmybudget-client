@@ -4,7 +4,7 @@ const initialState = {
 	loading: false,
 	error: null,
 	userId: null,
-	token: null
+	token: null,
 };
 
 export default function(state = initialState, action) {
@@ -12,19 +12,19 @@ export default function(state = initialState, action) {
 	case LOGIN:
 		return {
 			...state,
-			loading: true
+			loading: true,
 		};
 	case LOGIN_SUCCESS:
 		return {
 			loading: false,
 			...action.payload,
-			error: null
+			error: null,
 		};
 	case LOGIN_FAILED:
 		return {
 			...state,
 			loading: false,
-			error: action.payload
+			error: action.payload,
 		};
 	default:
 		return state;
