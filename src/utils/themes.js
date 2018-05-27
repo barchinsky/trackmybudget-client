@@ -5,11 +5,11 @@ const themes = [
 		{
 			backgroundColor: '#ffffff',
 			textColor: '#000',
-			placeholderTextColor: '#9e9e9e',
-			inputFieldBgColor: '#b1b1b1'
+			placeholderTextColor: '#777777',
+			inputFieldBgColor: '#cbcbcb',
 		},
 		'Light'
-	)
+	),
 ];
 
 export default themes;
