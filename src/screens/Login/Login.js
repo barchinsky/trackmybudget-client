@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Theme from 'react-native-theming';
-import TextInput from '@components/TextInput/TextInput';
-
 import { Button } from 'react-native';
+import PropTypes from 'prop-types';
+
+import TextInput from '@components/TextInput/TextInput';
 
 import { logIn } from '@redux/actions/account';
 import styles from './_styles';
@@ -14,14 +15,24 @@ export class LoginScreen extends Component {
 
 		this.state = {
 			login: '',
-			password: ''
+			password: '',
 		};
 	}
+
+	renderError = () => {
+		const { error } = this.props;
+		console.log('error:', error);
+		return error ? (
+			<Theme.View style={styles.errorContainer}>
+				<Theme.Text style={styles.errorText}>{error.message}</Theme.Text>
+			</Theme.View>
+		) : null;
+	};
 
 	renderLogo = () => {
 		return (
 			<Theme.View style={styles.logoContainer}>
-				<Theme.Text> TrackMyBudet </Theme.Text>
+				<Theme.Text style={styles.logoText}> TrackMyBudet </Theme.Text>
 			</Theme.View>
 		);
 	};
@@ -73,9 +84,23 @@ export class LoginScreen extends Component {
 			<Theme.View style={styles.container}>
 				{this.renderLogo()}
 				{this.renderLoginForm()}
+				{this.renderError()}
 			</Theme.View>
 		);
 	}
 }
 
-export default connect()(LoginScreen);
+LoginScreen.propTypes = {
+	error: PropTypes.object,
+	loading: PropTypes.bool,
+	dispatch: PropTypes.func,
+};
+
+function mapStateToProps(state) {
+	return {
+		error: state.userData.error,
+		loading: state.userData.loading,
+	};
+}
+
+export default connect(mapStateToProps)(LoginScreen);
