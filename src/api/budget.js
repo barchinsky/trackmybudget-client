@@ -1,4 +1,5 @@
 import axios from '@utils/axios.js';
+import Budget from '@models/budget';
 
 export function getBudgets(token) {
 	const uri = '/budgets';
@@ -7,8 +8,20 @@ export function getBudgets(token) {
 		token,
 	};
 
-	return axios.get(uri, { headers })
-		.then(response => response.data);
+	return axios
+		.get(uri, { headers })
+		.then(response => response.data)
+		.then(responseData => {
+			//console.log('budgetList:', budgetList);
+			const { status, error, data } = responseData;
+			const budgets = [];
+			for (let b of data) {
+				// console.log('b:----------->', b);
+				budgets.push(new Budget(b));
+			}
+
+			return { status, error, data: budgets };
+		});
 }
 
 export function getBudgetTransactions(token, budgetId) {
@@ -47,7 +60,7 @@ export function deleteBudget(token, budget) {
 }
 
 export function updateBudget(token, budget) {
-	console.log('updateBudget:', budget);
+	//console.log('updateBudget:', budget);
 	const uri = '/update/budget';
 
 	const headers = { token };
