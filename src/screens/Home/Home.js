@@ -13,6 +13,7 @@ import BudgetList from '@components/Budget/List/List';
 import { getUserData } from '@api/local-storage';
 import { fetchBudgets } from '@redux/actions/budgets/fetch';
 import { loginSuccess } from '@redux/actions/account';
+import { fetchCategories } from '@redux/actions/categories/fetch';
 
 import styles from './_styles';
 
@@ -40,7 +41,10 @@ export class App extends Component {
 		} else {
 			this.props.dispatch(loginSuccess(userData));
 
-			const initStack = [this.props.dispatch(fetchBudgets())];
+			const initStack = [
+				this.props.dispatch(fetchBudgets()),
+				this.props.dispatch(fetchCategories()),
+			];
 			await Promise.all(initStack);
 
 			this.setState({ isLoaded: true, isLoggedIn: true });
