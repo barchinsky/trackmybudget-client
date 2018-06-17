@@ -2,7 +2,9 @@ import {
 	FETCHING_CATEGORIES,
 	FETCH_CATEGORIES_FAILED,
 	FETCH_CATEGORIES_SUCCESS,
-} from '@redux/actions/category';
+} from '@redux/actions/categories/fetch';
+
+import { UPDATE_CATEGORY_SUCCESS } from '@redux/actions/categories/update';
 
 const initialState = {
 	loading: false,
@@ -28,6 +30,14 @@ export default function(state = initialState, action) {
 			loading: false,
 			error: null,
 			data: action.payload,
+		};
+	case UPDATE_CATEGORY_SUCCESS:
+		return {
+			...state,
+			data: state.data.map(
+				category =>
+					category.id === action.payload.id ? action.payload : category
+			),
 		};
 	default:
 		return state;
