@@ -1,4 +1,4 @@
-import { getCategories } from '@api/category';
+import * as api from '@api/category';
 
 export const FETCHING_CATEGORIES = 'FETCHING_CATEGORIES';
 export const FETCH_CATEGORIES_SUCCESS = 'FETCH_CATEGORIES_SUCCESS';
@@ -28,7 +28,8 @@ export function fetchCategories() {
 	return (dispatch, getState) => {
 		dispatch(fetchingCategories());
 		const { token } = getState().userData;
-		return getCategories({ token })
+		return api
+			.getCategories({ token })
 			.then(response => {
 				const { error, data } = response;
 				if (error) throw new Error(error);
