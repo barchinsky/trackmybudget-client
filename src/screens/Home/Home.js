@@ -6,9 +6,10 @@ import themes from '@utils/themes';
 
 //import LoginScreen from '@screens/Login/Login';
 import SplashScreen from '@screens/Splash/Splash';
-import Card from '@components/Card/Card';
+// import Card from '@components/Card/Card';
 import BudgetList from '@components/Budget/List/List';
 //import HomeScreen from '@screens/Home/Home';
+import CategoryCard from '@components/Category/Card/Card';
 
 import { getUserData } from '@api/local-storage';
 import { fetchBudgets } from '@redux/actions/budgets/fetch';
@@ -62,6 +63,7 @@ export class App extends Component {
 	renderBudets = () => {
 		const { loading, data, error } = this.props.budgets;
 
+		// return <CategoryCard title="Test name" color="#d400ff" />;
 		return <BudgetList budgets={data} />;
 	};
 

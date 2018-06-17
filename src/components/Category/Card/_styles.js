@@ -5,13 +5,14 @@ export default createStyle({
 		flex: 1,
 		flexDirection: 'row',
 		maxHeight: '@menuCardHeight',
+		height: '@menuCardHeight',
 		backgroundColor: '@menuCardBgColor',
 		justifyContent: 'flex-start',
 	},
 	iconContainer: {
-		justifyContent: 'center',
 		alignItems: 'center',
-		padding: 5,
+		justifyContent: 'center',
+		width: 100,
 	},
 	titleContainer: {
 		flex: 1,
@@ -21,11 +22,10 @@ export default createStyle({
 		paddingLeft: 20,
 	},
 	title: {
-		fontSize: 24,
+		fontSize: 20,
 	},
 	icon: {
-		width: 50,
-		height: 50,
+		fontSize: 34,
 	},
 	colorContainer: {
 		justifyContent: 'center',

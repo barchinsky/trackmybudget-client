@@ -17,8 +17,17 @@ export default class BudgetList extends Component {
 	renderList = () => {
 		const { budgets } = this.props;
 
-		return <FlatList data={budgets} renderItem={this.renderBudgetCard} />;
+		return (
+			<FlatList
+				data={budgets}
+				renderItem={this.renderBudgetCard}
+				keyExtractor={this._keyExtractor}
+			/>
+		);
 	};
+
+	_keyExtractor = item => item.id;
+
 	render() {
 		return (
 			<Theme.View style={styles.container}>{this.renderList()}</Theme.View>
