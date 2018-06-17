@@ -30,3 +30,13 @@ export function updateCategory({ token, category }) {
 	return axios.post(uri, body, { headers })
 		.then(response => response.data);
 }
+
+export function NI_deleteCategory({ token, category }) {
+	const uri = '/delete/category';
+
+	const headers = { token };
+	const body = { id: category.id };
+
+	return axios.post(uri, body, { headers })
+		.then(response => response.data);
+}
