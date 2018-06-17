@@ -7,22 +7,22 @@ export const LOGIN_FAILED = 'LOGIN_FAILED';
 
 export function loging() {
 	return {
-		type: LOGIN
+		type: LOGIN,
 	};
 }
 
-export function loginSuccess(accessToken) {
+export function loginSuccess(userData) {
 	return {
 		type: LOGIN_SUCCESS,
-		payload: accessToken
+		payload: userData,
 	};
 }
 
 export function loginFailed(err) {
-	console.log('login failed!', err);
+	//console.log('login failed!', err);
 	return {
 		type: LOGIN_FAILED,
-		payload: err
+		payload: err,
 	};
 }
 
@@ -30,18 +30,19 @@ export function logIn(user, pass, rememberMe = false) {
 	return dispatch => {
 		dispatch(loging());
 
-		getUserData()
+		return getUserData()
 			.then(data => {
-			//console.log('<------------>', data);
+				console.log('<------------>', data);
 				const { userId, token } = data;
 				if (userId && token) {
 				// if creds saved locally
 					console.log('creds saved locally. Retrieving...');
-					return dispatch(loginSuccess(data));
+					dispatch(loginSuccess(data));
+					return;
 				} else {
 				// else
 				//console.log('----------->>');
-					login(user, pass) // do request to api
+					return login(user, pass) // do request to api
 						.then(response => {
 						//console.log('------------>>>', response);
 							const { data, error } = response;

@@ -76,7 +76,15 @@ export class LoginScreen extends Component {
 
 	doLogin = () => {
 		const { login, password } = this.state;
-		this.props.dispatch(logIn(login, password, true));
+		this.props
+			.dispatch(logIn(login, password, true))
+			.then(() => {
+				if (this.props.error === null)
+					this.props.navigation.navigate('HomeScreen');
+			})
+			.catch(err => {
+				console.log('Login failed---------->:', err);
+			});
 	};
 
 	render() {
@@ -94,6 +102,7 @@ LoginScreen.propTypes = {
 	error: PropTypes.object,
 	loading: PropTypes.bool,
 	dispatch: PropTypes.func,
+	navigation: PropTypes.object,
 };
 
 function mapStateToProps(state) {

@@ -13,7 +13,10 @@
     "react": "16.3.1",
     "react-native": "0.55.4",
     "react-native-i18n": "^2.0.12",
+    "react-native-modal-datetime-picker": "^5.1.0",
+    "react-native-progress-bar-animated": "^1.0.6",
     "react-native-theming": "^1.0.11",
+    "react-navigation": "^2.0.4",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "redux-thunk": "^2.2.0"
@@ -29,7 +32,8 @@
     "eslint-plugin-react": "^7.7.0",
     "eslint-plugin-react-native": "^3.2.1",
     "jest": "22.4.3",
-    "react-test-renderer": "16.3.1"
+    "react-test-renderer": "16.3.1",
+    "redux-logger": "^3.0.6"
   },
   "jest": {
     "preset": "react-native"
