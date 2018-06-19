@@ -12,6 +12,7 @@ const themes = [
 			menuCardBgColor: '#d7d7d7',
 			budgetCardHeight: 80,
 			budgetCardBorderColor: '#c9c9c9',
+			cardTitleFontSize: 35,
 		},
 		'Light'
 	),
