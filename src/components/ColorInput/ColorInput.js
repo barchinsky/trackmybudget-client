@@ -1,19 +1,24 @@
 import React, { Component } from 'react';
 import Theme from 'react-native-theming';
 import { PropTypes } from 'prop-types';
-import { ColorPicker } from 'react-native-color-picker';
+import { ColorPicker, toHsv, fromHsv } from 'react-native-color-picker';
 
-import Card from '@components/Card/Card';
+import Touchable from '@components/Touchable/Touchable';
 
 import styles from './_styles';
 
-export default class ColorCard extends Component {
+export default class ColorPickerInput extends Component {
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			displayPicker: false,
+			color: '',
 		};
+	}
+
+	componentDidMount() {
+		this.setState({ color: toHsv(this.props.color) });
 	}
 
 	renderTitle = () => {
@@ -38,30 +43,37 @@ export default class ColorCard extends Component {
 		this.setState({ displayPicker: true });
 	};
 
-	onColorChanged = newColor => {
-		const { color } = this.props;
+	onColorSelected = newColor => {
+		console.log('new color:', newColor);
 		this.setState({ displayPicker: false });
 
-		if (!this.props.onColorChanged) return;
+		if (!this.props.onColorSelected) return;
 
-		if (newColor != color) {
-			this.props.onColorChanged(newColor);
-		}
+		this.props.onColorSelected(newColor);
+	};
+
+	onColorChange = color => {
+		console.log('onColorChange:', color);
+		this.setState({ color });
 	};
 
 	renderCard = () => {
 		return (
-			<Card onPress={this.onPress}>
+			<Touchable style={styles.container} onPress={this.onPress}>
 				{this.renderTitle()}
 				{this.renderColorPreview()}
-			</Card>
+			</Touchable>
 		);
 	};
 
 	renderPicker = () => {
+		const { color } = this.state;
+		console.log('renderPicker:', color);
 		return (
 			<ColorPicker
-				onColorSelected={this.onColorChanged}
+				color={color}
+				onColorSelected={this.onColorSelected}
+				onColorChange={this.onColorChange}
 				style={{ flex: 1, backgroundColor: 'black' }}
 			/>
 		);
@@ -69,21 +81,17 @@ export default class ColorCard extends Component {
 
 	render() {
 		const { displayPicker } = this.state;
-		const { enablePicker } = this.props;
 
-		return displayPicker && enablePicker
-			? this.renderPicker()
-			: this.renderCard();
+		return displayPicker ? this.renderPicker() : this.renderCard();
 	}
 }
 
-ColorCard.propTypes = {
+ColorPickerInput.propTypes = {
 	title: PropTypes.string,
 	color: PropTypes.string,
-	onColorChanged: PropTypes.func,
-	enablePicker: PropTypes.bool,
+	onColorSelected: PropTypes.func,
 };
 
-ColorCard.defaultProps = {
-	enablePicker: false,
+ColorPicker.defaultProps = {
+	color: { h: 1, s: 1, v: 1 },
 };
