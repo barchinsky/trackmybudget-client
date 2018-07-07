@@ -5,14 +5,14 @@ const themes = [
 		{
 			backgroundColor: '#ffffff',
 			textColor: '#000',
-			secondaryTextColor: '#166c7d',
+			secondaryTextColor: '#2f2f2f',
 			placeholderTextColor: '#777777',
 			inputFieldBgColor: '#cbcbcb',
 			menuCardHeight: 80,
 			menuCardBgColor: '#d7d7d7',
 			budgetCardHeight: 80,
 			budgetCardBorderColor: '#c9c9c9',
-			cardTitleFontSize: 35,
+			cardTitleFontSize: 25,
 		},
 		'Light'
 	),
