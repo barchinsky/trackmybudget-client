@@ -5,6 +5,7 @@ import {
 } from '@redux/actions/categories/fetch';
 
 import { UPDATE_CATEGORY_SUCCESS } from '@redux/actions/categories/update';
+import { CREATE_CATEGORY_SUCCESS } from '@redux/actions/categories/create';
 
 const initialState = {
 	loading: false,
@@ -38,6 +39,12 @@ export default function(state = initialState, action) {
 				category =>
 					category.id === action.payload.id ? action.payload : category
 			),
+		};
+	case CREATE_CATEGORY_SUCCESS:
+		console.log('create category success:', action.payload);
+		return {
+			...state,
+			data: state.data.concat([action.payload]),
 		};
 	default:
 		return state;
