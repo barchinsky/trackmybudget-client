@@ -4,21 +4,25 @@ import App from './src/App';
 
 import store from '@redux/store';
 
-import { login } from '@api/authorization';
-import {
-	getUserData,
-	saveUserLoginAndToken,
-	clearLocalCreds,
-} from '@api/local-storage';
-import { logIn } from '@redux/actions/account';
+// import { login } from '@api/authorization';
+// import {
+// 	getUserData,
+// 	saveUserLoginAndToken,
+// 	clearLocalCreds,
+// } from '@api/local-storage';
+// import { logIn } from '@redux/actions/account';
 
-import {
-	getBudgets,
-	getBudgetTransactions,
-	addBudget,
-	deleteBudget,
-	updateBudget,
-} from '@api/budget';
+// import {
+// 	getBudgets,
+// 	getBudgetTransactions,
+// 	addBudget,
+// 	deleteBudget,
+// 	updateBudget,
+// } from '@api/budget';
+
+import { fetchCategoriesSuccess } from '@redux/actions/categories/fetch';
+import { updateCategory } from '@redux/actions/categories/update';
+import Category from '@models/category';
 
 const token =
 	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YWRiN2FiM2VlOTNiODE0MzI3M2Q3Y2UiLCJpYXQiOjE1MjQ0MzA1NjZ9.mj8mETN1quZhD7bRFoxOcDoILUrEdljhp28FW9TucrQ';
@@ -84,10 +88,34 @@ const token =
 // 		console.log(response)
 // 	);
 
+// const cat1 = new Category({
+// 	_id: '5ae232093305571d3ca5d347',
+// 	userId: '5adb7ab3ee93b8143273d7ce',
+// 	name: 'Cat1Updated',
+// 	color: '#2b2b2b',
+// 	__v: 0,
+// });
+//
+// const cat2 = new Category({
+// 	_id: '5ae232093305571d3ca5d348',
+// 	userId: '5adb7ab3ee93b8143273d7ce',
+// 	name: 'Cat2Updated',
+// 	color: '#2b2b2b',
+// 	__v: 0,
+// });
+//
+// store.dispatch(fetchCategoriesSuccess([cat1, cat2]));
+//
+// cat1.name = 'Cat1';
+// store.dispatch(updateCategory(cat1));
+//
+// cat2.color = 'green';
+// store.dispatch(updateCategory(cat2));
+
 store.subscribe(() => {
 	// console.log(store.getState().budgets.data);
-	// console.log(store.getState().budgets.data.length);
-	console.log(store.getState().userData.token);
+	console.log(store.getState().categories);
+	// console.log(store.getState().userData.token);
 });
 
 export default class AppContainer extends React.Component {

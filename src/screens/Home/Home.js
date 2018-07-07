@@ -6,13 +6,15 @@ import themes from '@utils/themes';
 
 //import LoginScreen from '@screens/Login/Login';
 import SplashScreen from '@screens/Splash/Splash';
-import Card from '@components/Card/Card';
+// import Card from '@components/Card/Card';
 import BudgetList from '@components/Budget/List/List';
 //import HomeScreen from '@screens/Home/Home';
+import CategoryCard from '@components/Category/Card/Card';
 
 import { getUserData } from '@api/local-storage';
 import { fetchBudgets } from '@redux/actions/budgets/fetch';
 import { loginSuccess } from '@redux/actions/account';
+import { fetchCategories } from '@redux/actions/categories/fetch';
 
 import styles from './_styles';
 
@@ -40,7 +42,10 @@ export class App extends Component {
 		} else {
 			this.props.dispatch(loginSuccess(userData));
 
-			const initStack = [this.props.dispatch(fetchBudgets())];
+			const initStack = [
+				this.props.dispatch(fetchBudgets()),
+				this.props.dispatch(fetchCategories()),
+			];
 			await Promise.all(initStack);
 
 			this.setState({ isLoaded: true, isLoggedIn: true });
@@ -58,6 +63,7 @@ export class App extends Component {
 	renderBudets = () => {
 		const { loading, data, error } = this.props.budgets;
 
+		// return <CategoryCard title="Test name" color="#d400ff" />;
 		return <BudgetList budgets={data} />;
 	};
 

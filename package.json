@@ -12,6 +12,7 @@
     "moment": "^2.22.1",
     "react": "16.3.1",
     "react-native": "0.55.4",
+    "react-native-color-picker": "^0.4.0",
     "react-native-i18n": "^2.0.12",
     "react-native-modal-datetime-picker": "^5.1.0",
     "react-native-progress-bar-animated": "^1.0.6",
