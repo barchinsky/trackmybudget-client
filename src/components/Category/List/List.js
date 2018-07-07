@@ -8,11 +8,16 @@ import CategoryCard from '@components/Category/Card/Card';
 import styles from './_styles';
 
 export default class CategoryList extends Component {
+	onItemPressed = category => {
+		// console.log('category selected:', category);
+		if (this.props.onItemPressed) this.props.onItemPressed(category);
+	};
+
 	renderCategoryCard = item => {
 		const category = item.item;
-		console.log('category:', category);
+		// console.log('category:', category);
 
-		return <CategoryCard category={category} />;
+		return <CategoryCard category={category} onPress={this.onItemPressed} />;
 	};
 
 	_keyExtractor = item => item.id;
@@ -38,6 +43,7 @@ export default class CategoryList extends Component {
 
 CategoryList.propTypes = {
 	categories: PropTypes.array,
+	onItemPressed: PropTypes.func,
 };
 
 CategoryList.defaultProps = {
