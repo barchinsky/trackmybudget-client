@@ -35,7 +35,6 @@ export class EditCategoryScreen extends Component {
 	}
 
 	onCategorySave = ({ name, color }) => {
-		console.log('onCategoryUpdate name:', name, ' color:', color);
 		const { category } = this.state;
 
 		category.name = name;
@@ -62,6 +61,7 @@ export class EditCategoryScreen extends Component {
 
 EditCategoryScreen.propTypes = {
 	navigation: PropTypes.object,
+	dispatch: PropTypes.func,
 };
 
 export default connect()(EditCategoryScreen);
