@@ -20,6 +20,21 @@ export default class CategoryForm extends Component {
 		};
 	}
 
+	static getDerivedStateFromProps(props, state) {
+		if (
+			props.category &&
+			(props.category.name !== state.name ||
+				props.category.color !== state.color)
+		) {
+			return {
+				name: props.category.name,
+				color: props.category.color,
+			};
+		}
+
+		return null;
+	}
+
 	renderTitle = () => {
 		const { name } = this.state;
 
@@ -31,14 +46,18 @@ export default class CategoryForm extends Component {
 		);
 	};
 
+	onChangeName = name => {
+		this.setState({ name });
+	};
+
 	onColorSelected = newColor => {
-		console.log('onColorSelected:', newColor);
+		// console.log('onColorSelected:', newColor);
 		this.setState({ color: newColor });
 	};
 
 	renderColorSelector = () => {
 		const { color } = this.state;
-		console.log('color:', color);
+		// console.log('color:', color);
 		return (
 			<Theme.View style={styles.colorInputContainer}>
 				<ColorInput
@@ -50,13 +69,15 @@ export default class CategoryForm extends Component {
 		);
 	};
 
-	onSubmit = () => {
-		console.warn('Pressed');
-		if (this.props.onSubmit) this.props.onSubmit(this.state);
+	onPressSave = () => {
+		const { name, color } = this.state;
+		if (this.props.onSave) {
+			this.props.onSave({ name, color });
+		}
 	};
 
 	renderSubmitButton = () => {
-		return <Button onPress={this.onSubmit} title="Save" />;
+		return <Button onPress={this.onPressSave} title="Save" />;
 	};
 
 	render() {
@@ -71,6 +92,6 @@ export default class CategoryForm extends Component {
 }
 
 CategoryForm.propTypes = {
-	onSubmit: PropTypes.func,
+	onSave: PropTypes.func,
 	category: PropTypes.object,
 };
