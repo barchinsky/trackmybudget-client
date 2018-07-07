@@ -1,11 +1,12 @@
-import { moment } from 'moment';
+import moment from 'moment';
 import { datetime } from '@utils/dateFormats';
 
 export default class Transaction {
 	constructor({ userId, comment, date, amount, categoryId }) {
 		this._userId = userId;
 		this._comment = comment;
-		this._date = moment(date, datetime);
+		this._date = moment(date)
+			.format(datetime);
 		this._amount = amount;
 		this._categoryId = categoryId;
 	}
