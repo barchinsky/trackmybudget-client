@@ -8,11 +8,22 @@ import CategoryList from '@components/Category/List/List';
 import styles from './_styles';
 
 export class CategoriesScreen extends Component {
+	categorySelected = category => {
+		let params = { category };
+		this.props.navigation.navigate('EditCategoryScreen', params);
+	};
+
 	renderCategoryList() {
 		const { categories } = this.props;
 
-		return <CategoryList categories={categories} />;
+		return (
+			<CategoryList
+				categories={categories}
+				onItemPressed={this.categorySelected}
+			/>
+		);
 	}
+
 	render() {
 		return (
 			<Theme.View style={styles.container}>
@@ -30,6 +41,7 @@ export class CategoriesScreen extends Component {
 
 CategoriesScreen.propTypes = {
 	categories: PropTypes.array,
+	navigation: PropTypes.object,
 };
 
 CategoriesScreen.defaultProps = {
