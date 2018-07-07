@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Theme from 'react-native-theming';
 import { PropTypes } from 'prop-types';
-import { ColorPicker, toHsv, fromHsv } from 'react-native-color-picker';
+import { ColorPicker, toHsv } from 'react-native-color-picker';
 
 import Touchable from '@components/Touchable/Touchable';
 
@@ -22,11 +22,11 @@ export default class ColorPickerInput extends Component {
 	}
 
 	renderTitle = () => {
-		const { title } = this.props;
+		const { name } = this.props;
 
 		return (
 			<Theme.View style={styles.titleContainer}>
-				<Theme.Text style={styles.title}>{title}</Theme.Text>
+				<Theme.Text style={styles.title}>{name}</Theme.Text>
 			</Theme.View>
 		);
 	};
@@ -44,7 +44,6 @@ export default class ColorPickerInput extends Component {
 	};
 
 	onColorSelected = newColor => {
-		console.log('new color:', newColor);
 		this.setState({ displayPicker: false });
 
 		if (!this.props.onColorSelected) return;
@@ -53,7 +52,6 @@ export default class ColorPickerInput extends Component {
 	};
 
 	onColorChange = color => {
-		console.log('onColorChange:', color);
 		this.setState({ color });
 	};
 
@@ -68,7 +66,6 @@ export default class ColorPickerInput extends Component {
 
 	renderPicker = () => {
 		const { color } = this.state;
-		console.log('renderPicker:', color);
 		return (
 			<ColorPicker
 				color={color}
@@ -87,7 +84,7 @@ export default class ColorPickerInput extends Component {
 }
 
 ColorPickerInput.propTypes = {
-	title: PropTypes.string,
+	name: PropTypes.string,
 	color: PropTypes.string,
 	onColorSelected: PropTypes.func,
 };
