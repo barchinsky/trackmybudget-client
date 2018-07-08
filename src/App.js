@@ -8,6 +8,8 @@ import CategoryScreen from '@screens/Categories/Categories';
 import EditCategoryScreen from '@screens/EditCategory/EditCategory';
 import ScreenAddCategory from '@screens/Add/Category/Category';
 
+import TransactionsScreen from '@screens/Transactions/Transactions';
+
 const CategoryStack = createStackNavigator(
 	{
 		CategoryScreen,
@@ -18,9 +20,19 @@ const CategoryStack = createStackNavigator(
 	}
 );
 
+const TransactionsStack = createStackNavigator(
+	{
+		TransactionsScreen,
+	},
+	{
+		initialRouteName: 'TransactionsScreen',
+	}
+);
+
 export default createDrawerNavigator(
 	{
 		HomeScreen,
+		TransactionsStack,
 		CategoryStack,
 		LoginScreen,
 		ScreenAddBudget,
