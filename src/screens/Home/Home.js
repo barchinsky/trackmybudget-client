@@ -90,7 +90,7 @@ App.propTypes = {
 function mapStateToProps(state) {
 	return {
 		userData: state.userData,
-		budgets: state.budgets,
+		budgets: state.budgets.data,
 	};
 }
 
