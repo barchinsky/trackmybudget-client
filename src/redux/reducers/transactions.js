@@ -4,6 +4,12 @@ import {
 	FETCH_TRANSACTIONS_FAILED,
 } from '@redux/actions/transactions/fetch';
 
+import {
+	CREATING_TRANSACTION,
+	CREATE_TRANSACTION_SUCCESS,
+	CREATE_TRANSACTION_FAILED,
+} from '@redux/actions/transactions/create';
+
 const initialState = {
 	error: null,
 	loading: false,
@@ -28,6 +34,23 @@ export default function(state = initialState, action) {
 			...state,
 			loading: false,
 			data: action.payload,
+		};
+	case CREATING_TRANSACTION:
+		return {
+			...state,
+			loading: true,
+		};
+	case CREATE_TRANSACTION_FAILED:
+		return {
+			...state,
+			loading: false,
+			error: action.payload,
+		};
+	case CREATE_TRANSACTION_SUCCESS:
+		return {
+			error: null,
+			loading: false,
+			data: [action.payload].concat(state.data),
 		};
 	default:
 		return state;
