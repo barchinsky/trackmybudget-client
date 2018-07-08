@@ -35,21 +35,21 @@ export class App extends Component {
 	}
 
 	loadUserData = async () => {
-		const userData = await getUserData();
-		if (!userData.userId) {
-			console.log('userData.userId:', userData.userId);
-			this.props.navigation.navigate('LoginScreen');
-		} else {
-			this.props.dispatch(loginSuccess(userData));
+		// const userData = await getUserData();
+		// if (!userData.userId) {
+		// 	console.log('userData.userId:', userData.userId);
+		// 	this.props.navigation.navigate('LoginScreen');
+		// } else {
+		// this.props.dispatch(loginSuccess(userData));
 
-			const initStack = [
-				this.props.dispatch(fetchBudgets()),
-				this.props.dispatch(fetchCategories()),
-			];
-			await Promise.all(initStack);
+		// const initStack = [
+		// 	this.props.dispatch(fetchBudgets()),
+		// 	this.props.dispatch(fetchCategories()),
+		// ];
+		// await Promise.all(initStack);
 
-			this.setState({ isLoaded: true, isLoggedIn: true });
-		}
+		this.setState({ isLoaded: true, isLoggedIn: true });
+		// }
 	};
 
 	static getDerivedStateFromProps(props, state) {
@@ -90,7 +90,7 @@ App.propTypes = {
 function mapStateToProps(state) {
 	return {
 		userData: state.userData,
-		budgets: state.budgets,
+		budgets: state.budgets.data,
 	};
 }
 
