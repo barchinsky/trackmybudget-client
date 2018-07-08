@@ -62,7 +62,7 @@ export default class TransactionCard extends Component {
 
 	render() {
 		return (
-			<Touchable style={styles.container}>
+			<Touchable style={styles.container} onPress={this.onPress}>
 				{this.renderLeftColumn()}
 				{this.renderMiddleColumn()}
 				{this.renderRightColumn()}

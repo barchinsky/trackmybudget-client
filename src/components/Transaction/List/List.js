@@ -9,13 +9,13 @@ import styles from './_styles';
 
 export default class TransactionList extends Component {
 	transactionSelected = transaction => {
-		console.log('TransactionList:: transaction selected:', transaction);
+		if (this.props.onTransactionSelected) {
+			this.props.onTransactionSelected(transaction);
+		}
 	};
 
 	renderList = () => {
-		console.log('renderList()');
 		const { transactions } = this.props;
-		console.log('tranasctions:', transactions.length);
 		return (
 			<FlatList
 				data={transactions}
@@ -28,7 +28,6 @@ export default class TransactionList extends Component {
 	_keyExtractor = item => '' + item.id;
 
 	renderTransactionCard = item => {
-		console.log('renderTransactionCard()');
 		const transaction = item.item;
 
 		return (
@@ -48,4 +47,5 @@ export default class TransactionList extends Component {
 
 TransactionList.propTypes = {
 	transactions: PropTypes.array,
+	onTransactionSelected: PropTypes.func,
 };
