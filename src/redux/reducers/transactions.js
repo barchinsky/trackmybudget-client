@@ -11,6 +11,10 @@ import {
 } from '@redux/actions/transactions/create';
 
 import { DELETE_TRANSACTION_SUCCESS } from '@redux/actions/transactions/delete';
+import {
+	UPDATE_TRANSACTION_SUCCESS,
+	UPDATE_TRANSACTION_FAILED,
+} from '@redux/actions/transactions/update';
 
 const initialState = {
 	error: null,
@@ -61,6 +65,21 @@ export default function(state = initialState, action) {
 			data: state.data.filter(
 				transaction => transaction.id !== action.payload.id
 			),
+		};
+	case UPDATE_TRANSACTION_SUCCESS:
+		return {
+			loading: false,
+			error: null,
+			data: state.data.map(
+				transaction =>
+					transaction.id == action.payload.id ? action.payload : transaction
+			),
+		};
+	case UPDATE_TRANSACTION_FAILED:
+		return {
+			...state,
+			loading: false,
+			error: action.payload,
 		};
 	default:
 		return state;
