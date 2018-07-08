@@ -10,6 +10,8 @@ import {
 	CREATE_TRANSACTION_FAILED,
 } from '@redux/actions/transactions/create';
 
+import { DELETE_TRANSACTION_SUCCESS } from '@redux/actions/transactions/delete';
+
 const initialState = {
 	error: null,
 	loading: false,
@@ -51,6 +53,14 @@ export default function(state = initialState, action) {
 			error: null,
 			loading: false,
 			data: [action.payload].concat(state.data),
+		};
+	case DELETE_TRANSACTION_SUCCESS:
+		return {
+			error: null,
+			loading: false,
+			data: state.data.filter(
+				transaction => transaction.id !== action.payload.id
+			),
 		};
 	default:
 		return state;
