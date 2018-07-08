@@ -10,6 +10,7 @@ export default class Transaction {
 			.format(datetime);
 		this._amount = amount;
 		this._categoryId = categoryId;
+		this._category = null;
 	}
 
 	get id() {
@@ -58,5 +59,13 @@ export default class Transaction {
 
 	set categoryId(id) {
 		this._categoryId = id;
+	}
+
+	get category() {
+		return this._category;
+	}
+
+	set category(c) {
+		this._category = c;
 	}
 }
