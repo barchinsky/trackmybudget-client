@@ -4,6 +4,7 @@ import { PropTypes } from 'prop-types';
 import { connect } from 'react-redux';
 
 import TransactionForm from '@components/Transaction/Form/Form';
+import { updateTransaction } from '@redux/actions/transactions/update';
 
 import styles from './_styles';
 
@@ -23,9 +24,28 @@ export class EditTransaction extends Component {
 				category={category[0]}
 				date={date}
 				categories={categories}
-				onSubmit={this.onTransacitonUpdate}
+				onSubmit={this.onTransactionUpdate}
 			/>
 		);
+	};
+
+	onTransactionUpdate = ({ amount, comment, category, date }) => {
+		console.log('onTransactionUpdate:', {
+			amount,
+			comment,
+			category,
+			date,
+		});
+
+		const originalTransaction = this.props.navigation.getParam('transaction');
+		originalTransaction.amount = amount;
+		originalTransaction.comment = comment;
+		originalTransaction.categoryId = category.id;
+		originalTransaction.date = date;
+
+		console.log('onTransactionUpdate:updated:', originalTransaction);
+
+		this.props.dispatch(updateTransaction(originalTransaction));
 	};
 
 	render() {
@@ -39,6 +59,7 @@ EditTransaction.propTypes = {
 	transaction: PropTypes.object,
 	categories: PropTypes.array,
 	navigation: PropTypes.object.isRequired,
+	dispatch: PropTypes.func,
 };
 
 function mapStateToProps(state) {
