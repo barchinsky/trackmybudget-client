@@ -30,7 +30,7 @@ export class ScreenAddBudget extends Component {
 
 	static navigationOptions = () => {
 		return {
-			title: 'Add new budget',
+			title: 'New Budget',
 		};
 	};
 }

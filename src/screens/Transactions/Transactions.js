@@ -47,6 +47,7 @@ export class TransactionsScreen extends Component {
 
 	transactionSelected = transaction => {
 		console.log('TransactionsScreen::transaction slected:', transaction);
+		this.props.navigation.navigate('EditTransactionScreen', { transaction });
 	};
 
 	render() {
@@ -65,6 +66,7 @@ export class TransactionsScreen extends Component {
 TransactionsScreen.propTypes = {
 	transactions: PropTypes.object,
 	categories: PropTypes.object,
+	navigation: PropTypes.object,
 };
 
 function mapStateToProps(state) {

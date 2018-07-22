@@ -40,7 +40,7 @@ export default class CategoryForm extends Component {
 
 		return (
 			<Theme.View styles={styles.titleContainer}>
-				<InputLabel text={'Name'} />
+				<InputLabel text={'Name:'} />
 				<TextInput onChangeText={this.onChangeName} value={name} />
 			</Theme.View>
 		);

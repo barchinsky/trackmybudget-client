@@ -98,6 +98,10 @@ export class LoginScreen extends Component {
 	}
 }
 
+LoginScreen.navigationOptions = () => {
+	return { title: 'Login' };
+};
+
 LoginScreen.propTypes = {
 	error: PropTypes.object,
 	loading: PropTypes.bool,

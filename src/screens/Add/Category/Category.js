@@ -31,6 +31,10 @@ export class ScreenAddCategory extends Component {
 	}
 }
 
+ScreenAddCategory.navigationOptions = () => {
+	return { title: 'New Category' };
+};
+
 ScreenAddCategory.propTypes = {
 	dispatch: PropTypes.func,
 	user: PropTypes.object,
