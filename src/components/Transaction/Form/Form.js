@@ -15,13 +15,22 @@ export default class TransactionForm extends Component {
 		super(props);
 
 		this.state = {
-			id: -1,
-			description: '',
+			id: Date.now(),
+			comment: '',
 			date: moment()
 				.format('YYYY-MM-DD'),
-			amount: 0,
-			category: '',
+			amount: '0',
+			category: null,
 		};
+	}
+
+	static getDerivedStateFromProps(props, state) {
+		if (props.category != state.category) {
+			return {
+				category: props.category,
+			};
+		}
+		return null;
 	}
 
 	renderDateInput = () => {
@@ -59,7 +68,7 @@ export default class TransactionForm extends Component {
 				<InputLabel text="Amount:" />
 				<TextInput
 					onChangeText={this.onChangeAmount}
-					value={amount}
+					value={'' + amount}
 					numberOfLines={1}
 					keyboardType={'number-pad'}
 				/>
@@ -74,15 +83,15 @@ export default class TransactionForm extends Component {
 		}
 	};
 
-	renderDescriptionInput = () => {
-		const { description } = this.state;
+	renderCommentInput = () => {
+		const { comment } = this.state;
 
 		return (
 			<Theme.View>
 				<InputLabel text="Description:" />
 				<TextInput
 					onChangeText={this.onChangeDescription}
-					value={description}
+					value={comment}
 					numberOfLines={1}
 					keyboardType={'number-pad'}
 				/>
@@ -90,8 +99,8 @@ export default class TransactionForm extends Component {
 		);
 	};
 
-	onChangeDescription = description => {
-		this.setState({ description });
+	onChangeDescription = comment => {
+		this.setState({ comment });
 	};
 
 	renderCategoryInput = () => {
@@ -105,15 +114,23 @@ export default class TransactionForm extends Component {
 						this.setState({ category: itemValue })
 					}
 				>
-					<Picker.Item label="Java" value="java" />
-					<Picker.Item label="JavaScript" value="js" />
+					{this.renderCategoryPickerItems()}
 				</Picker>
 			</Theme.View>
 		);
 	};
 
+	renderCategoryPickerItems = () => {
+		const { categories } = this.props;
+		categories.unshift({ name: 'Please, select a category' });
+
+		return categories.map(category => (
+			<Picker.Item key={category.id} label={category.name} value={category} />
+		));
+	};
+
 	renderSubmitButton = () => {
-		return <Button onPress={this.onSave} title="Save" />;
+		return <Button onPress={this.onPressSubmit} title="Save" />;
 	};
 
 	onPressSubmit = () => {
@@ -133,7 +150,7 @@ export default class TransactionForm extends Component {
 	render() {
 		return (
 			<Theme.View style={styles.container}>
-				{this.renderDescriptionInput()}
+				{this.renderCommentInput()}
 				{this.renderAmountInput()}
 				{this.renderCategoryInput()}
 				{this.renderDateInput()}
@@ -145,10 +162,14 @@ export default class TransactionForm extends Component {
 
 TransactionForm.propTypes = {
 	onSubmit: PropTypes.func,
-	description: PropTypes.string,
-	amount: PropTypes.string,
+	comment: PropTypes.string,
+	amount: PropTypes.number,
 	date: PropTypes.string,
 	category: PropTypes.string,
-	categories: PropTypes.object,
+	categories: PropTypes.array,
 	onDelete: PropTypes.func,
+};
+
+TransactionForm.defaultProps = {
+	categories: [{ name: 'Please, add category firstly', id: -1 }],
 };
