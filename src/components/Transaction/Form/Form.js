@@ -8,6 +8,11 @@ import { Button, Picker } from 'react-native';
 import InputLabel from '@components/InputLabel/InputLabel';
 import TextInput from '@components/TextInput/TextInput';
 
+import {
+	date as dateFormat,
+	datetime as datetimeFormat,
+} from '@utils/dateFormats';
+
 import styles from './_styles';
 
 export default class TransactionForm extends Component {
@@ -18,23 +23,35 @@ export default class TransactionForm extends Component {
 			id: Date.now(),
 			comment: '',
 			date: moment()
-				.format('YYYY-MM-DD'),
+				.format(dateFormat),
 			amount: '0',
 			category: null,
 		};
 	}
 
 	static getDerivedStateFromProps(props, state) {
-		if (props.category != state.category) {
+		if (
+			props.category != state.category ||
+			props.amount != state.amount ||
+			props.comment != state.comment ||
+			props.date != state.date
+		) {
+			console.log('getDerivedStateFromProps;', props);
 			return {
 				category: props.category,
+				amount: props.amount,
+				comment: props.comment,
+				date: moment(props.date, datetimeFormat)
+					.format(dateFormat),
 			};
 		}
+
 		return null;
 	}
 
 	renderDateInput = () => {
 		const { date } = this.state;
+		console.log('date:', date);
 
 		return (
 			<Theme.View style={styles.dateContainer}>
@@ -49,7 +66,7 @@ export default class TransactionForm extends Component {
 					date={date}
 					mode="date"
 					placeholder="Choose transaction date"
-					format="YYYY-MM-DD"
+					format={dateFormat}
 					confirmBtnText="Confirm"
 					cancelBtnText="Cancel"
 					onDateChange={date => {
@@ -165,7 +182,7 @@ TransactionForm.propTypes = {
 	comment: PropTypes.string,
 	amount: PropTypes.number,
 	date: PropTypes.string,
-	category: PropTypes.string,
+	category: PropTypes.object,
 	categories: PropTypes.array,
 	onDelete: PropTypes.func,
 };
