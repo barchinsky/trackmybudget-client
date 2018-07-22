@@ -22,7 +22,7 @@ export default createStyle({
 	},
 	middleColumn: {
 		flex: 1,
-		justifyContent: 'flex-start',
+		justifyContent: 'center',
 		alignItems: 'flex-start',
 		paddingLeft: 5,
 		paddingTop: 5,
@@ -31,7 +31,7 @@ export default createStyle({
 		// flexDirection: 'row',
 	},
 	descriptionContainer: {
-		flex: 1,
+		// flex: 1,
 		paddingBottom: 1,
 		// maxHeight: 25,
 		// borderWidth: 1,
