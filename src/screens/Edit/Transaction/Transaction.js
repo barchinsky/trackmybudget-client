@@ -30,22 +30,15 @@ export class EditTransaction extends Component {
 	};
 
 	onTransactionUpdate = ({ amount, comment, category, date }) => {
-		console.log('onTransactionUpdate:', {
-			amount,
-			comment,
-			category,
-			date,
-		});
+		const tranToUpdate = this.props.navigation.getParam('transaction');
+		tranToUpdate.amount = amount;
+		tranToUpdate.comment = comment;
+		tranToUpdate.categoryId = category.id;
+		tranToUpdate.date = date;
 
-		const originalTransaction = this.props.navigation.getParam('transaction');
-		originalTransaction.amount = amount;
-		originalTransaction.comment = comment;
-		originalTransaction.categoryId = category.id;
-		originalTransaction.date = date;
+		// console.log('onTransactionUpdate:updated:', tranToUpdate);
 
-		console.log('onTransactionUpdate:updated:', originalTransaction);
-
-		this.props.dispatch(updateTransaction(originalTransaction));
+		this.props.dispatch(updateTransaction(tranToUpdate));
 	};
 
 	render() {
