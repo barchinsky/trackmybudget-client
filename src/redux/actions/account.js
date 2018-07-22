@@ -26,7 +26,7 @@ export function loginFailed(err) {
 	};
 }
 
-export function logIn(user, pass, rememberMe = false) {
+export function _logIn(user, pass, rememberMe = false) {
 	return dispatch => {
 		dispatch(loging());
 
@@ -64,4 +64,18 @@ export function logIn(user, pass, rememberMe = false) {
 				}
 			});
 	};
+}
+
+export function logIn() {
+	const data = {
+		userId: 'testid',
+		token: 'testtoken',
+	};
+	return new Promise(resolve => {
+		return dispatch => {
+			saveUserLoginAndToken(data.userId, data.token); // save to local storage
+			dispatch(loginSuccess(data));
+			resolve();
+		};
+	});
 }

@@ -29,16 +29,21 @@ export function addBudget(budget) {
 		const { token } = getState().userData;
 		dispatch(addingBudget());
 
-		return apiAddBudget(token, budget)
-			.then(response => {
-				const { error, data } = response;
-
-				if (error) dispatch(addBudgetFailed(error));
-				else dispatch(addBudgetSuccess(data));
-			})
-			.catch(error => {
-				dispatch(addBudgetFailed(error));
-				throw error;
-			});
+		// 	return apiAddBudget(token, budget)
+		// 		.then(response => {
+		// 			const { error, data } = response;
+		//
+		// 			if (error) dispatch(addBudgetFailed(error));
+		// 			else dispatch(addBudgetSuccess(data));
+		// 		})
+		// 		.catch(error => {
+		// 			dispatch(addBudgetFailed(error));
+		// 			throw error;
+		// 		});
+		// };
+		return new Promise(resolve => {
+			dispatch(addBudgetSuccess(budget));
+			resolve();
+		});
 	};
 }
