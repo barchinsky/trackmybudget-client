@@ -29,4 +29,12 @@ export default class Category {
 	get userId() {
 		return this._userId;
 	}
+
+	serialize() {
+		return JSON.stringify(this);
+	}
+
+	static deserialize(data) {
+		return new Category(JSON.parse(data));
+	}
 }
