@@ -2,14 +2,14 @@ import moment from 'moment';
 import { datetime } from '@utils/dateFormats';
 
 export default class Transaction {
-	constructor({ id, userId, comment, date, amount, categoryId }) {
-		this._id = id;
-		this._userId = userId;
-		this._comment = comment;
-		this._date = moment(date)
+	constructor({ _id, _userId, _comment, _date, _amount, _categoryId }) {
+		this._id = _id;
+		this._userId = _userId;
+		this._comment = _comment;
+		this._date = moment(_date)
 			.format(datetime);
-		this._amount = amount;
-		this._categoryId = categoryId;
+		this._amount = _amount;
+		this._categoryId = _categoryId;
 		this._category = null;
 	}
 
@@ -67,5 +67,16 @@ export default class Transaction {
 
 	set category(c) {
 		this._category = c;
+	}
+
+	serialize() {
+		return JSON.stringify(this);
+	}
+
+	static deserialize(data) {
+		console.log('Transaciton:datatodeser:', data);
+		const deserData = JSON.parse(data);
+		console.log('deserData:', deserData);
+		return new Transaction(deserData);
 	}
 }
