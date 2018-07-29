@@ -42,8 +42,13 @@ export class EditTransaction extends Component {
 		this.props.dispatch(updateTransaction(tranToUpdate));
 	};
 
-	onTransactionDelete = t => {
-		this.props.dispatch(deleteTransaction(t));
+	onTransactionDelete = async t => {
+		try {
+			await this.props.dispatch(deleteTransaction(t));
+			this.props.navigation.goBack();
+		} catch (e) {
+			console.log('EditTransactionScreen.onTransactionDelete():', e.message);
+		}
 	};
 
 	render() {
