@@ -1,3 +1,5 @@
+import ASM from '@utils/AsyncStorageManager/AsyncStorageManager';
+
 export const UPDATING_TRANSACTION = 'UPDATING_TRANSACTION';
 export const UPDATE_TRANSACTION_SUCCESS = 'UPDATE_TRANSACTION_SUCCESS';
 export const UPDATE_TRANSACTION_FAILED = 'UPDATE_TRANSACTION_FAILED';
@@ -23,15 +25,14 @@ export function updateTransactionSuccess(transaction) {
 }
 
 export function updateTransaction(transaction) {
-	return dispatch => {
+	return async dispatch => {
 		dispatch(updatingTransaction());
 
-		// do api or db call
-		//...
-
-		const { error } = { error: null };
-
-		if (!error) dispatch(updateTransactionSuccess(transaction));
-		else dispatch(updateTransactionFailed(error));
+		try {
+			await ASM.updateTransaction(transaction);
+			dispatch(updateTransactionSuccess(transaction));
+		} catch (e) {
+			dispatch(updateTransactionFailed(e.message));
+		}
 	};
 }
