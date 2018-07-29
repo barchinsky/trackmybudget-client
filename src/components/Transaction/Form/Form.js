@@ -40,7 +40,9 @@ export default class TransactionForm extends Component {
 		) {
 			// console.log('getDerivedStateFromProps;', props);
 			return {
-				category,
+				category: category
+					? category
+					: { name: 'Please, add category', id: -1 },
 				amount,
 				comment,
 				date: moment(date, datetimeFormat)
@@ -123,11 +125,7 @@ export default class TransactionForm extends Component {
 	};
 
 	renderCategoryInput = () => {
-		console.log(
-			'renderCategoryInput():',
-			this.state.category.name,
-			this.state.category.id
-		);
+		console.log('renderCategoryInput():', this.state.category);
 		return (
 			<Theme.View>
 				<InputLabel text="Category:" />

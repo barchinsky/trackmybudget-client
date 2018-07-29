@@ -70,14 +70,20 @@ export default class CategoryForm extends Component {
 	};
 
 	onPressSave = () => {
-		const { name, color } = this.state;
+		// const { name, color } = this.state;
 		if (this.props.onSave) {
-			this.props.onSave({ name, color });
+			this.props.onSave({ ...this.state });
 		}
 	};
 
 	renderSubmitButton = () => {
 		return <Button onPress={this.onPressSave} title="Save" />;
+	};
+
+	renderDeleteButton = () => {
+		return this.props.onDelete ? (
+			<Button onPress={this.onPressSave} title="Save" />
+		) : null;
 	};
 
 	render() {
@@ -93,5 +99,6 @@ export default class CategoryForm extends Component {
 
 CategoryForm.propTypes = {
 	onSave: PropTypes.func,
+	onDelete: PropTypes.func,
 	category: PropTypes.object,
 };
