@@ -139,7 +139,7 @@ export default class TransactionForm extends Component {
 
 	renderCategoryPickerItems = () => {
 		const { categories } = this.props;
-		categories.unshift({ name: 'Please, select a category' });
+		// categories.unshift({ name: 'Please, select a category' });
 
 		return categories.map(category => (
 			<Picker.Item key={category.id} label={category.name} value={category} />
@@ -188,5 +188,5 @@ TransactionForm.propTypes = {
 };
 
 TransactionForm.defaultProps = {
-	categories: [{ name: 'Please, add category firstly', id: -1 }],
+	categories: [{ name: 'Please, add category', id: -1 }],
 };
