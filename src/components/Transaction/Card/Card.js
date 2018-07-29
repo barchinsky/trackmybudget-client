@@ -10,15 +10,14 @@ export default class TransactionCard extends Component {
 	onPress = () => {
 		if (this.props.onPress) this.props.onPress(this.props.transaction);
 	};
+
 	renderLeftColumn = () => {
 		const { category } = this.props.transaction;
+		const color = category && category.color ? category.color : 'white';
+		const name = category && category.name ? category.name[0] : 'Un';
 		return (
-			<Theme.View
-				style={[styles.leftColumn, { backgroundColor: category.color }]}
-			>
-				<Theme.Text style={styles.leftColumnText}>
-					{category.name[0]}
-				</Theme.Text>
+			<Theme.View style={[styles.leftColumn, { backgroundColor: color }]}>
+				<Theme.Text style={styles.leftColumnText}>{name}</Theme.Text>
 			</Theme.View>
 		);
 	};
