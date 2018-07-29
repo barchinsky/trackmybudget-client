@@ -14,16 +14,14 @@ export class EditTransaction extends Component {
 		const { categories } = this.props;
 		const transaction = this.props.navigation.getParam('transaction');
 		console.log('transationtoedit:', transaction);
-		const { amount, comment, categoryId, date } = transaction;
+		const { categoryId } = transaction;
 
-		const category = categories.filter(category => category.id === categoryId);
+		const category = categories.find(category => category.id === categoryId);
+		transaction.category = category;
 
 		return (
 			<TransactionForm
-				amount={amount}
-				comment={comment}
-				category={category[0]}
-				date={date}
+				transaction={transaction}
 				categories={categories}
 				onSubmit={this.onTransactionUpdate}
 				onDelete={this.onTransactionDelete}
@@ -37,8 +35,9 @@ export class EditTransaction extends Component {
 		tranToUpdate.comment = comment;
 		tranToUpdate.categoryId = category.id;
 		tranToUpdate.date = date;
+		tranToUpdate.category = null;
 
-		// console.log('onTransactionUpdate:updated:', tranToUpdate);
+		console.log('onTransactionUpdate:updated:', tranToUpdate);
 
 		this.props.dispatch(updateTransaction(tranToUpdate));
 	};
