@@ -71,11 +71,8 @@ export function logIn() {
 		userId: 'testid',
 		token: 'testtoken',
 	};
-	return new Promise(resolve => {
-		return dispatch => {
-			saveUserLoginAndToken(data.userId, data.token); // save to local storage
-			dispatch(loginSuccess(data));
-			resolve();
-		};
-	});
+	return async dispatch => {
+		await saveUserLoginAndToken(data.userId, data.token); // save to local storage
+		dispatch(loginSuccess(data));
+	};
 }
