@@ -51,10 +51,7 @@ export class EditCategoryScreen extends Component {
 
 	render() {
 		return (
-			<Theme.View style={styles.container}>
-				<Theme.Text>Im the EditCategoryScreen component</Theme.Text>
-				{this.renderForm()}
-			</Theme.View>
+			<Theme.View style={styles.container}>{this.renderForm()}</Theme.View>
 		);
 	}
 }
