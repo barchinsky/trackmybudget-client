@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 
 import TransactionForm from '@components/Transaction/Form/Form';
 import { updateTransaction } from '@redux/actions/transactions/update';
+import { deleteTransaction } from '@redux/actions/transactions/delete';
 
 import styles from './_styles';
 
@@ -25,6 +26,7 @@ export class EditTransaction extends Component {
 				date={date}
 				categories={categories}
 				onSubmit={this.onTransactionUpdate}
+				onDelete={this.onTransactionDelete}
 			/>
 		);
 	};
@@ -39,6 +41,10 @@ export class EditTransaction extends Component {
 		// console.log('onTransactionUpdate:updated:', tranToUpdate);
 
 		this.props.dispatch(updateTransaction(tranToUpdate));
+	};
+
+	onTransactionDelete = t => {
+		this.props.dispatch(deleteTransaction(t));
 	};
 
 	render() {
