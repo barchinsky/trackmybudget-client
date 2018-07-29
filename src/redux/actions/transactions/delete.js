@@ -1,3 +1,5 @@
+import ASM from '@utils/AsyncStorageManager/AsyncStorageManager';
+
 export const DELETING_TRANSACTION = 'DELETING_TRANSACTION';
 export const DELETE_TRANSACTION_SUCCESS = 'DELETE_TRANSACTION_SUCCESS';
 export const DELETE_TRANSACTION_FAILED = 'DELETE_TRANSACTION_FAILED';
@@ -23,15 +25,13 @@ export function deleteTransactionSuccess(transaction) {
 }
 
 export function deleteTransaction(transaction) {
-	return dispatch => {
+	return async dispatch => {
 		dispatch(deletingTransaction());
-
-		// do api or db call
-		//...
-		const { error } = { error: null };
-
-		// process response
-		if (!error) dispatch(deleteTransactionSuccess(transaction));
-		else dispatch(deleteTransactionFailed(error));
+		try {
+			await ASM.deleteTransaction(transaction);
+			dispatch(deleteTransactionSuccess(transaction));
+		} catch (e) {
+			dispatch(deleteTransactionFailed(e));
+		}
 	};
 }
