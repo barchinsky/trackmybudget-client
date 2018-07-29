@@ -30,18 +30,20 @@ export default class TransactionForm extends Component {
 	}
 
 	static getDerivedStateFromProps(props, state) {
+		const { category, amount, comment, date } = props.transaction;
+		console.log('category:', category);
 		if (
-			props.category != state.category ||
-			props.amount != state.amount ||
-			props.comment != state.comment ||
-			props.date != state.date
+			category != state.category ||
+			amount != state.amount ||
+			comment != state.comment ||
+			date != state.date
 		) {
-			console.log('getDerivedStateFromProps;', props);
+			// console.log('getDerivedStateFromProps;', props);
 			return {
-				category: props.category,
-				amount: props.amount,
-				comment: props.comment,
-				date: moment(props.date, datetimeFormat)
+				category,
+				amount,
+				comment,
+				date: moment(date, datetimeFormat)
 					.format(dateFormat),
 			};
 		}
@@ -51,7 +53,7 @@ export default class TransactionForm extends Component {
 
 	renderDateInput = () => {
 		const { date } = this.state;
-		console.log('date:', date);
+		// console.log('date:', date);
 
 		return (
 			<Theme.View style={styles.dateContainer}>
@@ -121,15 +123,20 @@ export default class TransactionForm extends Component {
 	};
 
 	renderCategoryInput = () => {
+		console.log(
+			'renderCategoryInput():',
+			this.state.category.name,
+			this.state.category.id
+		);
 		return (
 			<Theme.View>
 				<InputLabel text="Category:" />
 				<Picker
 					selectedValue={this.state.category}
 					style={{ height: 50, width: '100%' }}
-					onValueChange={(itemValue, itemIndex) =>
-						this.setState({ category: itemValue })
-					}
+					onValueChange={(itemValue, itemIndex) => {
+						this.setState({ category: itemValue });
+					}}
 				>
 					{this.renderCategoryPickerItems()}
 				</Picker>
@@ -161,7 +168,7 @@ export default class TransactionForm extends Component {
 	};
 
 	onPressDelete = () => {
-		if (this.props.onDelete) this.props.onDelete(this.state);
+		if (this.props.onDelete) this.props.onDelete(this.props.transaction);
 	};
 
 	render() {
@@ -172,18 +179,16 @@ export default class TransactionForm extends Component {
 				{this.renderCategoryInput()}
 				{this.renderDateInput()}
 				{this.renderSubmitButton()}
+				{this.renderDeleteButton()}
 			</Theme.View>
 		);
 	}
 }
 
 TransactionForm.propTypes = {
-	onSubmit: PropTypes.func,
-	comment: PropTypes.string,
-	amount: PropTypes.number,
-	date: PropTypes.string,
-	category: PropTypes.object,
+	transaction: PropTypes.object,
 	categories: PropTypes.array,
+	onSubmit: PropTypes.func,
 	onDelete: PropTypes.func,
 };
 
