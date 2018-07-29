@@ -27,7 +27,7 @@ export function createTransactionSuccess(transaction) {
 export function createTransaction(transaction) {
 	return async dispatch => {
 		try {
-			await ASM.addTransaction(transaction.serialize());
+			await ASM.addTransaction(transaction);
 			dispatch(createTransactionSuccess(transaction));
 		} catch (e) {
 			dispatch(createTransactionFailed(e));
