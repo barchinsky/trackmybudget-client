@@ -74,9 +74,9 @@ export default class Transaction {
 	}
 
 	static deserialize(data) {
-		console.log('Transaciton:datatodeser:', data);
+		// console.log('Transaciton:datatodeser:', data);
 		const deserData = JSON.parse(data);
-		console.log('deserData:', deserData);
+		// console.log('deserData:', deserData);
 		return new Transaction(deserData);
 	}
 }
