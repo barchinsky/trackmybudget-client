@@ -26,26 +26,30 @@ export class AddTransactionScreen extends Component {
 			_categoryId: categoryId,
 			_date: date,
 		});
-		console.warn('transaction to save:', t);
+		// console.warn('transaction to save:', t);
 
 		this.props.dispatch(createTransaction(t));
 	};
 
 	render() {
 		const { categories } = this.props;
-		const amount = '0';
+		const amount = 0;
 		const date = moment()
 			.format(dateFormat);
 		const category = categories[0];
 
+		const defaultTransaction = new Transaction({
+			_date: date,
+			_amount: amount,
+		});
+		defaultTransaction.category = category;
+
 		return (
 			<Theme.View style={styles.container}>
 				<TransactionForm
-					onSubmit={this.onSave}
+					transaction={defaultTransaction}
 					categories={categories}
-					amount={amount}
-					date={date}
-					category={category}
+					onSubmit={this.onSave}
 				/>
 			</Theme.View>
 		);
