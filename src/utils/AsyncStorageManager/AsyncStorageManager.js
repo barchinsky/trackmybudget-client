@@ -5,12 +5,12 @@ import Budget from '@models/budget';
 
 const TRANSACTIONS_KEY = 'transactions';
 const CATEGORIES_KEY = 'categories';
+const BUDGETS_KEY = 'budgets';
 
 export default class AsyncStorageManager {
 	static async getTransactions() {
-		const key = 'transactions';
 		const transactions = await AsyncStorageManager.restoreData(
-			key,
+			TRANSACTIONS_KEY,
 			Transaction
 		);
 		return transactions;
@@ -19,9 +19,9 @@ export default class AsyncStorageManager {
 	static async addTransaction(transaction) {
 		try {
 			const transactions = await AsyncStorageManager.getTransactions();
-			console.log('addTransaction::transactions', transactions);
+			// console.log('addTransaction::transactions', transactions);
 			const updatedTransactions = [transaction, ...transactions];
-			console.log('addTransaction::updatedTransactions:', updatedTransactions);
+			// console.log('addTransaction::updatedTransactions:', updatedTransactions);
 			await AsyncStorageManager._updateTransactions(updatedTransactions);
 			return 1;
 		} catch (e) {
@@ -40,7 +40,7 @@ export default class AsyncStorageManager {
 			);
 			AsyncStorageManager._updateTransactions(updatedTransactions);
 		} catch (e) {
-			console.log('AsyncStorageManager().deleteTransaction()::', e.message);
+			// console.log('AsyncStorageManager().deleteTransaction()::', e.message);
 			throw new Error(
 				`AsyncStorageManager().deleteTransaction()::${e.message}`
 			);
@@ -75,6 +75,7 @@ export default class AsyncStorageManager {
 		);
 	}
 
+	///////////////// Categories ///////////////////////////
 	static async getCategories() {
 		try {
 			const categories = AsyncStorageManager.restoreData(
@@ -96,6 +97,7 @@ export default class AsyncStorageManager {
 			await AsyncStorageManager._updateCategories(updatedCategories);
 			return true;
 		} catch (e) {
+			console.error('AsyncStorageManager()::addCategory()::', e.message);
 			return false;
 		}
 	}
@@ -141,7 +143,68 @@ export default class AsyncStorageManager {
 		}
 	}
 
+	///////////////////////// Budgets /////////////////////////////////
+
+	static async getBudgets() {
+		const budgets = await AsyncStorageManager.restoreData(BUDGETS_KEY, Budget);
+
+		return budgets;
+	}
+
+	static async addBudget(budget) {
+		try {
+			const oldBudgets = AsyncStorageManager.getBudgets();
+			const newBudgets = [budget, ...oldBudgets];
+			console.log('newBudgets:', newBudgets);
+			await AsyncStorageManager._updateBudgets(newBudgets);
+			return 1;
+		} catch (e) {
+			console.error('AsyncStorageManager()::addBudget()::', e.message);
+			return 0;
+		}
+	}
+
+	static async deleteBudget(budget) {
+		try {
+			const oldBudgets = await AsyncStorageManager.getBudgets();
+			const newBudgets = oldBudgets.filter(b => b.id !== budget.id);
+			await AsyncStorageManager._updateBudgets(newBudgets);
+			return 1;
+		} catch (e) {
+			console.error('AsyncStorageManager()::deleteBudget()::', e.message);
+			return 0;
+		}
+	}
+
+	static async updateBudget(budget) {
+		try {
+			const oldBudgets = await AsyncStorageManager.getBudgets();
+			const newBudgets = oldBudgets.map(b => (b.id === budget.id ? budget : b));
+			await AsyncStorageManager._updateBudgets(newBudgets);
+			return 1;
+		} catch (e) {
+			console.error('AsyncStorageManager()::updateBudget()::', e.message);
+			return 0;
+		}
+	}
+
+	static async _updateBudgets(budgets) {
+		try {
+			await AsyncStorageManager.deleteItem(BUDGETS_KEY);
+			const serializedBudgets = budgets.map(b => b.serialize());
+			await AsyncStorage.setItem(
+				BUDGETS_KEY,
+				JSON.stringify(serializedBudgets)
+			);
+		} catch (e) {
+			console.error('AsyncStorageManager()::_updateBudgets()::', e.message);
+		}
+	}
+
+	// Utilities methods
+
 	static async deleteItem(key) {
+		// remove item from async storage
 		try {
 			await AsyncStorage.removeItem(key);
 			return true;
