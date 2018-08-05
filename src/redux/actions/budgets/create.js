@@ -1,4 +1,5 @@
-import { addBudget as apiAddBudget } from '@api/budget';
+// import { addBudget as apiAddBudget } from '@api/budget';
+import ASM from '@utils/AsyncStorageManager/AsyncStorageManager';
 
 export const ADDING_BUDGET = 'ADDING_BUDGET';
 export const ADD_BUDGET_SUCCESS = 'ADD_BUDGET_SUCCESS';
@@ -25,25 +26,19 @@ export function addBudgetFailed(error) {
 }
 
 export function addBudget(budget) {
-	return (dispatch, getState) => {
-		const { token } = getState().userData;
+	return async dispatch => {
+		// const { token } = getState().userData;
 		dispatch(addingBudget());
 
-		// 	return apiAddBudget(token, budget)
-		// 		.then(response => {
-		// 			const { error, data } = response;
-		//
-		// 			if (error) dispatch(addBudgetFailed(error));
-		// 			else dispatch(addBudgetSuccess(data));
-		// 		})
-		// 		.catch(error => {
-		// 			dispatch(addBudgetFailed(error));
-		// 			throw error;
-		// 		});
-		// };
-		return new Promise(resolve => {
+		const isSuccess = await ASM.addBudget(budget);
+
+		if (isSuccess) {
 			dispatch(addBudgetSuccess(budget));
-			resolve();
-		});
+		} else {
+			const e = new Error('Add budget failed');
+			dispatch(addBudgetFailed(e));
+		}
+
+		return isSuccess;
 	};
 }
