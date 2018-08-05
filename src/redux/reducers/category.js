@@ -6,6 +6,7 @@ import {
 
 import { UPDATE_CATEGORY_SUCCESS } from '@redux/actions/categories/update';
 import { CREATE_CATEGORY_SUCCESS } from '@redux/actions/categories/create';
+import { DELETE_CATEGORY_SUCCESS } from '@redux/actions/categories/delete';
 
 const initialState = {
 	loading: false,
@@ -41,10 +42,15 @@ export default function(state = initialState, action) {
 			),
 		};
 	case CREATE_CATEGORY_SUCCESS:
-		console.log('create category success:', action.payload);
+		// console.log('create category success:', action.payload);
 		return {
 			...state,
 			data: state.data.concat([action.payload]),
+		};
+	case DELETE_CATEGORY_SUCCESS:
+		return {
+			...state,
+			data: state.data.filter(c => c.id !== action.payload.id),
 		};
 	default:
 		return state;

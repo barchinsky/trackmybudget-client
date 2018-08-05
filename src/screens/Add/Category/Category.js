@@ -22,6 +22,7 @@ export class ScreenAddCategory extends Component {
 			_id: id,
 		});
 		this.props.dispatch(createCategory(categoryToSave));
+		this.props.navigation.goBack();
 	};
 
 	renderCategoryForm = () => {
@@ -44,6 +45,7 @@ ScreenAddCategory.navigationOptions = () => {
 ScreenAddCategory.propTypes = {
 	dispatch: PropTypes.func,
 	user: PropTypes.object,
+	navigation: PropTypes.object,
 };
 
 function mapStateToProps(state) {

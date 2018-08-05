@@ -82,8 +82,16 @@ export default class CategoryForm extends Component {
 
 	renderDeleteButton = () => {
 		return this.props.onDelete ? (
-			<Button onPress={this.onPressSave} title="Save" />
+			<Button
+				style={styles.deleteButton}
+				onPress={this.onDelete}
+				title="Delete"
+			/>
 		) : null;
+	};
+
+	onDelete = () => {
+		this.props.onDelete(this.props.category);
 	};
 
 	render() {
@@ -92,6 +100,7 @@ export default class CategoryForm extends Component {
 				{this.renderTitle()}
 				{this.renderColorSelector()}
 				{this.renderSubmitButton()}
+				{this.renderDeleteButton()}
 			</Theme.View>
 		);
 	}

@@ -5,10 +5,8 @@ import { PropTypes } from 'prop-types';
 
 import CategoryForm from '@components/Category/Form/Form';
 
-import {
-	updateCategory,
-	updateCategorySuccess,
-} from '@redux/actions/categories/update';
+import { updateCategory } from '@redux/actions/categories/update';
+import { deleteCategory } from '@redux/actions/categories/delete';
 
 import styles from './_styles';
 
@@ -40,13 +38,24 @@ export class EditCategoryScreen extends Component {
 		category.name = name;
 		category.color = color;
 
-		this.props.dispatch(updateCategorySuccess(category));
+		this.props.dispatch(updateCategory(category));
+	};
+
+	onCategoryDelete = async category => {
+		await this.props.dispatch(deleteCategory(category));
+		this.props.navigation.goBack();
 	};
 
 	renderForm = () => {
 		const { category } = this.state;
 
-		return <CategoryForm category={category} onSave={this.onCategorySave} />;
+		return (
+			<CategoryForm
+				category={category}
+				onSave={this.onCategorySave}
+				onDelete={this.onCategoryDelete}
+			/>
+		);
 	};
 
 	render() {

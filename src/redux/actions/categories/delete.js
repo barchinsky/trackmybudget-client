@@ -3,7 +3,7 @@ import ASM from '@utils/AsyncStorageManager/AsyncStorageManager';
 export const DELETE_CATEGORY_SUCCESS = 'DELETE_CATEGORY_SUCCESS';
 export const DELETE_CATEGORY_FAILED = 'DELETE_CATEGORY_FAILED';
 
-export function updateCategorySuccess(category) {
+export function deleteCategorySuccess(category) {
 	return {
 		type: DELETE_CATEGORY_SUCCESS,
 		payload: category,
@@ -35,7 +35,7 @@ export function deleteCategory(category) {
 		try {
 			// do request to data AsyncStorageManager
 			await ASM.deleteCategory(category);
-			dispatch(updateCategorySuccess(category));
+			dispatch(deleteCategorySuccess(category));
 		} catch (e) {
 			console.log('redux.updateCategory():', e.message);
 		}
