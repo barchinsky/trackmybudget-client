@@ -68,7 +68,7 @@ export default class BudgetForm extends Component {
 				<TextInput
 					numberOfLines={1}
 					onChangeText={this.onEstimateChange}
-					value={estimate}
+					value={'' + estimate}
 				/>
 				<Button onPress={this.onSubmit} title="Save" />
 			</Theme.View>

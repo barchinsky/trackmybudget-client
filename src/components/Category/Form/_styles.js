@@ -11,4 +11,7 @@ export default createStyle({
 		flex: 1,
 		paddingBottom: 5,
 	},
+	deleteButton: {
+		backgroundColor: '#f54b4b',
+	},
 });

@@ -1,8 +1,8 @@
 export default class Category {
-	constructor({ name, userId, color, _id } = {}) {
-		this._name = name;
-		this._userId = userId;
-		this._color = color;
+	constructor({ _name, _userId, _color, _id } = {}) {
+		this._name = _name;
+		this._userId = _userId;
+		this._color = _color;
 		this._id = _id;
 	}
 
@@ -28,5 +28,13 @@ export default class Category {
 
 	get userId() {
 		return this._userId;
+	}
+
+	serialize() {
+		return JSON.stringify(this);
+	}
+
+	static deserialize(data) {
+		return new Category(JSON.parse(data));
 	}
 }

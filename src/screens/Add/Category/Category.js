@@ -12,10 +12,17 @@ import styles from './_styles';
 
 export class ScreenAddCategory extends Component {
 	saveCategory = ({ name, color }) => {
+		console.log('saveCategory:', name, color);
 		const { userId } = this.props.user;
 		const id = Date.now();
-		const categoryToSave = new Category({ name, color, userId, _id: id });
+		const categoryToSave = new Category({
+			_name: name,
+			_color: color,
+			_userId: userId,
+			_id: id,
+		});
 		this.props.dispatch(createCategory(categoryToSave));
+		this.props.navigation.goBack();
 	};
 
 	renderCategoryForm = () => {
@@ -31,9 +38,14 @@ export class ScreenAddCategory extends Component {
 	}
 }
 
+ScreenAddCategory.navigationOptions = () => {
+	return { title: 'New Category' };
+};
+
 ScreenAddCategory.propTypes = {
 	dispatch: PropTypes.func,
 	user: PropTypes.object,
+	navigation: PropTypes.object,
 };
 
 function mapStateToProps(state) {

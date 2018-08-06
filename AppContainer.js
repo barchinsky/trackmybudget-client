@@ -24,6 +24,12 @@ import { fetchCategoriesSuccess } from '@redux/actions/categories/fetch';
 import { updateCategory } from '@redux/actions/categories/update';
 import Category from '@models/category';
 
+import { fetchTransactionsSuccess } from '@redux/actions/transactions/fetch';
+import { createTransaction } from '@redux/actions/transactions/create';
+import { deleteTransaction } from '@redux/actions/transactions/delete';
+import { updateTransaction } from '@redux/actions/transactions/update';
+import Transaction from '@models/transaction';
+
 const token =
 	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YWRiN2FiM2VlOTNiODE0MzI3M2Q3Y2UiLCJpYXQiOjE1MjQ0MzA1NjZ9.mj8mETN1quZhD7bRFoxOcDoILUrEdljhp28FW9TucrQ';
 
@@ -103,6 +109,26 @@ const token =
 // 	color: '#2b2b2b',
 // 	__v: 0,
 // });
+
+const d1 = new Date();
+const d2 = new Date();
+const tran1 = new Transaction({
+	id: 1,
+	userId: '1',
+	comment: 'LIDL food',
+	date: d1,
+	amount: 1234.23,
+	categoryId: '1',
+});
+const tran2 = new Transaction({
+	id: 2,
+	userId: '2',
+	comment: 'REWE food',
+	date: d2,
+	amount: 34.23,
+	categoryId: '1',
+});
+
 //
 // store.dispatch(fetchCategoriesSuccess([cat1, cat2]));
 //
@@ -114,9 +140,15 @@ const token =
 
 store.subscribe(() => {
 	// console.log(store.getState().budgets.data);
-	console.log(store.getState().categories);
+	console.log('------------->', store.getState().transactions);
 	// console.log(store.getState().userData.token);
 });
+
+store.dispatch(fetchTransactionsSuccess([tran1, tran2]));
+// store.dispatch(createTransaction(tran1));
+// store.dispatch(deleteTransaction(tran1));
+// tran1.comment = 'Lidl food updated';
+// store.dispatch(updateTransaction(tran1));
 
 export default class AppContainer extends React.Component {
 	render() {

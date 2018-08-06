@@ -1,4 +1,5 @@
 import * as api from '@api/category';
+import ASM from '@utils/AsyncStorageManager/AsyncStorageManager';
 
 export const FETCHING_CATEGORIES = 'FETCHING_CATEGORIES';
 export const FETCH_CATEGORIES_SUCCESS = 'FETCH_CATEGORIES_SUCCESS';
@@ -24,20 +25,33 @@ export function fetchCategoriesFailed(error) {
 	};
 }
 
-export function fetchCategories() {
-	return (dispatch, getState) => {
-		dispatch(fetchingCategories());
-		const { token } = getState().userData;
-		return api
-			.getCategories({ token })
-			.then(response => {
-				const { error, data } = response;
-				if (error) throw new Error(error);
+// export function fetchCategories() {
+// 	return (dispatch, getState) => {
+// 		dispatch(fetchingCategories());
+// 		const { token } = getState().userData;
+// 		return api
+// 			.getCategories({ token })
+// 			.then(response => {
+// 				const { error, data } = response;
+// 				if (error) throw new Error(error);
+//
+// 				dispatch(fetchCategoriesSuccess(data));
+// 			})
+// 			.catch(error => {
+// 				throw error;
+// 			});
+// 	};
+// }
 
-				dispatch(fetchCategoriesSuccess(data));
-			})
-			.catch(error => {
-				throw error;
-			});
+export function fetchCategories() {
+	return async dispatch => {
+		dispatch(fetchingCategories());
+
+		try {
+			const categories = await ASM.getCategories();
+			dispatch(fetchCategoriesSuccess(categories));
+		} catch (error) {
+			dispatch(fetchCategoriesFailed(error.message));
+		}
 	};
 }

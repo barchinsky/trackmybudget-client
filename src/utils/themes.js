@@ -13,6 +13,7 @@ const themes = [
 			budgetCardHeight: 80,
 			budgetCardBorderColor: '#c9c9c9',
 			cardTitleFontSize: 25,
+			cardHeight: 80,
 		},
 		'Light'
 	),
