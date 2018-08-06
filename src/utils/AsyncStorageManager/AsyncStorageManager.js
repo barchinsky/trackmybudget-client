@@ -153,7 +153,18 @@ export default class AsyncStorageManager {
 
 	static async addBudget(budget) {
 		try {
-			const oldBudgets = AsyncStorageManager.getBudgets();
+			const oldBudgets = await AsyncStorageManager.getBudgets();
+
+			// get spent amount of already added transactions that fits budget params
+			const tranasctions = await AsyncStorageManager.getTransactions();
+			const spentAmount = tranasctions.reduce((acc, transaction) => {
+				transaction.date >= budget.startDate &&
+				transaction.date <= budget.endDate
+					? transaction.amount
+					: 0;
+			}, 0);
+			budget.spentAmount = spentAmount;
+			console.log('oldBudgets:', oldBudgets);
 			const newBudgets = [budget, ...oldBudgets];
 			console.log('newBudgets:', newBudgets);
 			await AsyncStorageManager._updateBudgets(newBudgets);
@@ -222,7 +233,7 @@ export default class AsyncStorageManager {
 				return [];
 			}
 			const deserializedData = JSON.parse(savedData);
-			console.log('deserializedData:', deserializedData);
+			// console.log('deserializedData:', deserializedData);
 			const objectsInstances = deserializedData.map(serialized => {
 				// console.log('serialized:', serialized);
 				return Instance.deserialize(serialized);
