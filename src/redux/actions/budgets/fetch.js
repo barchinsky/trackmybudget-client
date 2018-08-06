@@ -1,4 +1,5 @@
-import { getBudgets } from '@api/budget';
+// import { getBudgets } from '@api/budget';
+import ASM from '@utils/AsyncStorageManager/AsyncStorageManager';
 
 export const FETCHING_BUDGETS = 'FETCHING_BUDGETS';
 export const FETCH_BUDGETS_SUCCESS = 'FETCH_BUDGETS_SUCCESS';
@@ -10,10 +11,10 @@ export function fetchingBudgets() {
 	};
 }
 
-export function fetchBudgetsSuccess(budgetList) {
+export function fetchBudgetsSuccess(budgets) {
 	return {
 		type: FETCH_BUDGETS_SUCCESS,
-		payload: budgetList,
+		payload: budgets,
 	};
 }
 
@@ -25,23 +26,34 @@ export function fetchBudgetsFailed(error) {
 }
 
 export function fetchBudgets() {
-	return (dispatch, getState) => {
-		dispatch(fetchingBudgets());
-		const { userData } = getState();
-
-		return getBudgets(userData.token)
-			.then(responseData => {
-				const { data, error } = responseData;
-
-				if (error === null) {
-					dispatch(fetchBudgetsSuccess(data));
-				} else {
-					dispatch(fetchBudgetsFailed(error));
-				}
-			})
-			.catch(error => {
-				console.log('error:', error);
-				dispatch(fetchBudgetsFailed(error.response.data.error));
-			});
+	return async dispatch => {
+		try {
+			const budgets = await ASM.getBudgets();
+			dispatch(fetchBudgetsSuccess(budgets));
+		} catch (e) {
+			dispatch(fetchBudgetsFailed(e));
+		}
 	};
 }
+
+// export function fetchBudgets() {
+// 	return (dispatch, getState) => {
+// 		dispatch(fetchingBudgets());
+// 		const { userData } = getState();
+//
+// 		return getBudgets(userData.token)
+// 			.then(responseData => {
+// 				const { data, error } = responseData;
+//
+// 				if (error === null) {
+// 					dispatch(fetchBudgetsSuccess(data));
+// 				} else {
+// 					dispatch(fetchBudgetsFailed(error));
+// 				}
+// 			})
+// 			.catch(error => {
+// 				console.log('error:', error);
+// 				dispatch(fetchBudgetsFailed(error.response.data.error));
+// 			});
+// 	};
+// }

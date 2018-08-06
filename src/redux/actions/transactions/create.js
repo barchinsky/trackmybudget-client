@@ -1,3 +1,5 @@
+import ASM from '@utils/AsyncStorageManager/AsyncStorageManager';
+
 export const CREATING_TRANSACTION = 'CREATING_TRANSACTION';
 export const CREATE_TRANSACTION_SUCCESS = 'CREATE_TRANSACTION_SUCCESS';
 export const CREATE_TRANSACTION_FAILED = 'CREATE_TRANSACTION_FAILED';
@@ -23,12 +25,12 @@ export function createTransactionSuccess(transaction) {
 }
 
 export function createTransaction(transaction) {
-	return dispatch => {
-		// do api or db call
-		//...
-		const { error } = { error: false };
-		// process result
-		if (!error) dispatch(createTransactionSuccess(transaction));
-		else dispatch(createTransactionFailed(error));
+	return async dispatch => {
+		try {
+			await ASM.addTransaction(transaction);
+			dispatch(createTransactionSuccess(transaction));
+		} catch (e) {
+			dispatch(createTransactionFailed(e));
+		}
 	};
 }

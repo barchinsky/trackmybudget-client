@@ -53,7 +53,4 @@ CategoryCard.propTypes = {
 	onPress: PropTypes.func,
 };
 
-CategoryCard.defaultProps = {
-	title: 'Dummy Title',
-	color: '#72c454',
-};
+CategoryCard.defaultProps = {};

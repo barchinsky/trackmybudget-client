@@ -10,6 +10,10 @@ import {
 	ADD_BUDGET_SUCCESS,
 } from '@redux/actions/budgets/create';
 
+import { DELETE_BUDGET_SUCCESS } from '@redux/actions/budgets/delete';
+
+import { UPDATE_BUDGET_SUCCESS } from '@redux/actions/budgets/update';
+
 const initialState = {
 	loading: false,
 	data: [],
@@ -46,6 +50,18 @@ export default function(state = initialState, action) {
 		return {
 			...state,
 			error: action.payload,
+		};
+	case UPDATE_BUDGET_SUCCESS:
+		return {
+			...state,
+			data: state.data.map(
+				b => (b.id === action.payload.id ? action.payload : b)
+			),
+		};
+	case DELETE_BUDGET_SUCCESS:
+		return {
+			...state,
+			data: state.data.filter(b => b.id !== action.payload.id),
 		};
 	default:
 		return state;

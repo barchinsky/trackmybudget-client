@@ -40,7 +40,7 @@ export default class CategoryForm extends Component {
 
 		return (
 			<Theme.View styles={styles.titleContainer}>
-				<InputLabel text={'Name'} />
+				<InputLabel text={'Name:'} />
 				<TextInput onChangeText={this.onChangeName} value={name} />
 			</Theme.View>
 		);
@@ -70,14 +70,28 @@ export default class CategoryForm extends Component {
 	};
 
 	onPressSave = () => {
-		const { name, color } = this.state;
+		// const { name, color } = this.state;
 		if (this.props.onSave) {
-			this.props.onSave({ name, color });
+			this.props.onSave({ ...this.state });
 		}
 	};
 
 	renderSubmitButton = () => {
 		return <Button onPress={this.onPressSave} title="Save" />;
+	};
+
+	renderDeleteButton = () => {
+		return this.props.onDelete ? (
+			<Button
+				style={styles.deleteButton}
+				onPress={this.onDelete}
+				title="Delete"
+			/>
+		) : null;
+	};
+
+	onDelete = () => {
+		this.props.onDelete(this.props.category);
 	};
 
 	render() {
@@ -86,6 +100,7 @@ export default class CategoryForm extends Component {
 				{this.renderTitle()}
 				{this.renderColorSelector()}
 				{this.renderSubmitButton()}
+				{this.renderDeleteButton()}
 			</Theme.View>
 		);
 	}
@@ -93,5 +108,6 @@ export default class CategoryForm extends Component {
 
 CategoryForm.propTypes = {
 	onSave: PropTypes.func,
+	onDelete: PropTypes.func,
 	category: PropTypes.object,
 };

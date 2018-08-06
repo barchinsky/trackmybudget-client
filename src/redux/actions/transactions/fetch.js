@@ -1,3 +1,5 @@
+import ASM from '@utils/AsyncStorageManager/AsyncStorageManager';
+
 export const FETCHING_TRANSACTIONS = 'FETCHING_TRANSACTIONS';
 export const FETCH_TRANSACTIONS_SUCCESS = 'FETCH_TRANSACTIONS_SUCCESS';
 export const FETCH_TRANSACTIONS_FAILED = 'FETCH_TRANSACTIONS_FAILED';
@@ -23,18 +25,16 @@ export const fetchTransactionFailed = error => {
 };
 
 export const fetchTransactions = () => {
-	return dispatch => {
+	console.log('fetchTranasctions()');
+	return async dispatch => {
 		dispatch(fetchingTransactions());
 
-		// do magic with data
-		const result = true;
-
-		// check response
-		// .....
-
-		// dispatch action based on response received
-
-		if (result) dispatch(fetchTransactionsSuccess(result));
-		else dispatch(fetchTransactionFailed(result));
+		try {
+			const transactions = await ASM.getTransactions();
+			console.log('fetchTransactions().asm:', transactions.length);
+			dispatch(fetchTransactionsSuccess(transactions));
+		} catch (e) {
+			dispatch(fetchTransactionFailed(e));
+		}
 	};
 };

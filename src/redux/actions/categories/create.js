@@ -1,3 +1,5 @@
+import ASM from '@utils/AsyncStorageManager/AsyncStorageManager';
+
 export const CREATE_CATEGORY_SUCCESS = 'CREATE_CATEGORY_SUCCESS';
 export const CREATE_CATEGORY_FAILED = 'CREATE_CATEGORY_FAILED';
 export const CREATE_CATEGORY = 'CREATE_CATEGORY';
@@ -8,7 +10,7 @@ export function creatingCategory() {
 	};
 }
 
-export function createCatgoryFailed(error) {
+export function createCategoryFailed(error) {
 	return {
 		type: CREATE_CATEGORY_FAILED,
 		payload: error,
@@ -24,7 +26,12 @@ export function createCategorySuccess(category) {
 
 export function createCategory(category) {
 	// console.log('createCategory():', category);
-	return dispatch => {
-		dispatch(createCategorySuccess(category));
+	return async dispatch => {
+		try {
+			await ASM.addCategory(category);
+			dispatch(createCategorySuccess(category));
+		} catch (e) {
+			dispatch(createCategoryFailed(e.message));
+		}
 	};
 }

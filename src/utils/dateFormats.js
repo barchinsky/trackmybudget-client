@@ -1,2 +1,2 @@
-export const datetime = 'YY/MM/DD HH:mm';
-export const date = 'YY/MM/DD';
+export const datetime = 'YYYY-MM-DD HH:mm';
+export const date = 'YYYY/MM/DD';

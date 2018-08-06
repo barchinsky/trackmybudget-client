@@ -5,19 +5,16 @@ import { PropTypes } from 'prop-types';
 import BudgetForm from '@components/Form/Budget/Budget';
 import { addBudget } from '@redux/actions/budgets/create';
 
+import Budget from '@models/budget';
+
 import styles from './_styles';
 
 export class ScreenAddBudget extends Component {
-	onSubmit = budget => {
-		console.warn(budget);
-		this.props
-			.dispatch(addBudget(budget))
-			.then(() => {
-				console.warn('Success');
-			})
-			.catch(error => {
-				console.warn('Something happend!', error);
-			});
+	onSubmit = async budgetInfo => {
+		const budget = new Budget(budgetInfo);
+		const isSuccess = await this.props.dispatch(addBudget(budget));
+
+		console.warn('isSuccess:', isSuccess);
 	};
 
 	render() {
@@ -30,7 +27,7 @@ export class ScreenAddBudget extends Component {
 
 	static navigationOptions = () => {
 		return {
-			title: 'Add new budget',
+			title: 'New Budget',
 		};
 	};
 }

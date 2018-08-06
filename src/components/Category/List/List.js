@@ -20,7 +20,7 @@ export default class CategoryList extends Component {
 		return <CategoryCard category={category} onPress={this.onItemPressed} />;
 	};
 
-	_keyExtractor = item => item.id;
+	_keyExtractor = item => `${item.id}`;
 
 	renderList = () => {
 		const { categories } = this.props;

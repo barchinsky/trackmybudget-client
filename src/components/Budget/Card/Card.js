@@ -82,7 +82,7 @@ export default class BudgetCard extends Component {
 				<ProgressBarAnimated
 					width={barWidth}
 					value={progress}
-					borderColor="#ed8454"
+					borderColor="white"
 					borderRadius={0}
 				/>
 			</Theme.View>

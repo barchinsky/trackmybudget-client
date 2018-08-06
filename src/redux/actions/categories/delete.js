@@ -1,19 +1,18 @@
-// import * as api from '@api/category';
 import ASM from '@utils/AsyncStorageManager/AsyncStorageManager';
 
-export const UPDATE_CATEGORY_SUCCESS = 'UPDATE_CATEGORY_SUCCESS';
-export const UPDATE_CATEGORY_FAILED = 'UPDATE_CATEGORY_FAILED';
+export const DELETE_CATEGORY_SUCCESS = 'DELETE_CATEGORY_SUCCESS';
+export const DELETE_CATEGORY_FAILED = 'DELETE_CATEGORY_FAILED';
 
-export function updateCategorySuccess(category) {
+export function deleteCategorySuccess(category) {
 	return {
-		type: UPDATE_CATEGORY_SUCCESS,
+		type: DELETE_CATEGORY_SUCCESS,
 		payload: category,
 	};
 }
 
-export function updateCategoryFailed(error) {
+export function deleteCategoryFailed(error) {
 	return {
-		type: UPDATE_CATEGORY_FAILED,
+		type: DELETE_CATEGORY_FAILED,
 		payload: error,
 	};
 }
@@ -31,15 +30,14 @@ export function updateCategoryFailed(error) {
 // 			});
 // 	};
 // }
-export function updateCategory(category) {
+export function deleteCategory(category) {
 	return async dispatch => {
 		try {
 			// do request to data AsyncStorageManager
-			await ASM.updateCategory(category);
-			dispatch(updateCategorySuccess(category));
+			await ASM.deleteCategory(category);
+			dispatch(deleteCategorySuccess(category));
 		} catch (e) {
-			// console.log('redux.updateCategory():', e.message);
-			dispatch(updateCategoryFailed(e.message));
+			console.log('redux.updateCategory():', e.message);
 		}
 	};
 }
