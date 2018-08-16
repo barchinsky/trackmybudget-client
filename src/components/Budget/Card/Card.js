@@ -15,10 +15,6 @@ import styles from './_styles';
 export default class BudgetCard extends Component {
 	constructor(props) {
 		super(props);
-
-		this.state = {
-			progress: 20,
-		};
 	}
 	renderLeftColumn = () => {
 		return (
@@ -72,7 +68,10 @@ export default class BudgetCard extends Component {
 	};
 
 	renderProgressBar = () => {
-		const { progress } = this.state;
+		// const { progress } = this.state;
+		const { spentAmount, estimate } = this.props.budget;
+		const safeEstimate = estimate === 0 ? 1 : estimate;
+		const progress = Math.floor((spentAmount / safeEstimate) * 100);
 
 		if (progress === null) return null;
 
