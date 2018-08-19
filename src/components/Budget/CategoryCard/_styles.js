@@ -3,29 +3,51 @@ import { createStyle } from 'react-native-theming';
 export default createStyle({
 	container: {
 		flexDirection: 'row',
-		justifyContent: 'space-between',
+		justifyContent: 'flex-start',
 		height: '@cardHeight',
 		width: '100%',
-		backgroundColor: 'green',
+		borderBottomWidth: 1,
+		borderBottomColor: '@secondaryColor',
+		// backgroundColor: 'green',
 	},
 	iconContainer: {
 		width: 80,
+		justifyContent: 'center',
+		alignItems: 'center',
 		height: '@cardHeight',
 		backgroundColor: 'red',
 	},
-	titleContainer: {
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: 'blue',
+	iconFont: {
+		fontSize: 56,
+		color: 'white',
 	},
-	categoryEstimateContainer: {
-		justifyContent: 'center',
+	titleContainer: {
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
 		alignItems: 'center',
-		backgroundColor: 'yellow',
-		width: 100,
-		height: '@cardHeight',
+		marginHorizontal: 10,
+		// backgroundColor: 'blue',
+	},
+	categoryName: {
+		fontSize: 22,
 	},
 	estimateInputField: {
 		width: 100,
+		textAlign: 'center',
+	},
+	estimateContainer: {
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'flex-end',
+		alignItems: 'center',
+		// width: 100,
+		marginHorizontal: 10,
+		textAlign: 'left',
+		// backgroundColor: 'yellow',
+	},
+	estimateText: {
+		// width: 100,
+		textAlign: 'center',
+		fontSize: 18,
 	},
 });
