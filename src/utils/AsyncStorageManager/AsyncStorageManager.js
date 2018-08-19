@@ -147,23 +147,31 @@ export default class AsyncStorageManager {
 
 	static async getBudgets() {
 		const budgets = await AsyncStorageManager.restoreData(BUDGETS_KEY, Budget);
+		const transactions = await AsyncStorageManager.getTransactions();
 
-		return budgets;
+		const budgetsWithSpenAmount = budgets.map(budget => {
+			// get spent amount of already added transactions that fits budget params
+
+			const spentAmount = transactions.reduce((acc, transaction) => {
+				transaction.date >= budget.startDate &&
+				transaction.date <= budget.endDate
+					? transaction.amount
+					: 0;
+			}, 0);
+			budget.spentAmount = spentAmount ? spentAmount : 0;
+
+			return budget;
+		});
+
+		console.log('budgetsWithSpenAmount:', budgetsWithSpenAmount);
+
+		return budgetsWithSpenAmount;
 	}
 
 	static async addBudget(budget) {
 		try {
 			const oldBudgets = await AsyncStorageManager.getBudgets();
 
-			// get spent amount of already added transactions that fits budget params
-			const tranasctions = await AsyncStorageManager.getTransactions();
-			const spentAmount = tranasctions.reduce((acc, transaction) => {
-				transaction.date >= budget.startDate &&
-				transaction.date <= budget.endDate
-					? transaction.amount
-					: 0;
-			}, 0);
-			budget.spentAmount = spentAmount;
 			console.log('oldBudgets:', oldBudgets);
 			const newBudgets = [budget, ...oldBudgets];
 			console.log('newBudgets:', newBudgets);
@@ -176,8 +184,8 @@ export default class AsyncStorageManager {
 	}
 
 	static async deleteBudget(budget) {
+		const oldBudgets = await AsyncStorageManager.getBudgets();
 		try {
-			const oldBudgets = await AsyncStorageManager.getBudgets();
 			const newBudgets = oldBudgets.filter(b => b.id !== budget.id);
 			await AsyncStorageManager._updateBudgets(newBudgets);
 			return 1;
