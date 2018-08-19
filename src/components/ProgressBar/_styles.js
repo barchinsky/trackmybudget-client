@@ -2,8 +2,9 @@ import { createStyle } from 'react-native-theming';
 
 export default createStyle({
 	container: {
-		flex: 1,
-		backgroundColor: '@backgroundColor',
-		padding: 5,
+		flex: 0,
+		position: 'absolute',
+		bottom: -1,
+		left: 0,
 	},
 });
