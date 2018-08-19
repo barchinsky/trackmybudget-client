@@ -17,9 +17,13 @@ export default class BudgetCard extends Component {
 		super(props);
 	}
 	renderLeftColumn = () => {
+		const { name } = this.props.budget;
+		const firstLetter = name[0];
 		return (
 			<Theme.View style={styles.leftContainer}>
-				<Theme.Text>B</Theme.Text>
+				<Theme.Text style={styles.budgetNameFirstLetter}>
+					{firstLetter}
+				</Theme.Text>
 			</Theme.View>
 		);
 	};
