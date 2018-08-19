@@ -11,6 +11,7 @@ export default class Budget {
 			.format(datetime);
 		this.spentAmount = raw_data.spentAmount || 0;
 		this.estimate = raw_data.estimate || 0;
+		this.categoryIdToEstimateMap = raw_data.categoryIdToEstimateMap || {};
 	}
 
 	serialize = () => {
