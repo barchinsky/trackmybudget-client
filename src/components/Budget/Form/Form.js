@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Theme from 'react-native-theming';
-import TextInput from '@components/TextInput/TextInput';
 import { Button, ScrollView } from 'react-native';
-import DateInput from '@components/DateInput/DateInput';
-
 import { PropTypes } from 'prop-types';
+
+import DateInput from '@components/DateInput/DateInput';
+import TextInput from '@components/TextInput/TextInput';
+import BudgetCategoryCard from '@components/Budget/CategoryCard/CategoryCard';
 
 import styles from './_styles';
 
@@ -18,7 +19,10 @@ export class BudgetForm extends Component {
 			startDate: null,
 			endDate: null,
 			estimate: 0,
+			categoryIdToEstimateMap: {},
 		};
+
+		// this.categoryIdToEstimateMap = {};
 	}
 
 	componentDidMount() {
@@ -80,13 +84,44 @@ export class BudgetForm extends Component {
 				numberOfLines={1}
 				onChangeText={this.onEstimateChange}
 				value={'' + estimate}
+				editable={false}
 			/>
 		);
 	};
 
 	renderBudgetCategories = () => {
 		const { categories } = this.props;
-		console.warn('categories:', categories.length);
+		// console.warn('categories:', categories.length);
+
+		const categoryCards = categories.map(c => {
+			return (
+				<BudgetCategoryCard
+					category={c}
+					key={c.id}
+					readOnly={false}
+					onUpdate={this.onBudgetCategoryUpdate}
+				/>
+			);
+		});
+
+		// const test = [...categoryCards, ...categoryCards, ...categoryCards];
+		// return test;
+		return categoryCards;
+	};
+
+	onBudgetCategoryUpdate = (id, newEstimate) => {
+		console.log(`id:${id}, estimate: ${newEstimate}`);
+		const { categoryIdToEstimateMap } = this.state;
+		categoryIdToEstimateMap[id] = newEstimate;
+
+		// console.log('this.categoryIdToEstimateMap:', this.categoryIdToEstimateMap);
+
+		const estimate = Object.keys(categoryIdToEstimateMap)
+			.reduce((acc, key) => {
+				return acc + +categoryIdToEstimateMap[key];
+			}, 0);
+
+		this.setState({ estimate, categoryIdToEstimateMap });
 	};
 
 	render() {
@@ -102,7 +137,13 @@ export class BudgetForm extends Component {
 					{this.renderLabel('Estimate')}
 					{this.renderEstimateDateInput()}
 					{this.renderBudgetCategories()}
-					<Button onPress={this.onSubmit} title="Save" />
+					<Theme.View style={styles.saveButtonContainer}>
+						<Button
+							onPress={this.onSubmit}
+							title="Save"
+							style={styles.saveButton}
+						/>
+					</Theme.View>
 				</ScrollView>
 			</Theme.View>
 		);

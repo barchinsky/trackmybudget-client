@@ -6,4 +6,7 @@ export default createStyle({
 		backgroundColor: '@backgroundColor',
 		padding: 5,
 	},
+	saveButtonContainer: {
+		marginTop: 5,
+	},
 });
