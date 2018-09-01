@@ -3,6 +3,12 @@ import Transaction from '@models/transaction';
 import Category from '@models/category';
 import Budget from '@models/budget';
 
+import moment from 'moment';
+import {
+	date as dateFormat,
+	datetime as dateTimeFormat,
+} from '@utils/dateFormats';
+
 const TRANSACTIONS_KEY = 'transactions';
 const CATEGORIES_KEY = 'categories';
 const BUDGETS_KEY = 'budgets';
@@ -14,6 +20,42 @@ export default class AsyncStorageManager {
 			Transaction
 		);
 		return transactions;
+	}
+
+	static async getTransactionsByBudgetAndCategory(
+		budget = null,
+		targetCategoryId = null
+	) {
+		if (!(budget && targetCategoryId)) return [];
+
+		const transactions = await AsyncStorageManager.getTransactions();
+
+		const budgetStartDate = moment(budget.startDate, dateFormat);
+		const budgetEndDate = moment(budget.endDate, dateFormat);
+
+		// console.log(
+		// 	`getTransactionsByBudgetAndCategory::startDate${budgetStartDate.format(
+		// 		dateTimeFormat
+		// 	)}, endDate:${budgetEndDate.format(
+		// 		dateTimeFormat
+		// 	)}, targetCategoryId:${targetCategoryId}`
+		// );
+
+		const filteredTransactions = transactions.filter(t => {
+			const transactionDate = moment(t.date, dateTimeFormat);
+			// console.log('transactionDate:', t.date);
+			// console.log(
+			// 	'transactionDate.isBetween(budgetStartDate, budgetEndDate): ',
+			// 	transactionDate.isBetween(budgetStartDate, budgetEndDate)
+			// );
+			// console.log('t.id == targetCategoryId: ', t.id == targetCategoryId);
+			return (
+				transactionDate.isBetween(budgetStartDate, budgetEndDate) &&
+				t.categoryId == targetCategoryId
+			);
+		});
+
+		return filteredTransactions;
 	}
 
 	static async addTransaction(transaction) {
@@ -151,14 +193,30 @@ export default class AsyncStorageManager {
 
 		const budgetsWithSpenAmount = budgets.map(budget => {
 			// get spent amount of already added transactions that fits budget params
+			console.log('budget::', budget);
+			const budgetStartDate = moment(budget.startDate, dateFormat);
+			const budgetEndDate = moment(budget.endDate, dateFormat);
+
+			console.log('budgetStartDate:', budgetStartDate.format(dateTimeFormat));
+			console.log('budgetEndDate:', budgetEndDate.format(dateTimeFormat));
 
 			const spentAmount = transactions.reduce((acc, transaction) => {
-				transaction.date >= budget.startDate &&
-				transaction.date <= budget.endDate
-					? transaction.amount
+				// console.log('transaction::', transaction);
+				const transactionDate = moment(transaction.date, dateTimeFormat);
+				console.log(
+					'transactionDate:',
+					transactionDate.format(dateTimeFormat),
+					transactionDate.isBetween(budgetStartDate, budgetEndDate)
+				);
+				const amount = transactionDate.isBetween(budgetStartDate, budgetEndDate)
+					? +transaction.amount
 					: 0;
+
+				return acc + amount;
 			}, 0);
-			budget.spentAmount = spentAmount ? spentAmount : 0;
+			budget.spentAmount = spentAmount;
+
+			console.log('getBudget()::spentAmount::', spentAmount);
 
 			return budget;
 		});
