@@ -96,41 +96,40 @@ const token =
 
 // const cat1 = new Category({
 // 	_id: '5ae232093305571d3ca5d347',
-// 	userId: '5adb7ab3ee93b8143273d7ce',
-// 	name: 'Cat1Updated',
-// 	color: '#2b2b2b',
+// 	_userId: '5adb7ab3ee93b8143273d7ce',
+// 	_name: 'Cat1Updated',
+// 	_color: '#2b2b2b',
 // 	__v: 0,
 // });
 //
 // const cat2 = new Category({
 // 	_id: '5ae232093305571d3ca5d348',
-// 	userId: '5adb7ab3ee93b8143273d7ce',
-// 	name: 'Cat2Updated',
-// 	color: '#2b2b2b',
+// 	_userId: '5adb7ab3ee93b8143273d7ce',
+// 	_name: 'Cat2Updated',
+// 	_color: '#2b2b2b',
 // 	__v: 0,
 // });
 
-const d1 = new Date();
-const d2 = new Date();
-const tran1 = new Transaction({
-	id: 1,
-	userId: '1',
-	comment: 'LIDL food',
-	date: d1,
-	amount: 1234.23,
-	categoryId: '1',
-});
-const tran2 = new Transaction({
-	id: 2,
-	userId: '2',
-	comment: 'REWE food',
-	date: d2,
-	amount: 34.23,
-	categoryId: '1',
-});
+// const d1 = new Date();
+// const d2 = new Date();
+// const tran1 = new Transaction({
+// 	id: 1,
+// 	userId: '1',
+// 	comment: 'LIDL food',
+// 	date: d1,
+// 	amount: 1234.23,
+// 	categoryId: '5ae232093305571d3ca5d347',
+// });
+// const tran2 = new Transaction({
+// 	id: 2,
+// 	userId: '2',
+// 	comment: 'REWE food',
+// 	date: d2,
+// 	amount: 34.23,
+// 	categoryId: '5ae232093305571d3ca5d348',
+// });
 
 //
-// store.dispatch(fetchCategoriesSuccess([cat1, cat2]));
 //
 // cat1.name = 'Cat1';
 // store.dispatch(updateCategory(cat1));
@@ -140,11 +139,12 @@ const tran2 = new Transaction({
 
 store.subscribe(() => {
 	// console.log(store.getState().budgets.data);
-	console.log('------------->', store.getState().transactions);
+	// console.log('------------->', store.getState().budgets);
 	// console.log(store.getState().userData.token);
 });
 
-store.dispatch(fetchTransactionsSuccess([tran1, tran2]));
+// store.dispatch(fetchCategoriesSuccess([cat1, cat2]));
+// store.dispatch(fetchTransactionsSuccess([tran1, tran2]));
 // store.dispatch(createTransaction(tran1));
 // store.dispatch(deleteTransaction(tran1));
 // tran1.comment = 'Lidl food updated';
