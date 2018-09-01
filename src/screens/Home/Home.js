@@ -9,16 +9,25 @@ import SplashScreen from '@screens/Splash/Splash';
 // import Card from '@components/Card/Card';
 import BudgetList from '@components/Budget/List/List';
 //import HomeScreen from '@screens/Home/Home';
-import CategoryCard from '@components/Category/Card/Card';
+// import CategoryCard from '@components/Category/Card/Card';
+// import TransactionCard from '@components/Transaction/Card/Card';
+// import TransactionList from '@components/Transaction/List/List';
 
 import { getUserData } from '@api/local-storage';
-import { fetchBudgets } from '@redux/actions/budgets/fetch';
+// import { fetchBudgets } from '@redux/actions/budgets/fetch';
 import { loginSuccess } from '@redux/actions/account';
 import { fetchCategories } from '@redux/actions/categories/fetch';
+import { fetchTransactions } from '@redux/actions/transactions/fetch';
+import { fetchBudgets } from '@redux/actions/budgets/fetch';
+
+// import Transaction from '@models/transaction';
+// import Category from '@models/category';
+// import TransactionForm from '@components/Transaction/Form/Form';
+// import BudgetCategoryCard from '@components/Budget/CategoryCard/CategoryCard';
 
 import styles from './_styles';
 
-export class App extends Component {
+export class Home extends Component {
 	constructor(props) {
 		super(props);
 
@@ -35,20 +44,22 @@ export class App extends Component {
 	}
 
 	loadUserData = async () => {
-		// const userData = await getUserData();
-		// if (!userData.userId) {
-		// 	console.log('userData.userId:', userData.userId);
-		// 	this.props.navigation.navigate('LoginScreen');
-		// } else {
-		// this.props.dispatch(loginSuccess(userData));
+		const userData = await getUserData();
+		if (!userData.userId) {
+			// console.log('userData.userId:', userData.userId);
+			this.props.navigation.navigate('LoginScreen');
+		} else {
+			this.props.dispatch(loginSuccess(userData));
 
-		// const initStack = [
-		// 	this.props.dispatch(fetchBudgets()),
-		// 	this.props.dispatch(fetchCategories()),
-		// ];
-		// await Promise.all(initStack);
+			const initStack = [
+				this.props.dispatch(fetchBudgets()),
+				this.props.dispatch(fetchCategories()),
+				this.props.dispatch(fetchTransactions()),
+			];
+			await Promise.all(initStack);
 
-		this.setState({ isLoaded: true, isLoggedIn: true });
+			this.setState({ isLoaded: true, isLoggedIn: true });
+		}
 		// }
 	};
 
@@ -61,14 +72,30 @@ export class App extends Component {
 	}
 
 	renderBudets = () => {
-		const { loading, data, error } = this.props.budgets;
+		const budgets = this.props.budgets;
 
-		// return <CategoryCard title="Test name" color="#d400ff" />;
-		return <BudgetList budgets={data} />;
+		return (
+			<BudgetList budgets={budgets} onBudgetPress={this.onBudgetSelected} />
+		);
+	};
+
+	onBudgetSelected = budget => {
+		console.log('onBudgetSelected()::', budget);
+		this.props.navigation.navigate('EditBudgetScreen', { budget });
 	};
 
 	renderContent() {
 		const { isLoaded } = this.state;
+		//
+		// const cat1 = new Category({
+		// 	_id: '5ae232093305571d3ca5d347',
+		// 	_userId: '5adb7ab3ee93b8143273d7ce',
+		// 	_name: 'Cat1Updated',
+		// 	_color: '#cf3232',
+		// 	__v: 0,
+		// });
+
+		// if (true) return <BudgetCategoryCard category={cat1} readOnly={true} />;
 
 		return isLoaded ? this.renderBudets() : <SplashScreen />;
 	}
@@ -80,7 +107,11 @@ export class App extends Component {
 	}
 }
 
-App.propTypes = {
+Home.navigationOptions = () => {
+	return { title: 'Budgets' };
+};
+
+Home.propTypes = {
 	dispatch: PropTypes.func,
 	userData: PropTypes.object,
 	navigation: PropTypes.object,
@@ -91,7 +122,8 @@ function mapStateToProps(state) {
 	return {
 		userData: state.userData,
 		budgets: state.budgets.data,
+		transactions: state.transactions.data,
 	};
 }
 
-export default connect(mapStateToProps)(App);
+export default connect(mapStateToProps)(Home);
