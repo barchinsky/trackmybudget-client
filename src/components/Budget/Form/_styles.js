@@ -9,4 +9,8 @@ export default createStyle({
 	saveButtonContainer: {
 		marginTop: 5,
 	},
+	datePicker: {
+		width: '100%',
+		height: 50,
+	},
 });
