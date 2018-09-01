@@ -42,7 +42,6 @@ export default createStyle({
 		alignItems: 'center',
 		// width: 100,
 		marginHorizontal: 10,
-		textAlign: 'left',
 		// backgroundColor: 'yellow',
 	},
 	estimateText: {

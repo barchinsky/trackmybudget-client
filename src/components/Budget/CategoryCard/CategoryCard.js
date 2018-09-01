@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { PropTypes } from 'prop-types';
 import Theme from 'react-native-theming';
 import { Dimensions } from 'react-native';
+import Touchable from '@components/Touchable/Touchable';
 
 import TextInput from '@components/TextInput/TextInput';
 import ProgressBar from '@components/ProgressBar/ProgressBar';
@@ -41,13 +42,14 @@ export default class BudgetCategoryCard extends Component {
 	};
 
 	renderEstimateInput = () => {
-		const { estimate } = this.state;
+		const { estimate } = this.state.estimate == '' ? this.props : this.state;
+		// console.log('renderEstimateInput::', this.state, this.props, estimate);
 		return (
 			<Theme.View style={styles.estimateContainer}>
 				<TextInput
 					style={styles.estimateInputField}
 					onChangeText={this.onEstimateChange}
-					value={estimate}
+					value={`${estimate}`}
 					keyboardType="number-pad"
 					placeholder="0"
 				/>
@@ -90,6 +92,14 @@ export default class BudgetCategoryCard extends Component {
 		) : null;
 	};
 
+	onPress = () => {
+		if (this.props.onPress) {
+			const { category } = this.props;
+
+			this.props.onPress(category.id);
+		}
+	};
+
 	render() {
 		const { readOnly } = this.props;
 
@@ -98,24 +108,25 @@ export default class BudgetCategoryCard extends Component {
 			: this.renderEstimateInput();
 
 		return (
-			<Theme.View style={styles.container}>
+			<Touchable style={styles.container} onPress={this.onPress}>
 				{this.renderIcon()}
 				{this.renderTitleContainer()}
 				{estimate}
 				{this.renderProgressBar()}
-			</Theme.View>
+			</Touchable>
 		);
 	}
 }
 
 BudgetCategoryCard.propTypes = {
 	category: PropTypes.object.isRequired,
-	estimate: PropTypes.string,
+	estimate: PropTypes.number,
 	spent: PropTypes.string,
 	displayProgress: PropTypes.bool,
 	progress: PropTypes.number,
 	readOnly: PropTypes.bool,
 	onUpdate: PropTypes.func,
+	onPress: PropTypes.func,
 };
 
 BudgetCategoryCard.defaultProps = {
