@@ -4,17 +4,11 @@ import Theme from 'react-native-theming';
 import { Button, ScrollView } from 'react-native';
 import { PropTypes } from 'prop-types';
 
-import DateInput from '@components/DateInput/DateInput';
 import DatePicker from 'react-native-datepicker';
 import TextInput from '@components/TextInput/TextInput';
 import BudgetCategoryCard from '@components/Budget/CategoryCard/CategoryCard';
 
-import DataManager from '@utils/AsyncStorageManager/AsyncStorageManager';
-
-import {
-	date as dateFormat,
-	datetime as datetimeFormat,
-} from '@utils/dateFormats';
+import { date as dateFormat } from '@utils/dateFormats';
 
 import moment from 'moment';
 
@@ -28,11 +22,9 @@ export class BudgetForm extends Component {
 			name: '',
 			startDate: null,
 			endDate: null,
-			estimate: 0,
+			estimate: '0',
 			categoryIdToEstimateMap: {},
 		};
-
-		// this.categoryIdToEstimateMap = {};
 	}
 
 	componentDidMount() {
@@ -57,17 +49,11 @@ export class BudgetForm extends Component {
 		this.setState({ name });
 	};
 
-	// onStartDateChange = startDate => {
-	// 	const date = startDate.setDate(0, 0, 0, 0);
-	// 	this.setState({ startDate: date });
-	// };
-
-	// onEndDateChange = endDate => {
-	// 	const date = endDate.setDate(23, 59, 59, 999);
-	// 	this.setState({ endDate: date });
-	// };
-
 	onEstimateChange = estimate => {
+		// estimate should be >= 0 and be a valid number
+		const e = +estimate;
+		if (isNaN(e) || e < 0) return;
+
 		this.setState({ estimate });
 	};
 
@@ -145,7 +131,7 @@ export class BudgetForm extends Component {
 	};
 
 	renderEndDateInput = () => {
-		console.log('renderEndDateInput()::state.endDate:', this.state.endDate);
+		// console.log('renderEndDateInput()::state.endDate:', this.state.endDate);
 		const endDate = this.state.endDate
 			? this.state.endDate
 			: moment()
@@ -164,32 +150,45 @@ export class BudgetForm extends Component {
 
 	renderEstimateInput = () => {
 		const { estimate } = this.state;
-
+		const estimateString = `${estimate}`;
 		return (
 			<TextInput
 				numberOfLines={1}
 				onChangeText={this.onEstimateChange}
-				value={'' + estimate}
+				value={estimateString}
 				editable={false}
 			/>
 		);
 	};
 
 	renderBudgetCategories = () => {
-		const { categories, budget, readOnly } = this.props;
-
+		const {
+			categories,
+			budget,
+			readOnly,
+			categoryIdTotalAmountMap,
+		} = this.props;
 		const { categoryIdToEstimateMap } = budget;
 		// console.warn('categories:', categories.length);
 
 		const categoryCards = categories.map(c => {
+			const totalSpent = categoryIdTotalAmountMap[c.id];
+			var estimate = +categoryIdToEstimateMap[c.id];
+			estimate = estimate > 0 ? estimate : 1;
+			const progress = (totalSpent / estimate) * 100;
+
+			console.log(
+				`renderBudgetCategories:: totalSpent:${totalSpent}, estimate: ${estimate}, progress:${progress}`
+			);
 			return (
 				<BudgetCategoryCard
 					category={c}
 					key={c.id}
 					readOnly={readOnly}
 					displayProgress={readOnly}
-					progress={50}
-					estimate={categoryIdToEstimateMap[c.id]}
+					progress={progress}
+					estimate={estimate}
+					spent={totalSpent}
 					onUpdate={this.onBudgetCategoryUpdate}
 					onPress={this.onBudgetCategoryPress}
 				/>
@@ -202,7 +201,7 @@ export class BudgetForm extends Component {
 	};
 
 	onBudgetCategoryUpdate = (id, newEstimate) => {
-		console.log(`id:${id}, estimate: ${newEstimate}`, this.state);
+		// console.log(`id:${id}, estimate: ${newEstimate}`, this.state);
 		const { categoryIdToEstimateMap } = this.state;
 		categoryIdToEstimateMap[id] = newEstimate;
 
@@ -216,15 +215,24 @@ export class BudgetForm extends Component {
 		this.setState({ estimate, categoryIdToEstimateMap });
 	};
 
-	onBudgetCategoryPress = async id => {
-		console.log('onBudgetCategoryPress()::' + id);
-		const { budget } = this.props;
-		const transactions = await DataManager.getTransactionsByBudgetAndCategory(
-			budget,
-			id
-		);
+	onBudgetCategoryPress = category => {
+		if (this.props.onBudgetCategoryPress) {
+			this.props.onBudgetCategoryPress(category);
+		}
+	};
 
-		console.log('onBudgetCategoryPress()::transactions::', transactions);
+	renderSaveButton = () => {
+		if (this.props.readOnly) return null;
+
+		return (
+			<Theme.View style={styles.saveButtonContainer}>
+				<Button
+					onPress={this.onSubmit}
+					title="Save"
+					style={styles.saveButton}
+				/>
+			</Theme.View>
+		);
 	};
 
 	render() {
@@ -240,13 +248,7 @@ export class BudgetForm extends Component {
 					{this.renderLabel('Estimate')}
 					{this.renderEstimateInput()}
 					{this.renderBudgetCategories()}
-					<Theme.View style={styles.saveButtonContainer}>
-						<Button
-							onPress={this.onSubmit}
-							title="Save"
-							style={styles.saveButton}
-						/>
-					</Theme.View>
+					{this.renderSaveButton()}
 				</ScrollView>
 			</Theme.View>
 		);
@@ -256,8 +258,10 @@ export class BudgetForm extends Component {
 BudgetForm.propTypes = {
 	budget: PropTypes.object,
 	categories: PropTypes.array,
+	categoryIdTotalAmountMap: PropTypes.object, // maping between categoryId and total spent amount
 	readOnly: PropTypes.bool,
 	onSubmit: PropTypes.func,
+	onBudgetCategoryPress: PropTypes.func,
 };
 
 BudgetForm.defaultProps = {

@@ -60,6 +60,8 @@ export default class BudgetCategoryCard extends Component {
 	renderEstimate = () => {
 		const { estimate, spent } = this.props;
 
+		console.log('spent:', spent);
+
 		const spentToEstimate = `${spent} / ${estimate}`;
 		return (
 			<Theme.View style={styles.estimateContainer}>
@@ -96,7 +98,7 @@ export default class BudgetCategoryCard extends Component {
 		if (this.props.onPress) {
 			const { category } = this.props;
 
-			this.props.onPress(category.id);
+			this.props.onPress(category);
 		}
 	};
 
@@ -121,7 +123,7 @@ export default class BudgetCategoryCard extends Component {
 BudgetCategoryCard.propTypes = {
 	category: PropTypes.object.isRequired,
 	estimate: PropTypes.number,
-	spent: PropTypes.string,
+	spent: PropTypes.number,
 	displayProgress: PropTypes.bool,
 	progress: PropTypes.number,
 	readOnly: PropTypes.bool,
@@ -130,8 +132,8 @@ BudgetCategoryCard.propTypes = {
 };
 
 BudgetCategoryCard.defaultProps = {
-	estimate: '0',
-	spent: '0',
+	estimate: 0,
+	spent: 0,
 	displayProgress: false,
 	progress: 0,
 	readOnly: true,
