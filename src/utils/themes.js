@@ -5,6 +5,7 @@ const themes = [
 		{
 			backgroundColor: '#ffffff',
 			secondaryColor: '#b8b8b8',
+			placeholderColor: '#7a807d',
 			textColor: '#000',
 			secondaryTextColor: '#2f2f2f',
 			placeholderTextColor: '#777777',
