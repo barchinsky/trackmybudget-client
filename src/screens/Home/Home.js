@@ -80,8 +80,8 @@ export class Home extends Component {
 	};
 
 	onBudgetSelected = budget => {
-		console.log('onBudgetSelected()::', budget);
-		this.props.navigation.navigate('EditBudgetScreen', { budget });
+		// console.log('onBudgetSelected()::', budget);
+		this.props.navigation.navigate('BudgetOverviewScreen', { budget });
 	};
 
 	renderContent() {
