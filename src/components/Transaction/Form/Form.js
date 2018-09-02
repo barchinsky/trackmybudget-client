@@ -23,7 +23,7 @@ export default class TransactionForm extends Component {
 			id: Date.now(),
 			comment: '',
 			date: moment()
-				.format(dateFormat),
+				.format(datetimeFormat),
 			amount: '0',
 			category: null,
 		};
@@ -46,7 +46,7 @@ export default class TransactionForm extends Component {
 				amount,
 				comment,
 				date: moment(date, datetimeFormat)
-					.format(dateFormat),
+					.format(datetimeFormat),
 			};
 		}
 
@@ -55,7 +55,6 @@ export default class TransactionForm extends Component {
 
 	renderDateInput = () => {
 		const { date } = this.state;
-		// console.log('date:', date);
 
 		return (
 			<Theme.View style={styles.dateContainer}>
@@ -68,9 +67,9 @@ export default class TransactionForm extends Component {
 						},
 					}}
 					date={date}
-					mode="date"
+					mode="datetime"
 					placeholder="Choose transaction date"
-					format={dateFormat}
+					format={datetimeFormat}
 					confirmBtnText="Confirm"
 					cancelBtnText="Cancel"
 					onDateChange={date => {
@@ -125,7 +124,7 @@ export default class TransactionForm extends Component {
 	};
 
 	renderCategoryInput = () => {
-		console.log('renderCategoryInput():', this.state.category);
+		// console.log('renderCategoryInput():', this.state.category);
 		return (
 			<Theme.View>
 				<InputLabel text="Category:" />
