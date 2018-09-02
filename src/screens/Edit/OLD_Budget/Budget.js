@@ -4,10 +4,9 @@ import { connect } from 'react-redux';
 import { PropTypes } from 'prop-types';
 
 import BudgetForm from '@components/Budget/Form/Form';
+import DataManager from '@utils/AsyncStorageManager/AsyncStorageManager';
 
 import { updateBudget } from '@redux/actions/budgets/update';
-
-import Budget from '@models/budget';
 
 import styles from './_styles';
 
@@ -17,7 +16,12 @@ export class EditBudgetScreen extends Component {
 		// console.warn('budget:', budget);
 		// return null;
 		return (
-			<BudgetForm budget={budget} onSubmit={this.onSubmit} readOnly={true} />
+			<BudgetForm
+				budget={budget}
+				onSubmit={this.onSubmit}
+				readOnly={true}
+				onBudgetCategoryPress={this.onBudgetCategoryPress}
+			/>
 		);
 	};
 
@@ -30,6 +34,19 @@ export class EditBudgetScreen extends Component {
 		} catch (e) {
 			console.error(e);
 		}
+	};
+
+	onBudgetCategoryPress = async categoryId => {
+		const budget = this.props.navigation.getParam('budget');
+		const transactions = await DataManager.getTransactionsByBudgetAndCategory(
+			budget,
+			categoryId
+		);
+
+		console.log(
+			'EditBudgetScreen::onBudgetCategoryPress:tranasctions:',
+			transactions
+		);
 	};
 
 	render() {
