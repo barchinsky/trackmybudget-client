@@ -34,8 +34,11 @@ export function deleteBudget(budget) {
 				const error = new Error('Updating budget failed!');
 				dispatch(deleteBudgetFailed(error));
 			}
+
+			return isSuccess;
 		} catch (e) {
 			dispatch(deleteBudgetFailed(e));
+			return false;
 		}
 	};
 }

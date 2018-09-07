@@ -23,10 +23,7 @@ export default class TransactionsOverviewByCategory extends Component {
 	componentDidMount() {
 		const category = this.props.navigation.getParam('category');
 		const transactions = this.props.navigation.getParam('transactions');
-		const totalAmountSpent = transactions.reduce(
-			(accum, t) => accum + +t.amount,
-			0
-		);
+		const totalAmountSpent = this.props.navigation.getParam('totalAmount');
 		const estimate = this.props.navigation.getParam('categoryEstimate');
 
 		this.setState({ category, transactions, estimate, totalAmountSpent });

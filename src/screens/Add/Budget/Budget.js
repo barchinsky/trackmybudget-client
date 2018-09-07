@@ -17,13 +17,17 @@ export class ScreenAddBudget extends Component {
 		budget.id = id;
 		const isSuccess = await this.props.dispatch(addBudget(budget));
 
+		if (isSuccess) {
+			this.props.navigation.navigate('BudgetsStack');
+		}
+
 		console.warn('isSuccess:', isSuccess);
 	};
 
 	render() {
 		return (
 			<Theme.View style={styles.container}>
-				<BudgetForm onSubmit={this.onSubmit} />
+				<BudgetForm onSubmit={this.onSubmit} readOnly={false} />
 			</Theme.View>
 		);
 	}
@@ -37,6 +41,7 @@ export class ScreenAddBudget extends Component {
 
 ScreenAddBudget.propTypes = {
 	dispatch: PropTypes.func,
+	navigation: PropTypes.object,
 };
 
 export default connect()(ScreenAddBudget);

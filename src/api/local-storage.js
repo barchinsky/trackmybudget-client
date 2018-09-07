@@ -26,7 +26,7 @@ export function getUserData() {
 }
 
 export function saveUserLoginAndToken(userId, token) {
-	console.log('Saving use data to local storage:', userId, token);
+	console.log('Saving user data to local storage:', userId, token);
 	return AsyncStorage.multiSet([['userId', userId], ['token', token]], err => {
 		if (err) {
 			console.log('error while saving creds', err);

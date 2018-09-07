@@ -5,8 +5,10 @@ import { PropTypes } from 'prop-types';
 
 import BudgetForm from '@components/Budget/Form/Form';
 import DataManager from '@utils/AsyncStorageManager/AsyncStorageManager';
+import Button from '@components/Button/Button';
 
 import { updateBudget } from '@redux/actions/budgets/update';
+import { deleteBudget } from '@redux/actions/budgets/delete';
 
 import styles from './_styles';
 
@@ -57,17 +59,9 @@ export class BudgetOverviewScreen extends Component {
 	};
 
 	renderBudgetForm = () => {
-		// const budget = this.props.navigation.getParam('budget');
-		// console.warn('budget:', budget);
-		// return null;
 		const { budget, categoryIdTotalAmountMap } = this.state;
 
 		if (!budget) return null;
-
-		console.log(
-			'---------------------------categoryIdTotalAmountMap:-----------------------------',
-			categoryIdTotalAmountMap
-		);
 
 		return (
 			<BudgetForm
@@ -81,13 +75,13 @@ export class BudgetOverviewScreen extends Component {
 	};
 
 	onSubmit = async budget => {
-		console.log('BudgetOverviewScreen::onSubmit:', budget);
+		// console.log('BudgetOverviewScreen::onSubmit:', budget);
 
 		try {
 			const isSuccess = await this.props.dispatch(updateBudget(budget));
-			console.warn('BudgetOverviewScreen:budget update::isSuccess:', isSuccess);
+			// console.warn('BudgetOverviewScreen:budget update::isSuccess:', isSuccess);
 		} catch (e) {
-			console.error(e);
+			// console.error(e);
 		}
 	};
 
@@ -99,28 +93,56 @@ export class BudgetOverviewScreen extends Component {
 		// 	budget,
 		// 	category.id
 		// );
-		const { budget, categoryIdTransactionsMap } = this.state;
+		const {
+			budget,
+			categoryIdTransactionsMap,
+			categoryIdTotalAmountMap,
+		} = this.state;
 		const { categoryIdToEstimateMap } = budget;
 		const categoryId = category.id;
 		const transactions = categoryIdTransactionsMap[categoryId];
 		const categoryEstimate = categoryIdToEstimateMap[categoryId];
+		const totalAmount = categoryIdTotalAmountMap[categoryId];
 
 		this.props.navigation.navigate('TransactionsOverviewByCategory', {
 			category,
 			transactions,
+			totalAmount,
 			categoryEstimate,
 		});
 
-		console.log(
-			'BudgetOverviewScreen::onBudgetCategoryPress:tranasctions:',
-			transactions
+		// console.log(
+		// 	'BudgetOverviewScreen::onBudgetCategoryPress:tranasctions:',
+		// 	transactions
+		// );
+	};
+
+	renderDeleteButton = () => {
+		return (
+			<Theme.View style={styles.deleteButtonContainer}>
+				<Button
+					onPress={this.onDeleteBudget}
+					title="Delete"
+					color="@deleteButtonColor"
+				/>
+			</Theme.View>
 		);
+	};
+
+	onDeleteBudget = () => {
+		const { budget } = this.state;
+
+		this.props.dispatch(deleteBudget(budget))
+			.then(() => {
+				this.props.navigation.goBack();
+			});
 	};
 
 	render() {
 		return (
 			<Theme.View style={styles.container}>
 				{this.renderBudgetForm()}
+				{this.renderDeleteButton()}
 			</Theme.View>
 		);
 	}

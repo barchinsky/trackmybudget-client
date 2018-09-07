@@ -5,4 +5,10 @@ export default createStyle({
 		flex: 1,
 		backgroundColor: '@backgroundColor',
 	},
+	deleteButtonContainer: {
+		marginTop: 5,
+	},
+	deleteButton: {
+		backgroundColor: '#ff6363',
+	},
 });

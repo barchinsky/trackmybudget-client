@@ -16,6 +16,7 @@ const themes = [
 			budgetCardBorderColor: '#c9c9c9',
 			cardTitleFontSize: 25,
 			cardHeight: 80,
+			deleteButtonColor: '#ff5959',
 		},
 		'Light'
 	),

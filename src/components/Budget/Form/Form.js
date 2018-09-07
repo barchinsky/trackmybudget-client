@@ -83,8 +83,10 @@ export class BudgetForm extends Component {
 
 	renderBudgetNameInput = () => {
 		const { name } = this.state;
+		const { readOnly } = this.props;
 		return (
 			<TextInput
+				editable={!readOnly}
 				numberOfLines={1}
 				onChangeText={this.onNameChange}
 				value={name}
@@ -93,10 +95,12 @@ export class BudgetForm extends Component {
 	};
 
 	renderDateInput = (date, dateDest) => {
-		// console.log(`dateDest: ${dateDest} date:${date}`);
+		// console.log(`dateDeost: ${dateDest} date:${date}`);
+		const { readOnly } = this.props;
 		return (
 			<DatePicker
 				style={styles.datePicker}
+				disabled={readOnly}
 				customStyles={{
 					dateInput: {
 						borderWidth: 0,
@@ -172,10 +176,15 @@ export class BudgetForm extends Component {
 		// console.warn('categories:', categories.length);
 
 		const categoryCards = categories.map(c => {
-			const totalSpent = categoryIdTotalAmountMap[c.id];
-			var estimate = +categoryIdToEstimateMap[c.id];
-			estimate = estimate > 0 ? estimate : 1;
-			const progress = (totalSpent / estimate) * 100;
+			const totalSpent = categoryIdTotalAmountMap
+				? categoryIdTotalAmountMap[c.id]
+				: 0;
+			var estimate =
+				categoryIdToEstimateMap[c.id] == undefined
+					? 0
+					: +categoryIdToEstimateMap[c.id];
+			var estimateForProgress = estimate > 0 ? estimate : 1;
+			const progress = (totalSpent / estimateForProgress) * 100;
 
 			console.log(
 				`renderBudgetCategories:: totalSpent:${totalSpent}, estimate: ${estimate}, progress:${progress}`
