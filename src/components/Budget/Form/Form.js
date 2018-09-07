@@ -186,9 +186,9 @@ export class BudgetForm extends Component {
 			var estimateForProgress = estimate > 0 ? estimate : 1;
 			const progress = (totalSpent / estimateForProgress) * 100;
 
-			console.log(
-				`renderBudgetCategories:: totalSpent:${totalSpent}, estimate: ${estimate}, progress:${progress}`
-			);
+			// console.log(
+			// 	`renderBudgetCategories:: totalSpent:${totalSpent}, estimate: ${estimate}, progress:${progress}`
+			// );
 			return (
 				<BudgetCategoryCard
 					category={c}

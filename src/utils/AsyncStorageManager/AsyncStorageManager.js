@@ -14,41 +14,41 @@ const CATEGORIES_KEY = 'categories';
 const BUDGETS_KEY = 'budgets';
 
 export default class AsyncStorageManager {
-	static async getTransactions() {
-		const transactions = await AsyncStorageManager.restoreData(
-			TRANSACTIONS_KEY,
-			Transaction
-		);
-		return transactions;
+	static TAG = 'AsyncStorageManager';
+
+	static transactionsKey(userId) {
+		return `${TRANSACTIONS_KEY}_${userId}`;
+	}
+
+	static async getTransactions(userId) {
+		try {
+			const userTransactionsKey = AsyncStorageManager.transactionsKey(userId);
+			const transactions = await AsyncStorageManager.restoreData(
+				userTransactionsKey,
+				Transaction
+			);
+			return transactions;
+		} catch (e) {
+			console.error('AsyncStorageManager::getTransactions()::', e.message);
+			return 0;
+		}
 	}
 
 	static async getTransactionsByBudgetAndCategory(
+		userId = null,
 		budget = null,
 		targetCategoryId = null
 	) {
-		if (!(budget && targetCategoryId)) return [];
+		if (!(budget && targetCategoryId && !userId)) return [];
 
-		const transactions = await AsyncStorageManager.getTransactions();
+		const transactions = await AsyncStorageManager.getTransactions(userId);
 
 		const budgetStartDate = moment(budget.startDate, dateFormat);
 		const budgetEndDate = moment(budget.endDate, dateFormat);
 
-		// console.log(
-		// 	`getTransactionsByBudgetAndCategory::startDate${budgetStartDate.format(
-		// 		dateTimeFormat
-		// 	)}, endDate:${budgetEndDate.format(
-		// 		dateTimeFormat
-		// 	)}, targetCategoryId:${targetCategoryId}`
-		// );
-
 		const filteredTransactions = transactions.filter(t => {
 			const transactionDate = moment(t.date, dateTimeFormat);
-			// console.log('transactionDate:', t.date);
-			// console.log(
-			// 	'transactionDate.isBetween(budgetStartDate, budgetEndDate): ',
-			// 	transactionDate.isBetween(budgetStartDate, budgetEndDate)
-			// );
-			// console.log('t.id == targetCategoryId: ', t.id == targetCategoryId);
+
 			return (
 				transactionDate.isBetween(budgetStartDate, budgetEndDate) &&
 				t.categoryId == targetCategoryId
@@ -58,62 +58,105 @@ export default class AsyncStorageManager {
 		return filteredTransactions;
 	}
 
-	static async addTransaction(transaction) {
+	static async addTransaction(transaction, userId) {
 		try {
-			const transactions = await AsyncStorageManager.getTransactions();
+			const transactions = await AsyncStorageManager.getTransactions(userId);
 			// console.log('addTransaction::transactions', transactions);
 			const updatedTransactions = [transaction, ...transactions];
 			// console.log('addTransaction::updatedTransactions:', updatedTransactions);
-			await AsyncStorageManager._updateTransactions(updatedTransactions);
-			return 1;
+			const result = await AsyncStorageManager._updateTransactions(
+				updatedTransactions,
+				userId
+			);
+
+			return result;
 		} catch (e) {
-			throw new Error(
-				'AsyncStorageManager()::addTransaction() Failed to store transaction:' +
-					e.message
+			return failed(
+				`Error::AsyncStorageManager.addTransaction()::${e.message}`
 			);
 		}
 	}
 
-	static async deleteTransaction(transaction) {
+	static async deleteTransaction(transaction, userId) {
 		try {
-			const transactions = await AsyncStorageManager.getTransactions();
+			const transactions = await AsyncStorageManager.getTransactions(userId);
+
+			// console.log(
+			// 	`${AsyncStorageManager.TAG}::transactions before delete:${
+			// 		transactions.length
+			// 	}`
+			// );
 			const updatedTransactions = transactions.filter(
 				t => t.id !== transaction.id
 			);
-			AsyncStorageManager._updateTransactions(updatedTransactions);
-		} catch (e) {
-			// console.log('AsyncStorageManager().deleteTransaction()::', e.message);
-			throw new Error(
-				`AsyncStorageManager().deleteTransaction()::${e.message}`
+			// console.log(
+			// 	`${AsyncStorageManager.TAG}::transactions after delete:${
+			// 		updatedTransactions.length
+			// 	}`
+			// );
+			const result = await AsyncStorageManager._updateTransactions(
+				updatedTransactions,
+				userId
 			);
+
+			console.log(
+				`${AsyncStorageManager.TAG}::deleteTransaction():result=${result}`
+			);
+
+			return result;
+		} catch (e) {
+			console.error(
+				`${AsyncStorageManager.TAG}.deleteTransaction():: ${e.message}`
+			);
+			return failed(e.message);
 		}
 	}
 
-	static async updateTransaction(transaction) {
+	static async updateTransaction(transaction, userId) {
 		try {
-			const transactions = await AsyncStorageManager.getTransactions();
+			const transactions = await AsyncStorageManager.getTransactions(userId);
 			const updatedTransactions = transactions.map(
 				t => (t.id === transaction.id ? transaction : t)
 			);
-			await AsyncStorageManager._updateTransactions(updatedTransactions);
-			return 1;
+			const result = await AsyncStorageManager._updateTransactions(
+				updatedTransactions,
+				userId
+			);
+
+			return result;
 		} catch (e) {
-			throw new Error(
+			console.error(
 				`AsyncStorageManager().updateTransactions():: Update failed:${
 					e.message
 				}`
 			);
+
+			return failed(e.message);
 		}
 	}
 
-	static async _updateTransactions(transactions) {
-		await AsyncStorageManager.deleteItem(TRANSACTIONS_KEY);
-		const serializedTransactions = transactions.map(t => t.serialize());
-		// console.log('serializedTransactions:', serializedTransactions);
-		await AsyncStorage.setItem(
-			TRANSACTIONS_KEY,
-			JSON.stringify(serializedTransactions)
-		);
+	static async _updateTransactions(transactions, userId) {
+		if (!userId) {
+			throw new Error(
+				'AsyncStorageManager()._updateTransactions()::No userId provided'
+			);
+		}
+
+		try {
+			const userTransactionsKey = AsyncStorageManager.transactionsKey(userId);
+			await AsyncStorageManager.deleteItem(userTransactionsKey);
+			const serializedTransactions = transactions.map(t => t.serialize());
+			// console.log('serializedTransactions:', serializedTransactions);
+			await AsyncStorage.setItem(
+				userTransactionsKey,
+				JSON.stringify(serializedTransactions)
+			);
+
+			return success();
+		} catch (e) {
+			console.error('AsyncStorageManager()::', e);
+			return failed(e.message);
+		}
 	}
 
 	///////////////// Categories ///////////////////////////
@@ -317,4 +360,24 @@ export default class AsyncStorageManager {
 	static async __clear__() {
 		await AsyncStorage.clear();
 	}
+}
+
+export const ASM_STATUS = {
+	SUCCESS: 1,
+	FAILED: 0,
+};
+
+// helpers
+function success() {
+	return {
+		status: ASM_STATUS.SUCCESS,
+		msg: '',
+	};
+}
+
+function failed(msg) {
+	return {
+		status: ASM_STATUS.FAILED,
+		msg: msg,
+	};
 }

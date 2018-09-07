@@ -1,4 +1,6 @@
-import ASM from '@utils/AsyncStorageManager/AsyncStorageManager';
+import ASM, {
+	ASM_STATUS,
+} from '@utils/AsyncStorageManager/AsyncStorageManager';
 
 export const CREATING_TRANSACTION = 'CREATING_TRANSACTION';
 export const CREATE_TRANSACTION_SUCCESS = 'CREATE_TRANSACTION_SUCCESS';
@@ -25,10 +27,18 @@ export function createTransactionSuccess(transaction) {
 }
 
 export function createTransaction(transaction) {
-	return async dispatch => {
+	return async (dispatch, getState) => {
 		try {
-			await ASM.addTransaction(transaction);
-			dispatch(createTransactionSuccess(transaction));
+			const userId = getState().userData.userId;
+			// console.log('createTransaction()::userId=', userId);
+			const res = await ASM.addTransaction(transaction, userId);
+			if (res.status == ASM_STATUS.SUCCESS) {
+				dispatch(createTransactionSuccess(transaction));
+			} else {
+				dispatch(createTransactionFailed(res.msg));
+			}
+
+			return res.status;
 		} catch (e) {
 			dispatch(createTransactionFailed(e));
 		}

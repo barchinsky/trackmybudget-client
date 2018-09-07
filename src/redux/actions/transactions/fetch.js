@@ -26,15 +26,18 @@ export const fetchTransactionFailed = error => {
 
 export const fetchTransactions = () => {
 	console.log('fetchTranasctions()');
-	return async dispatch => {
+	return async (dispatch, getState) => {
 		dispatch(fetchingTransactions());
 
 		try {
-			const transactions = await ASM.getTransactions();
+			const userId = getState().userData.userId;
+			const transactions = await ASM.getTransactions(userId);
 			console.log('fetchTransactions().asm:', transactions.length);
 			dispatch(fetchTransactionsSuccess(transactions));
+			return 1;
 		} catch (e) {
 			dispatch(fetchTransactionFailed(e));
+			return 0;
 		}
 	};
 };
