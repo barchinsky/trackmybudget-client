@@ -4,6 +4,8 @@ const themes = [
 	createTheme(
 		{
 			backgroundColor: '#ffffff',
+			secondaryColor: '#b8b8b8',
+			placeholderColor: '#7a807d',
 			textColor: '#000',
 			secondaryTextColor: '#2f2f2f',
 			placeholderTextColor: '#777777',
@@ -14,6 +16,7 @@ const themes = [
 			budgetCardBorderColor: '#c9c9c9',
 			cardTitleFontSize: 25,
 			cardHeight: 80,
+			deleteButtonColor: '#ff5959',
 		},
 		'Light'
 	),

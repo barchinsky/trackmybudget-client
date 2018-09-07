@@ -12,10 +12,16 @@ export default class DateInput extends Component {
 		super(props);
 
 		this.state = {
-			date: '',
+			// date: '',
 			isDateTimePickerVisible: false,
 		};
 	}
+
+	// componentDidMount() {
+	// 	const { value } = this.props;
+	//
+	// 	this.setState({ date: value });
+	// }
 
 	_showDateTimePicker = () => {
 		Keyboard.dismiss();
@@ -26,18 +32,21 @@ export default class DateInput extends Component {
 
 	_handleDatePicked = date => {
 		console.log('A date has been picked: ', date);
-		this.setState({ date: date.toLocaleString() });
+		// this.setState({ date: date.toLocaleString() });
 		this._hideDateTimePicker();
 
 		if (this.props.onChange) this.props.onChange(date);
 	};
 
 	render() {
+		const currentDate = this.props.value;
+		console.log('currentDate:', currentDate);
+		const d = new Date(currentDate);
 		return (
 			<Theme.View style={styles.container}>
 				<TextInput
 					numberOfLines={1}
-					value={this.state.date}
+					value={currentDate}
 					onFocus={this._showDateTimePicker}
 					onBlur={this._hideDateTimePicker}
 				/>
@@ -45,6 +54,7 @@ export default class DateInput extends Component {
 					isVisible={this.state.isDateTimePickerVisible}
 					onConfirm={this._handleDatePicked}
 					onCancel={this._hideDateTimePicker}
+					date={d}
 				/>
 			</Theme.View>
 		);
@@ -52,5 +62,10 @@ export default class DateInput extends Component {
 }
 
 DateInput.propTypes = {
+	value: PropTypes.string,
 	onChange: PropTypes.func,
+};
+
+DateInput.defaultProps = {
+	value: '',
 };

@@ -27,15 +27,18 @@ export function deleteBudgetFailed(error) {
 export function deleteBudget(budget) {
 	return async dispatch => {
 		try {
-			const isSuccess = await ASM.updateBudget(budget);
+			const isSuccess = await ASM.deleteBudget(budget);
 			if (isSuccess) {
 				dispatch(deleteBudgetSuccess(budget));
 			} else {
 				const error = new Error('Updating budget failed!');
 				dispatch(deleteBudgetFailed(error));
 			}
+
+			return isSuccess;
 		} catch (e) {
 			dispatch(deleteBudgetFailed(e));
+			return false;
 		}
 	};
 }

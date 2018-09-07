@@ -11,7 +11,11 @@ export default class BudgetList extends Component {
 	renderBudgetCard = item => {
 		const budget = item.item;
 
-		return <BudgetCard budget={budget} />;
+		return <BudgetCard budget={budget} onPress={this.onBudgetPress} />;
+	};
+
+	onBudgetPress = budget => {
+		if (this.props.onBudgetPress) this.props.onBudgetPress(budget);
 	};
 
 	renderList = () => {
@@ -26,7 +30,7 @@ export default class BudgetList extends Component {
 		);
 	};
 
-	_keyExtractor = item => item.id;
+	_keyExtractor = item => '' + item.id;
 
 	render() {
 		return (
@@ -37,6 +41,7 @@ export default class BudgetList extends Component {
 
 BudgetList.propTypes = {
 	budgets: PropTypes.array,
+	onBudgetPress: PropTypes.func,
 };
 
 BudgetList.defaultProps = {

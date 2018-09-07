@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Theme from 'react-native-theming';
 import { PropTypes } from 'prop-types';
-import BudgetForm from '@components/Form/Budget/Budget';
+
+import BudgetForm from '@components/Budget/Form/Form';
 import { addBudget } from '@redux/actions/budgets/create';
 
 import Budget from '@models/budget';
@@ -11,8 +12,14 @@ import styles from './_styles';
 
 export class ScreenAddBudget extends Component {
 	onSubmit = async budgetInfo => {
+		const id = Date.now();
 		const budget = new Budget(budgetInfo);
+		budget.id = id;
 		const isSuccess = await this.props.dispatch(addBudget(budget));
+
+		if (isSuccess) {
+			this.props.navigation.navigate('BudgetsStack');
+		}
 
 		console.warn('isSuccess:', isSuccess);
 	};
@@ -20,7 +27,7 @@ export class ScreenAddBudget extends Component {
 	render() {
 		return (
 			<Theme.View style={styles.container}>
-				<BudgetForm onSubmit={this.onSubmit} />
+				<BudgetForm onSubmit={this.onSubmit} readOnly={false} />
 			</Theme.View>
 		);
 	}
@@ -34,6 +41,7 @@ export class ScreenAddBudget extends Component {
 
 ScreenAddBudget.propTypes = {
 	dispatch: PropTypes.func,
+	navigation: PropTypes.object,
 };
 
 export default connect()(ScreenAddBudget);

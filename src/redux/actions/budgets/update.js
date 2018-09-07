@@ -34,6 +34,8 @@ export function updateBudget(budget) {
 				const error = new Error('Updating budget failed!');
 				dispatch(updateBudgetFailed(error));
 			}
+
+			return isSuccess;
 		} catch (e) {
 			dispatch(updateBudgetFailed(e));
 		}

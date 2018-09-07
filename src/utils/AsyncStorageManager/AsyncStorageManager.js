@@ -3,6 +3,12 @@ import Transaction from '@models/transaction';
 import Category from '@models/category';
 import Budget from '@models/budget';
 
+import moment from 'moment';
+import {
+	date as dateFormat,
+	datetime as dateTimeFormat,
+} from '@utils/dateFormats';
+
 const TRANSACTIONS_KEY = 'transactions';
 const CATEGORIES_KEY = 'categories';
 const BUDGETS_KEY = 'budgets';
@@ -14,6 +20,42 @@ export default class AsyncStorageManager {
 			Transaction
 		);
 		return transactions;
+	}
+
+	static async getTransactionsByBudgetAndCategory(
+		budget = null,
+		targetCategoryId = null
+	) {
+		if (!(budget && targetCategoryId)) return [];
+
+		const transactions = await AsyncStorageManager.getTransactions();
+
+		const budgetStartDate = moment(budget.startDate, dateFormat);
+		const budgetEndDate = moment(budget.endDate, dateFormat);
+
+		// console.log(
+		// 	`getTransactionsByBudgetAndCategory::startDate${budgetStartDate.format(
+		// 		dateTimeFormat
+		// 	)}, endDate:${budgetEndDate.format(
+		// 		dateTimeFormat
+		// 	)}, targetCategoryId:${targetCategoryId}`
+		// );
+
+		const filteredTransactions = transactions.filter(t => {
+			const transactionDate = moment(t.date, dateTimeFormat);
+			// console.log('transactionDate:', t.date);
+			// console.log(
+			// 	'transactionDate.isBetween(budgetStartDate, budgetEndDate): ',
+			// 	transactionDate.isBetween(budgetStartDate, budgetEndDate)
+			// );
+			// console.log('t.id == targetCategoryId: ', t.id == targetCategoryId);
+			return (
+				transactionDate.isBetween(budgetStartDate, budgetEndDate) &&
+				t.categoryId == targetCategoryId
+			);
+		});
+
+		return filteredTransactions;
 	}
 
 	static async addTransaction(transaction) {
@@ -65,12 +107,11 @@ export default class AsyncStorageManager {
 	}
 
 	static async _updateTransactions(transactions) {
-		const storageKey = 'transactions';
-		await AsyncStorageManager.deleteItem(storageKey);
+		await AsyncStorageManager.deleteItem(TRANSACTIONS_KEY);
 		const serializedTransactions = transactions.map(t => t.serialize());
-		console.log('serializedTransactions:', serializedTransactions);
+		// console.log('serializedTransactions:', serializedTransactions);
 		await AsyncStorage.setItem(
-			storageKey,
+			TRANSACTIONS_KEY,
 			JSON.stringify(serializedTransactions)
 		);
 	}
@@ -130,10 +171,10 @@ export default class AsyncStorageManager {
 		try {
 			await AsyncStorageManager.deleteItem(CATEGORIES_KEY);
 			const serializedCategories = categories.map(c => c.serialize());
-			console.log(
-				'AsyncStorageManager._updateCategories(): serializeCategories:',
-				serializedCategories
-			);
+			// console.log(
+			// 	'AsyncStorageManager._updateCategories(): serializeCategories:',
+			// 	serializedCategories
+			// );
 			await AsyncStorage.setItem(
 				CATEGORIES_KEY,
 				JSON.stringify(serializedCategories)
@@ -147,26 +188,50 @@ export default class AsyncStorageManager {
 
 	static async getBudgets() {
 		const budgets = await AsyncStorageManager.restoreData(BUDGETS_KEY, Budget);
+		const transactions = await AsyncStorageManager.getTransactions();
 
-		return budgets;
+		const budgetsWithSpenAmount = budgets.map(budget => {
+			// get spent amount of already added transactions that fits budget params
+			// console.log('budget::', budget);
+			const budgetStartDate = moment(budget.startDate, dateFormat);
+			const budgetEndDate = moment(budget.endDate, dateFormat);
+
+			// console.log('budgetStartDate:', budgetStartDate.format(dateTimeFormat));
+			// console.log('budgetEndDate:', budgetEndDate.format(dateTimeFormat));
+
+			const spentAmount = transactions.reduce((acc, transaction) => {
+				// console.log('transaction::', transaction);
+				const transactionDate = moment(transaction.date, dateTimeFormat);
+				// console.log(
+				// 	'transactionDate:',
+				// 	transactionDate.format(dateTimeFormat),
+				// 	transactionDate.isBetween(budgetStartDate, budgetEndDate)
+				// );
+				const amount = transactionDate.isBetween(budgetStartDate, budgetEndDate)
+					? +transaction.amount
+					: 0;
+
+				return acc + amount;
+			}, 0);
+			budget.spentAmount = spentAmount;
+
+			// console.log('getBudget()::spentAmount::', spentAmount);
+
+			return budget;
+		});
+
+		// console.log('budgetsWithSpenAmount:', budgetsWithSpenAmount);
+
+		return budgetsWithSpenAmount;
 	}
 
 	static async addBudget(budget) {
 		try {
 			const oldBudgets = await AsyncStorageManager.getBudgets();
 
-			// get spent amount of already added transactions that fits budget params
-			const tranasctions = await AsyncStorageManager.getTransactions();
-			const spentAmount = tranasctions.reduce((acc, transaction) => {
-				transaction.date >= budget.startDate &&
-				transaction.date <= budget.endDate
-					? transaction.amount
-					: 0;
-			}, 0);
-			budget.spentAmount = spentAmount;
-			console.log('oldBudgets:', oldBudgets);
+			// console.log('oldBudgets:', oldBudgets);
 			const newBudgets = [budget, ...oldBudgets];
-			console.log('newBudgets:', newBudgets);
+			// console.log('newBudgets:', newBudgets);
 			await AsyncStorageManager._updateBudgets(newBudgets);
 			return 1;
 		} catch (e) {
@@ -176,8 +241,8 @@ export default class AsyncStorageManager {
 	}
 
 	static async deleteBudget(budget) {
+		const oldBudgets = await AsyncStorageManager.getBudgets();
 		try {
-			const oldBudgets = await AsyncStorageManager.getBudgets();
 			const newBudgets = oldBudgets.filter(b => b.id !== budget.id);
 			await AsyncStorageManager._updateBudgets(newBudgets);
 			return 1;
@@ -228,7 +293,7 @@ export default class AsyncStorageManager {
 	static async restoreData(key, Instance) {
 		try {
 			const savedData = (await AsyncStorage.getItem(key)) || [];
-			console.log(`AsyncStorageManager()::restoreData::${key}: ${savedData}`);
+			// console.log(`AsyncStorageManager()::restoreData::${key}: ${savedData}`);
 			if (!savedData.length) {
 				return [];
 			}

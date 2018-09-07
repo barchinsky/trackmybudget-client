@@ -52,4 +52,7 @@ export default createStyle({
 		bottom: 0,
 		left: 0,
 	},
+	budgetNameFirstLetter: {
+		fontSize: 50,
+	},
 });
