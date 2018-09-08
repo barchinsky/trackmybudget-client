@@ -17,27 +17,22 @@ export function deleteCategoryFailed(error) {
 	};
 }
 
-// export function updateCategory(category) {
-// 	return (dispatch, getState) => {
-// 		const { token } = getState().userData;
-//
-// 		return api
-// 			.updateCategory({ token, category })
-// 			.then(response => response.data)
-// 			.then(() => dispatch(updateCategorySuccess(category)))
-// 			.catch(error => {
-// 				throw error;
-// 			});
-// 	};
-// }
 export function deleteCategory(category) {
-	return async dispatch => {
+	return async (dispatch, getState) => {
 		try {
 			// do request to data AsyncStorageManager
-			await ASM.deleteCategory(category);
-			dispatch(deleteCategorySuccess(category));
+			const userId = getState().userData.userId;
+			const result = await ASM.deleteCategory(category, userId);
+			if (result.status) {
+				dispatch(deleteCategorySuccess(category));
+			} else {
+				dispatch(deleteCategoryFailed(result.msg));
+			}
+
+			return result;
 		} catch (e) {
 			console.log('redux.updateCategory():', e.message);
+			dispatch(deleteCategoryFailed(e.message));
 		}
 	};
 }

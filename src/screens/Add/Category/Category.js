@@ -10,9 +10,11 @@ import { createCategory } from '@redux/actions/categories/create';
 
 import styles from './_styles';
 
+const TAG = 'ScreenAddCategory';
 export class ScreenAddCategory extends Component {
-	saveCategory = ({ name, color }) => {
-		console.log('saveCategory:', name, color);
+	saveCategory = async ({ name, color }) => {
+		console.log(`${TAG}::saveCategory(): name=${name}, color=${color}`);
+
 		const { userId } = this.props.user;
 		const id = Date.now();
 		const categoryToSave = new Category({
@@ -21,8 +23,15 @@ export class ScreenAddCategory extends Component {
 			_userId: userId,
 			_id: id,
 		});
-		this.props.dispatch(createCategory(categoryToSave));
-		this.props.navigation.goBack();
+
+		const result = await this.props.dispatch(createCategory(categoryToSave));
+
+		console.log(`${TAG}.saveCategory()::result=${result}`);
+		if (result.status) {
+			this.props.navigation.navigate('CategoryStack');
+		} else {
+			console.error(`${TAG}::saveCategory()::Error:${result.msg}`);
+		}
 	};
 
 	renderCategoryForm = () => {

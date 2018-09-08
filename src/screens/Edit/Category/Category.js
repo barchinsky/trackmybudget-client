@@ -10,6 +10,7 @@ import { deleteCategory } from '@redux/actions/categories/delete';
 
 import styles from './_styles';
 
+const TAG = 'EditCategoryScreen';
 export class EditCategoryScreen extends Component {
 	constructor(props) {
 		super(props);
@@ -32,18 +33,34 @@ export class EditCategoryScreen extends Component {
 		return false;
 	}
 
-	onCategorySave = ({ name, color }) => {
+	onCategorySave = async ({ name, color }) => {
 		const { category } = this.state;
 
 		category.name = name;
 		category.color = color;
 
-		this.props.dispatch(updateCategory(category));
+		const result = await this.props.dispatch(updateCategory(category));
+
+		if (result.status) {
+			console.log(`${TAG}::onCategorySave(): Category update done!`);
+		} else {
+			console.error(`${TAG}::onCategorySave(): Category update failed!`);
+		}
+
+		console.log(`${TAG}::onCategorySave():: result=${result}`);
 	};
 
 	onCategoryDelete = async category => {
-		await this.props.dispatch(deleteCategory(category));
-		this.props.navigation.goBack();
+		const result = await this.props.dispatch(deleteCategory(category));
+
+		console.log(`${TAG}::onCategoryDelete(): result=${result}`);
+		if (result.status) {
+			this.props.navigation.goBack();
+		} else {
+			console.error(
+				`${TAG}::onCategoryDelete():: Deletion failed: ${result.msg}`
+			);
+		}
 	};
 
 	renderForm = () => {

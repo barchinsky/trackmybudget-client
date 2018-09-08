@@ -26,19 +26,25 @@ export function addBudgetFailed(error) {
 }
 
 export function addBudget(budget) {
-	return async dispatch => {
+	return async (dispatch, getState) => {
 		// const { token } = getState().userData;
 		dispatch(addingBudget());
 
-		const isSuccess = await ASM.addBudget(budget);
+		try {
+			const userId = getState().userData.userId;
+			console.log(`redux:addBudget(): userId=${userId}`);
+			const result = await ASM.addBudget(budget, userId);
 
-		if (isSuccess) {
-			dispatch(addBudgetSuccess(budget));
-		} else {
-			const e = new Error('Add budget failed');
-			dispatch(addBudgetFailed(e));
+			if (result.status) {
+				dispatch(addBudgetSuccess(budget));
+			} else {
+				dispatch(addBudgetFailed(result.msg));
+			}
+			return result;
+		} catch (e) {
+			console.error(`redux::addBudget(): Action failed: ${e.message}`);
+			dispatch(addBudgetFailed(e.message));
+			return false;
 		}
-
-		return isSuccess;
 	};
 }

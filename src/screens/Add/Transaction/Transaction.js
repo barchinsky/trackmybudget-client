@@ -14,7 +14,8 @@ import { dateFormat } from '@utils/dateFormats';
 import styles from './_styles';
 
 export class AddTransactionScreen extends Component {
-	onSave = ({ id, comment, amount, category, date }) => {
+	static TAG = 'AddTransactionScreen';
+	onSave = async ({ id, comment, amount, category, date }) => {
 		// console.warn('category:', category);
 		const categoryId = category.id;
 		const { userId } = this.props;
@@ -27,8 +28,15 @@ export class AddTransactionScreen extends Component {
 			_date: date,
 		});
 		// console.warn('transaction to save:', t);
-
-		this.props.dispatch(createTransaction(t));
+		try {
+			const result = await this.props.dispatch(createTransaction(t));
+			console.log(`${AddTransactionScreen.TAG}::onSave():result=${result}`);
+			if (result) {
+				this.props.navigation.navigate('BudgetScreen');
+			}
+		} catch (e) {
+			console.error(`${AddTransactionScreen.TAG}::onSave(): ${e.message}`);
+		}
 	};
 
 	render() {
@@ -66,6 +74,7 @@ AddTransactionScreen.propTypes = {
 	userId: PropTypes.string,
 	categories: PropTypes.array,
 	dispatch: PropTypes.func.isRequired,
+	navigation: PropTypes.object.isRequired,
 };
 
 function mapStateToProps(state) {

@@ -1,4 +1,6 @@
-import ASM from '@utils/AsyncStorageManager/AsyncStorageManager';
+import ASM, {
+	ASM_STATUS,
+} from '@utils/AsyncStorageManager/AsyncStorageManager';
 
 export const DELETING_TRANSACTION = 'DELETING_TRANSACTION';
 export const DELETE_TRANSACTION_SUCCESS = 'DELETE_TRANSACTION_SUCCESS';
@@ -25,13 +27,22 @@ export function deleteTransactionSuccess(transaction) {
 }
 
 export function deleteTransaction(transaction) {
-	return async dispatch => {
+	return async (dispatch, getState) => {
 		dispatch(deletingTransaction());
 		try {
-			await ASM.deleteTransaction(transaction);
-			dispatch(deleteTransactionSuccess(transaction));
+			const userId = getState().userData.userId;
+			const res = await ASM.deleteTransaction(transaction, userId);
+			console.log(`deleteTransaction()::${res}`);
+			if (res.status == ASM_STATUS.SUCCESS) {
+				dispatch(deleteTransactionSuccess(transaction));
+			} else {
+				dispatch(deleteTransactionFailed(e));
+			}
+
+			return res.status;
 		} catch (e) {
 			dispatch(deleteTransactionFailed(e));
+			return 0;
 		}
 	};
 }
