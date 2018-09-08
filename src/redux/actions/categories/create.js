@@ -26,10 +26,16 @@ export function createCategorySuccess(category) {
 
 export function createCategory(category) {
 	// console.log('createCategory():', category);
-	return async dispatch => {
+	return async (dispatch, getState) => {
 		try {
-			await ASM.addCategory(category);
-			dispatch(createCategorySuccess(category));
+			const userId = getState().userData.userId;
+			const result = await ASM.addCategory(category, userId);
+			if (result.status) {
+				dispatch(createCategorySuccess(category));
+			} else {
+				dispatch(createCategoryFailed(result.msg));
+			}
+			return result;
 		} catch (e) {
 			dispatch(createCategoryFailed(e.message));
 		}

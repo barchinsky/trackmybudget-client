@@ -32,11 +32,18 @@ export function updateCategoryFailed(error) {
 // 	};
 // }
 export function updateCategory(category) {
-	return async dispatch => {
+	return async (dispatch, getState) => {
 		try {
 			// do request to data AsyncStorageManager
-			await ASM.updateCategory(category);
-			dispatch(updateCategorySuccess(category));
+			const userId = getState().userData.userId;
+			const result = await ASM.updateCategory(category, userId);
+			if (result.status) {
+				dispatch(updateCategorySuccess(category));
+			} else {
+				dispatch(updateCategoryFailed(result.msg));
+			}
+
+			return result;
 		} catch (e) {
 			// console.log('redux.updateCategory():', e.message);
 			dispatch(updateCategoryFailed(e.message));

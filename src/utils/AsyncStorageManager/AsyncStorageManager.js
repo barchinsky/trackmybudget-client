@@ -13,11 +13,14 @@ const TRANSACTIONS_KEY = 'transactions';
 const CATEGORIES_KEY = 'categories';
 const BUDGETS_KEY = 'budgets';
 
+const TAG = 'AsyncStorageManager';
 export default class AsyncStorageManager {
-	static TAG = 'AsyncStorageManager';
-
 	static transactionsKey(userId) {
 		return `${TRANSACTIONS_KEY}_${userId}`;
+	}
+
+	static categoriesKey(userId) {
+		return `${CATEGORIES_KEY}_${userId}`;
 	}
 
 	static async getTransactions(userId) {
@@ -29,15 +32,15 @@ export default class AsyncStorageManager {
 			);
 			return transactions;
 		} catch (e) {
-			console.error('AsyncStorageManager::getTransactions()::', e.message);
-			return 0;
+			console.error(`${TAG}::getTransactions()::Error: ${e.message}`);
+			return failed(e.message);
 		}
 	}
 
 	static async getTransactionsByBudgetAndCategory(
-		userId = null,
 		budget = null,
-		targetCategoryId = null
+		targetCategoryId = null,
+		userId = null
 	) {
 		if (!(budget && targetCategoryId && !userId)) return [];
 
@@ -99,15 +102,11 @@ export default class AsyncStorageManager {
 				userId
 			);
 
-			console.log(
-				`${AsyncStorageManager.TAG}::deleteTransaction():result=${result}`
-			);
+			console.log(`${TAG}::deleteTransaction():result=${result}`);
 
 			return result;
 		} catch (e) {
-			console.error(
-				`${AsyncStorageManager.TAG}.deleteTransaction():: ${e.message}`
-			);
+			console.error(`${TAG}.deleteTransaction():: ${e.message}`);
 			return failed(e.message);
 		}
 	}
@@ -125,11 +124,7 @@ export default class AsyncStorageManager {
 
 			return result;
 		} catch (e) {
-			console.error(
-				`AsyncStorageManager().updateTransactions():: Update failed:${
-					e.message
-				}`
-			);
+			console.error(`${TAG}.updateTransactions()::Error:${e.message}`);
 
 			return failed(e.message);
 		}
@@ -137,9 +132,8 @@ export default class AsyncStorageManager {
 
 	static async _updateTransactions(transactions, userId) {
 		if (!userId) {
-			throw new Error(
-				'AsyncStorageManager()._updateTransactions()::No userId provided'
-			);
+			console.error(`${TAG}._updateTransactions()::No userId provided`);
+			return failed(`${TAG}._updateTransactions()::No userId provided`);
 		}
 
 		try {
@@ -154,17 +148,23 @@ export default class AsyncStorageManager {
 
 			return success();
 		} catch (e) {
-			console.error('AsyncStorageManager()::', e);
+			console.error(`${TAG}::_updateTransactions()::Error:${e.message}`);
 			return failed(e.message);
 		}
 	}
 
 	///////////////// Categories ///////////////////////////
-	static async getCategories() {
+
+	static async getCategories(userId) {
 		try {
-			const categories = AsyncStorageManager.restoreData(
-				CATEGORIES_KEY,
+			const userCategoriesKey = AsyncStorageManager.categoriesKey(userId);
+			const categories = await AsyncStorageManager.restoreData(
+				userCategoriesKey,
 				Category
+			);
+
+			console.log(
+				`${TAG}.getCategories()::categories.length=${categories.length}`
 			);
 
 			return categories || [];
@@ -174,56 +174,66 @@ export default class AsyncStorageManager {
 		}
 	}
 
-	static async addCategory(category) {
+	static async addCategory(category, userId) {
 		try {
-			const categories = await AsyncStorageManager.getCategories();
+			const categories = await AsyncStorageManager.getCategories(userId);
 			const updatedCategories = [category, ...categories];
-			await AsyncStorageManager._updateCategories(updatedCategories);
-			return true;
+			const result = await AsyncStorageManager._updateCategories(
+				updatedCategories,
+				userId
+			);
+			return result;
 		} catch (e) {
-			console.error('AsyncStorageManager()::addCategory()::', e.message);
-			return false;
+			console.error(`${TAG}::addCategory()::Error ${e.message}`);
+			return failed(e.message);
 		}
 	}
 
-	static async updateCategory(category) {
+	static async updateCategory(category, userId) {
 		try {
-			const categories = await AsyncStorageManager.getCategories();
+			const categories = await AsyncStorageManager.getCategories(userId);
 			const updatedCategories = categories.map(
 				c => (c.id === category.id ? category : c)
 			);
-			await AsyncStorageManager._updateCategories(updatedCategories);
-			return 1;
+			const result = await AsyncStorageManager._updateCategories(
+				updatedCategories,
+				userId
+			);
+			return result;
 		} catch (e) {
-			console.log('AsyncStorageManager.updateCategory:', e.message);
+			console.log(`${TAG}.updateCategory()::Error${e.message}`);
 		}
 	}
 
-	static async deleteCategory(category) {
+	static async deleteCategory(category, userId) {
 		try {
-			const categories = await AsyncStorageManager.getCategories();
+			const categories = await AsyncStorageManager.getCategories(userId);
 			const updatedCategories = categories.filter(c => c.id !== category.id);
-			await AsyncStorageManager._updateCategories(updatedCategories);
-			return 1;
+			const result = await AsyncStorageManager._updateCategories(
+				updatedCategories,
+				userId
+			);
+			return result;
 		} catch (e) {
 			console.log('AsyncStorageManager.deleteCategory:', e.message);
 		}
 	}
 
-	static async _updateCategories(categories) {
+	static async _updateCategories(categories, userId) {
 		try {
-			await AsyncStorageManager.deleteItem(CATEGORIES_KEY);
+			const userCategoriesKey = AsyncStorageManager.categoriesKey(userId);
+			await AsyncStorageManager.deleteItem(userCategoriesKey);
 			const serializedCategories = categories.map(c => c.serialize());
-			// console.log(
-			// 	'AsyncStorageManager._updateCategories(): serializeCategories:',
-			// 	serializedCategories
-			// );
+
 			await AsyncStorage.setItem(
-				CATEGORIES_KEY,
+				userCategoriesKey,
 				JSON.stringify(serializedCategories)
 			);
+
+			return success();
 		} catch (e) {
-			console.log('AsyncStorageManager()._updateCategories:', e.message);
+			console.log(`${TAG}._updateCategories():Error: ${e.message}`);
+			return failed(`${TAG}._updateCategories():Error: ${e.message}`);
 		}
 	}
 
