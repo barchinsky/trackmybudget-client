@@ -27,17 +27,17 @@ export function deleteBudgetFailed(error) {
 export function deleteBudget(budget) {
 	return async dispatch => {
 		try {
-			const isSuccess = await ASM.deleteBudget(budget);
-			if (isSuccess) {
+			const result = await ASM.deleteBudget(budget);
+			if (result.status) {
 				dispatch(deleteBudgetSuccess(budget));
 			} else {
-				const error = new Error('Updating budget failed!');
-				dispatch(deleteBudgetFailed(error));
+				dispatch(deleteBudgetFailed(result.msg));
 			}
 
-			return isSuccess;
+			return result;
 		} catch (e) {
-			dispatch(deleteBudgetFailed(e));
+			dispatch(deleteBudgetFailed(e.message));
+			console.error(`redux::deleteBudget(): action failed: ${e.message}`);
 			return false;
 		}
 	};
