@@ -32,6 +32,7 @@ export function addBudget(budget) {
 
 		try {
 			const userId = getState().userData.userId;
+			console.log(`redux:addBudget(): userId=${userId}`);
 			const result = await ASM.addBudget(budget, userId);
 
 			if (result.status) {

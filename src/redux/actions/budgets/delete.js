@@ -25,9 +25,11 @@ export function deleteBudgetFailed(error) {
 }
 
 export function deleteBudget(budget) {
-	return async dispatch => {
+	return async (dispatch, getState) => {
 		try {
-			const result = await ASM.deleteBudget(budget);
+			const userId = getState().userData.userId;
+			console.log(`redux:deleteBudget(): userId=${userId}`);
+			const result = await ASM.deleteBudget(budget, userId);
 			if (result.status) {
 				dispatch(deleteBudgetSuccess(budget));
 			} else {

@@ -249,6 +249,8 @@ export default class AsyncStorageManager {
 			userBudgetsKey,
 			Budget
 		);
+
+		console.log(`${TAG}.getBudgets()::Fetched budgets: ${budgets.length}`);
 		const transactions = await AsyncStorageManager.getTransactions(userId);
 
 		const budgetsWithSpenAmount = budgets.map(budget => {
@@ -281,9 +283,13 @@ export default class AsyncStorageManager {
 			return budget;
 		});
 
-		// console.log('budgetsWithSpenAmount:', budgetsWithSpenAmount);
+		console.log(
+			`${TAG}.getBudgets(): budgetsWithSpenAmount.length=${
+				budgetsWithSpenAmount.length
+			}`
+		);
 
-		return budgetsWithSpenAmount;
+		return budgetsWithSpenAmount || [];
 	}
 
 	static async addBudget(budget, userId) {
@@ -297,6 +303,7 @@ export default class AsyncStorageManager {
 				newBudgets,
 				userId
 			);
+			console.log(`${TAG}.addBudget(): result: ${result}`);
 			return result;
 		} catch (e) {
 			console.error(`${TAG}::addBudget():: ${e.message}`);
@@ -357,6 +364,7 @@ export default class AsyncStorageManager {
 	static async deleteItem(key) {
 		// remove item from async storage
 		try {
+			console.log(`${TAG}.deleteItem(): key: ${key}`);
 			await AsyncStorage.removeItem(key);
 			return success();
 		} catch (e) {
@@ -390,6 +398,7 @@ export default class AsyncStorageManager {
 	}
 
 	static async __clear__() {
+		console.warn(`${TAG}::WARNING: Clear AsyncStorage requested!`);
 		await AsyncStorage.clear();
 	}
 }

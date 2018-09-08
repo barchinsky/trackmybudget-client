@@ -28,6 +28,7 @@ export function updateBudget(budget) {
 	return async (dispatch, getState) => {
 		try {
 			const userId = getState().userData.userId;
+			console.log(`redux:fetchBudgets(): userId=${userId}`);
 			const result = await ASM.updateBudget(budget, userId);
 			if (result.status) {
 				dispatch(updateBudgetSuccess(budget));
