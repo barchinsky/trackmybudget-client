@@ -60,7 +60,7 @@ export default class BudgetCategoryCard extends Component {
 	renderEstimate = () => {
 		const { estimate, spent } = this.props;
 
-		console.log('spent:', spent);
+		// console.log('spent:', spent);
 
 		const spentToEstimate = `${spent} / ${estimate}`;
 		return (

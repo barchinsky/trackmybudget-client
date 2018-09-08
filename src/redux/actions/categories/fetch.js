@@ -44,14 +44,15 @@ export function fetchCategoriesFailed(error) {
 // }
 
 export function fetchCategories() {
-	return async dispatch => {
+	return async (dispatch, getState) => {
 		dispatch(fetchingCategories());
 
 		try {
-			const categories = await ASM.getCategories();
+			const userId = getState().userData.userId;
+			const categories = await ASM.getCategories(userId);
 			dispatch(fetchCategoriesSuccess(categories));
-		} catch (error) {
-			dispatch(fetchCategoriesFailed(error.message));
+		} catch (e) {
+			dispatch(fetchCategoriesFailed(e.message));
 		}
 	};
 }

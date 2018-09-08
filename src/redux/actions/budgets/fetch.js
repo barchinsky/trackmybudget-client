@@ -26,9 +26,11 @@ export function fetchBudgetsFailed(error) {
 }
 
 export function fetchBudgets() {
-	return async dispatch => {
+	return async (dispatch, getState) => {
 		try {
-			const budgets = await ASM.getBudgets();
+			const userId = getState().userData.userId;
+			console.log(`redux:fetchBudgets(): userId=${userId}`);
+			const budgets = await ASM.getBudgets(userId);
 			dispatch(fetchBudgetsSuccess(budgets));
 		} catch (e) {
 			dispatch(fetchBudgetsFailed(e));

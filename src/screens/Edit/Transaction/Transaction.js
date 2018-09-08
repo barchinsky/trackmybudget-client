@@ -9,11 +9,12 @@ import { deleteTransaction } from '@redux/actions/transactions/delete';
 
 import styles from './_styles';
 
+const TAG = 'EditTransaction';
 export class EditTransaction extends Component {
 	renderForm = () => {
 		const { categories } = this.props;
 		const transaction = this.props.navigation.getParam('transaction');
-		console.log('transationtoedit:', transaction);
+		// console.log('transationtoedit:', transaction);
 		const { categoryId } = transaction;
 
 		const category = categories.find(category => category.id === categoryId);
@@ -29,7 +30,7 @@ export class EditTransaction extends Component {
 		);
 	};
 
-	onTransactionUpdate = ({ amount, comment, category, date }) => {
+	onTransactionUpdate = async ({ amount, comment, category, date }) => {
 		const tranToUpdate = this.props.navigation.getParam('transaction');
 		tranToUpdate.amount = amount;
 		tranToUpdate.comment = comment;
@@ -37,9 +38,11 @@ export class EditTransaction extends Component {
 		tranToUpdate.date = date;
 		tranToUpdate.category = null;
 
-		console.log('onTransactionUpdate:updated:', tranToUpdate);
+		// console.log('onTransactionUpdate:updated:', tranToUpdate);
 
-		this.props.dispatch(updateTransaction(tranToUpdate));
+		const res = await this.props.dispatch(updateTransaction(tranToUpdate));
+
+		console.log(`${TAG}::onTransactionUpdate()::result=${res}`);
 	};
 
 	onTransactionDelete = async t => {
@@ -47,7 +50,7 @@ export class EditTransaction extends Component {
 			await this.props.dispatch(deleteTransaction(t));
 			this.props.navigation.goBack();
 		} catch (e) {
-			console.log('EditTransactionScreen.onTransactionDelete():', e.message);
+			console.log(`${TAG}.onTransactionDelete()::Error:${e.message}`);
 		}
 	};
 
