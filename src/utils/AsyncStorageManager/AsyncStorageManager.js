@@ -150,15 +150,12 @@ export default class AsyncStorageManager {
 
 		try {
 			const userTransactionsKey = AsyncStorageManager.transactionsKey(userId);
-			await AsyncStorageManager.deleteItem(userTransactionsKey);
-			const serializedTransactions = transactions.map(t => t.serialize());
-			// console.log('serializedTransactions:', serializedTransactions);
-			await AsyncStorage.setItem(
+			const result = await AsyncStorageManager.storeSerializableData(
 				userTransactionsKey,
-				JSON.stringify(serializedTransactions)
+				transactions
 			);
 
-			return success();
+			return result;
 		} catch (e) {
 			console.error(`${TAG}::_updateTransactions()::Error:${e.message}`);
 			return failed(e.message);
@@ -234,15 +231,13 @@ export default class AsyncStorageManager {
 	static async _updateCategories(categories, userId) {
 		try {
 			const userCategoriesKey = AsyncStorageManager.categoriesKey(userId);
-			await AsyncStorageManager.deleteItem(userCategoriesKey);
-			const serializedCategories = categories.map(c => c.serialize());
 
-			await AsyncStorage.setItem(
+			const result = await AsyncStorageManager.storeSerializableData(
 				userCategoriesKey,
-				JSON.stringify(serializedCategories)
+				categories
 			);
 
-			return success();
+			return result;
 		} catch (e) {
 			console.log(`${TAG}._updateCategories():Error: ${e.message}`);
 			return failed(`${TAG}._updateCategories():Error: ${e.message}`);
@@ -352,15 +347,13 @@ export default class AsyncStorageManager {
 	static async _updateBudgets(budgets, userId) {
 		try {
 			const userBudgetsKey = AsyncStorageManager.budgetsKey(userId);
-			await AsyncStorageManager.deleteItem(userBudgetsKey);
 
-			const serializedBudgets = budgets.map(b => b.serialize());
-			await AsyncStorage.setItem(
+			const result = await AsyncStorageManager.storeSerializableData(
 				userBudgetsKey,
-				JSON.stringify(serializedBudgets)
+				budgets
 			);
 
-			return success();
+			return result;
 		} catch (e) {
 			console.error(`${TAG}::_updateBudgets():: ${e.message}`);
 			return failed(e.message);
@@ -368,6 +361,19 @@ export default class AsyncStorageManager {
 	}
 
 	// Utilities methods
+	static async storeSerializableData(key, data) {
+		try {
+			await AsyncStorageManager.deleteItem(key);
+
+			const serializedData = data.map(b => b.serialize());
+			await AsyncStorage.setItem(key, JSON.stringify(serializedData));
+
+			return success();
+		} catch (e) {
+			console.error(`${TAG}::_updateBudgets():: ${e.message}`);
+			return failed(e.message);
+		}
+	}
 
 	static async deleteItem(key) {
 		// remove item from async storage
@@ -407,7 +413,12 @@ export default class AsyncStorageManager {
 
 	static async __clear__() {
 		console.warn(`${TAG}::WARNING: Clear AsyncStorage requested!`);
-		await AsyncStorage.clear();
+		try {
+			await AsyncStorage.clear();
+			console.warn(`${TAG}::WARNING: Clear AsyncStorage done.`);
+		} catch (e) {
+			console.error(`${TAG}.__clear__(): Error:${e.message}`);
+		}
 	}
 }
 
