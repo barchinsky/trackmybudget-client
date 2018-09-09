@@ -596,25 +596,3 @@ export default class AsyncStorageManager {
 		}
 	}
 }
-
-// helpers
-export const ASM_STATUS = {
-	SUCCESS: 1,
-	FAILED: 0,
-};
-
-// build succes response
-function success() {
-	return {
-		status: ASM_STATUS.SUCCESS,
-		msg: '',
-	};
-}
-
-// build failed response
-function failed(msg) {
-	return {
-		status: ASM_STATUS.FAILED,
-		msg: msg,
-	};
-}
