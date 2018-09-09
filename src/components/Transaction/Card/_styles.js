@@ -24,7 +24,7 @@ export default createStyle({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'flex-start',
-		paddingLeft: 5,
+		paddingLeft: 10,
 		paddingTop: 5,
 		// borderWidth: 1,
 		// borderColor: 'red',
@@ -38,7 +38,8 @@ export default createStyle({
 		// borderColor: 'green',
 	},
 	descriptionText: {
-		fontSize: 25,
+		fontSize: 18,
+		fontWeight: '500',
 		color: '@textColor',
 	},
 	dateContainer: {

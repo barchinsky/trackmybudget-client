@@ -13,8 +13,8 @@ import { dateFormat } from '@utils/dateFormats';
 
 import styles from './_styles';
 
+const TAG = 'AddTransactionScreen';
 export class AddTransactionScreen extends Component {
-	static TAG = 'AddTransactionScreen';
 	onSave = async ({ id, comment, amount, category, date }) => {
 		// console.warn('category:', category);
 		const categoryId = category.id;
@@ -30,12 +30,12 @@ export class AddTransactionScreen extends Component {
 		// console.warn('transaction to save:', t);
 		try {
 			const result = await this.props.dispatch(createTransaction(t));
-			console.log(`${AddTransactionScreen.TAG}::onSave():result=${result}`);
-			if (result) {
-				this.props.navigation.navigate('BudgetScreen');
+			console.log(`${TAG}::onSave():result=${result}`);
+			if (result.status) {
+				this.props.navigation.navigate('Transactions');
 			}
 		} catch (e) {
-			console.error(`${AddTransactionScreen.TAG}::onSave(): ${e.message}`);
+			console.error(`${TAG}::onSave(): ${e.message}`);
 		}
 	};
 

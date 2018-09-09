@@ -8,6 +8,7 @@ import CardDetailsDashboardPlaceholder from '@components/Category/DetailsDashboa
 
 import styles from './_styles';
 
+const TAG = 'TransactionsOverviewByCategory';
 export default class TransactionsOverviewByCategory extends Component {
 	constructor(props) {
 		super(props);
@@ -20,13 +21,74 @@ export default class TransactionsOverviewByCategory extends Component {
 		};
 	}
 
-	componentDidMount() {
-		const category = this.props.navigation.getParam('category');
-		const transactions = this.props.navigation.getParam('transactions');
-		const totalAmountSpent = this.props.navigation.getParam('totalAmount');
-		const estimate = this.props.navigation.getParam('categoryEstimate');
+	// componentDidMount() {
+	// 	const category = this.props.navigation.getParam('category');
+	// 	const transactions = this.props.navigation.getParam('transactions');
+	// 	const totalAmountSpent = this.props.navigation.getParam('totalAmount');
+	// 	const estimate = this.props.navigation.getParam('categoryEstimate');
+	//
+	// 	// assign category data to transaction
+	// 	transactions.map(t => {
+	// 		t.category = category;
+	// 	});
+	//
+	// 	this.setState({ category, transactions, estimate, totalAmountSpent });
+	// }
 
-		this.setState({ category, transactions, estimate, totalAmountSpent });
+	static getDerivedStateFromProps(props, state) {
+		const category = props.navigation.getParam('category');
+		const transactions = props.navigation.getParam('transactions');
+		const totalAmountSpent = props.navigation.getParam('totalAmount');
+		const estimate = props.navigation.getParam('categoryEstimate');
+
+		console.log(
+			`${TAG}.getDerivedStateFromProps():: transactions.length: ${
+				transactions.length
+			}`
+		);
+
+		let newState = {};
+		if (category != state.category) {
+			newState = { ...newState, category };
+		}
+
+		if (transactions.length != state.transactions.length) {
+			// assign category data to transaction
+			transactions.map(t => {
+				t.category = category;
+			});
+
+			newState = {
+				...newState,
+				transactions,
+			};
+		}
+
+		if (totalAmountSpent != state.totalAmountSpent) {
+			newState = { ...newState, totalAmountSpent };
+		}
+
+		if (estimate != state.estimate) {
+			newState = { ...newState, estimate };
+		}
+
+		if (newState != {}) {
+			console.log(`${TAG}.getDerivedStateFromProps::newState:`, newState);
+			return newState;
+		}
+
+		return null;
+	}
+
+	componentDidUpdate(prevProps) {
+		const transactions = this.props.navigation.getParam('transactions');
+		const prevTransactions = prevProps.navigation.getParam('transactions');
+
+		console.log(
+			`${TAG}.componentDidUpdate():: transactions.length:${
+				transactions.length
+			}, prevTransactions.length:${prevTransactions.length}`
+		);
 	}
 
 	renderHeader = () => {
@@ -55,7 +117,8 @@ export default class TransactionsOverviewByCategory extends Component {
 	};
 
 	onTransactionSelected = t => {
-		console.log('TransactionsOverviewByCategory::onTransactionSelected:', t);
+		// console.log('TransactionsOverviewByCategory::onTransactionSelected:', t);
+		this.props.navigation.navigate('EditTransactionScreen', { transaction: t });
 	};
 
 	render() {
@@ -66,6 +129,13 @@ export default class TransactionsOverviewByCategory extends Component {
 			</Theme.View>
 		);
 	}
+
+	static navigationOptions = ({ navigation }) => {
+		const category = navigation.getParam('category');
+		return {
+			title: `${category.name}'s transactions`,
+		};
+	};
 }
 
 TransactionsOverviewByCategory.propTypes = {

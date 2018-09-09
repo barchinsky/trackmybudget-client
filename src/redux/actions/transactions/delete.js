@@ -1,6 +1,4 @@
-import ASM, {
-	ASM_STATUS,
-} from '@utils/AsyncStorageManager/AsyncStorageManager';
+import ASM from '@utils/AsyncStorageManager/AsyncStorageManager';
 
 export const DELETING_TRANSACTION = 'DELETING_TRANSACTION';
 export const DELETE_TRANSACTION_SUCCESS = 'DELETE_TRANSACTION_SUCCESS';
@@ -32,14 +30,14 @@ export function deleteTransaction(transaction) {
 		try {
 			const userId = getState().userData.userId;
 			const res = await ASM.deleteTransaction(transaction, userId);
-			console.log(`deleteTransaction()::${res}`);
-			if (res.status == ASM_STATUS.SUCCESS) {
+			console.log(`redux::deleteTransaction()::${JSON.stringify(res)}`);
+			if (res.status) {
 				dispatch(deleteTransactionSuccess(transaction));
 			} else {
 				dispatch(deleteTransactionFailed(e));
 			}
 
-			return res.status;
+			return res;
 		} catch (e) {
 			dispatch(deleteTransactionFailed(e));
 			return 0;
