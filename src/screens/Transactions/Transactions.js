@@ -56,7 +56,7 @@ export class TransactionsScreen extends Component {
 		);
 	}
 
-	static navigationOptions = navigation => {
+	static navigationOptions = () => {
 		return {
 			title: 'Transactions',
 		};

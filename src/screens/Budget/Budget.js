@@ -9,9 +9,11 @@ import Button from '@components/Button/Button';
 
 import { updateBudget } from '@redux/actions/budgets/update';
 import { deleteBudget } from '@redux/actions/budgets/delete';
+import { syncDone } from '@redux/actions/app/app';
 
 import styles from './_styles';
 
+const TAG = 'BudgetOverviewScreen';
 export class BudgetOverviewScreen extends Component {
 	constructor(props) {
 		super(props);
@@ -28,6 +30,16 @@ export class BudgetOverviewScreen extends Component {
 		this.prepareData();
 	}
 
+	componentDidUpdate(prevProps) {
+		if (
+			prevProps.syncRequired != this.props.syncRequired &&
+			this.props.syncRequired
+		) {
+			console.log(`${TAG}.componentDidUpdate: syncRequired`);
+			this.prepareData();
+		}
+	}
+
 	prepareData = async () => {
 		this.setState({ loading: true });
 		const categoryIdTotalAmountMap = {};
@@ -35,11 +47,13 @@ export class BudgetOverviewScreen extends Component {
 
 		const budget = this.props.navigation.getParam('budget');
 		const { categoryIdToEstimateMap } = budget;
+		const { userId } = this.props;
 
 		for (let categoryId in categoryIdToEstimateMap) {
 			const transactions = await DataManager.getTransactionsByBudgetAndCategory(
 				budget,
-				categoryId
+				categoryId,
+				userId
 			);
 
 			categoryIdTransactionsMap[categoryId] = transactions;
@@ -55,11 +69,18 @@ export class BudgetOverviewScreen extends Component {
 			budget,
 			categoryIdTotalAmountMap,
 			categoryIdTransactionsMap,
+			loading: false,
 		});
+
+		this.props.dispatch(syncDone());
 	};
 
 	renderBudgetForm = () => {
 		const { budget, categoryIdTotalAmountMap } = this.state;
+		console.log(
+			`${TAG}::categoryIdTotalAmountMap: ${categoryIdTotalAmountMap}`
+		);
+		console.log(categoryIdTotalAmountMap);
 
 		if (!budget) return null;
 
@@ -78,7 +99,11 @@ export class BudgetOverviewScreen extends Component {
 		// console.log('BudgetOverviewScreen::onSubmit:', budget);
 
 		try {
-			const isSuccess = await this.props.dispatch(updateBudget(budget));
+			const result = await this.props.dispatch(updateBudget(budget));
+
+			if (result.status) {
+				console.log(`${TAG}.onSubmit()::Budget updated!`);
+			}
 			// console.warn('BudgetOverviewScreen:budget update::isSuccess:', isSuccess);
 		} catch (e) {
 			// console.error(e);
@@ -86,13 +111,6 @@ export class BudgetOverviewScreen extends Component {
 	};
 
 	onBudgetCategoryPress = async category => {
-		// const budget = this.props.navigation.getParam('budget');
-		// const { categoryIdToEstimateMap } = budget;
-		// const categoryEstimate = categoryIdToEstimateMap[category.id];
-		// const transactions = await DataManager.getTransactionsByBudgetAndCategory(
-		// 	budget,
-		// 	category.id
-		// );
 		const {
 			budget,
 			categoryIdTransactionsMap,
@@ -104,17 +122,18 @@ export class BudgetOverviewScreen extends Component {
 		const categoryEstimate = categoryIdToEstimateMap[categoryId];
 		const totalAmount = categoryIdTotalAmountMap[categoryId];
 
+		console.log(
+			`categoryId:${categoryId}, categoryEstimate:${categoryEstimate}, transactions.length:${
+				transactions.length
+			}, totalAmount:${totalAmount}`
+		);
+
 		this.props.navigation.navigate('TransactionsOverviewByCategory', {
 			category,
 			transactions,
 			totalAmount,
 			categoryEstimate,
 		});
-
-		// console.log(
-		// 	'BudgetOverviewScreen::onBudgetCategoryPress:tranasctions:',
-		// 	transactions
-		// );
 	};
 
 	renderDeleteButton = () => {
@@ -146,11 +165,28 @@ export class BudgetOverviewScreen extends Component {
 			</Theme.View>
 		);
 	}
+
+	static navigationOptions = ({ navigation }) => {
+		const budget = navigation.getParam('budget');
+
+		return {
+			title: `${budget.name} budget`,
+		};
+	};
 }
 
 BudgetOverviewScreen.propTypes = {
+	userId: PropTypes.string.isRequired,
 	navigation: PropTypes.object.isRequired,
 	dispatch: PropTypes.func.isRequired,
+	syncRequired: PropTypes.bool,
 };
 
-export default connect()(BudgetOverviewScreen);
+function mapStateToProps(state) {
+	return {
+		userId: state.userData.userId,
+		syncRequired: state.app.syncRequired,
+	};
+}
+
+export default connect(mapStateToProps)(BudgetOverviewScreen);

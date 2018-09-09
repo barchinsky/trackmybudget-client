@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import TransactionForm from '@components/Transaction/Form/Form';
 import { updateTransaction } from '@redux/actions/transactions/update';
 import { deleteTransaction } from '@redux/actions/transactions/delete';
+import { sync } from '@redux/actions/app/app';
 
 import styles from './_styles';
 
@@ -40,17 +41,33 @@ export class EditTransaction extends Component {
 
 		// console.log('onTransactionUpdate:updated:', tranToUpdate);
 
-		const res = await this.props.dispatch(updateTransaction(tranToUpdate));
+		const result = await this.props.dispatch(updateTransaction(tranToUpdate));
 
-		console.log(`${TAG}::onTransactionUpdate()::result=${res}`);
+		if (result.status) {
+			this.props.dispatch(sync());
+			console.log(`${TAG}.onTransactionUpdate():: Transaction updated!`);
+		} else {
+			console.error(
+				`${TAG}.onTransactionUpdate()::Transaction update failed:${result.msg}`
+			);
+		}
+
+		// console.log(`${TAG}::onTransactionUpdate()::result=${res}`);
 	};
 
 	onTransactionDelete = async t => {
 		try {
-			await this.props.dispatch(deleteTransaction(t));
-			this.props.navigation.goBack();
+			const result = await this.props.dispatch(deleteTransaction(t));
+			console.log(
+				`${TAG}.onTransactionDelete()::result=${JSON.stringify(result)}`
+			);
+
+			if (result.status) {
+				this.props.dispatch(sync());
+				this.props.navigation.goBack();
+			}
 		} catch (e) {
-			console.log(`${TAG}.onTransactionDelete()::Error:${e.message}`);
+			console.error(`${TAG}.onTransactionDelete()::Error:${e.message}`);
 		}
 	};
 
@@ -59,6 +76,12 @@ export class EditTransaction extends Component {
 			<Theme.View style={styles.container}>{this.renderForm()}</Theme.View>
 		);
 	}
+
+	static navigationOptions = () => {
+		return {
+			title: 'Transaction details',
+		};
+	};
 }
 
 EditTransaction.propTypes = {
