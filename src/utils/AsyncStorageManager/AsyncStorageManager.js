@@ -420,6 +420,179 @@ export default class AsyncStorageManager {
 			console.error(`${TAG}.__clear__(): Error:${e.message}`);
 		}
 	}
+
+	static async exportData(userId) {
+		if (!userId) {
+			console.warn(`${TAG}.exportData(): No userId provided!`);
+			return failed(`${TAG}.exportData(): No userId provided!`);
+		}
+
+		try {
+			console.log(`${TAG}.exportData()`);
+			const exportStartTime = Date.now();
+
+			const exportObject = {};
+
+			const transactionsKey = AsyncStorageManager.transactionsKey(userId);
+			const categoriesKey = AsyncStorageManager.categoriesKey(userId);
+			const budgetsKey = AsyncStorageManager.budgetsKey(userId);
+
+			const transactions = await AsyncStorageManager.restoreData(
+				transactionsKey,
+				Transaction
+			);
+			console.log(
+				`${TAG}.exportData():: Transactions to export: ${transactions.length}`
+			);
+
+			const categories = await AsyncStorageManager.restoreData(
+				categoriesKey,
+				Category
+			);
+			console.log(
+				`${TAG}.exportData():: Categories to export: ${categories.length}`
+			);
+
+			const budgets = await AsyncStorageManager.restoreData(budgetsKey, Budget);
+			console.log(`${TAG}.exportData():: Budgets to export: ${budgets.length}`);
+
+			const serializedTransactions = transactions.map(t => t.serialize());
+			const serializedCategories = categories.map(c => c.serialize());
+			const serializedBudgets = budgets.map(b => b.serialize());
+
+			exportObject[TRANSACTIONS_KEY] = serializedTransactions;
+			exportObject[CATEGORIES_KEY] = serializedCategories;
+			exportObject[BUDGETS_KEY] = serializedBudgets;
+
+			console.log(`${TAG}.exportData()::exportObject:`, exportObject);
+			const result = JSON.stringify(exportObject);
+
+			const exportEndTime = Date.now();
+			console.log(
+				`Time spent for export: ${(exportEndTime - exportStartTime) / 1000} sec`
+			);
+
+			return success(result);
+		} catch (e) {
+			return failed(e.message);
+		}
+	}
+
+	static async importData(inputDataAsString, userId) {
+		if (!userId) {
+			return failed(`${TAG}.importData():: Error: No userId provided`);
+		}
+
+		console.log(`${TAG}.importData():: Import requested`);
+		const importStartTime = Date.now();
+		const report = {
+			[TRANSACTIONS_KEY]: 0,
+			[CATEGORIES_KEY]: 0,
+			[BUDGETS_KEY]: 0,
+		};
+
+		try {
+			const parsedImportObject = JSON.parse(inputDataAsString);
+			console.log(
+				`${TAG}.importData()::parsedImportObject:`,
+				Object.keys(parsedImportObject)
+			);
+			// Import transactions
+			if (parsedImportObject.hasOwnProperty(TRANSACTIONS_KEY)) {
+				const userTransactionsKey = AsyncStorageManager.transactionsKey(userId);
+				const serializedTransactions = parsedImportObject[TRANSACTIONS_KEY];
+
+				if (serializedTransactions.length) {
+					let result = await AsyncStorageManager.storeImportedDataWithMerge(
+						userTransactionsKey,
+						serializedTransactions
+					);
+
+					if (result.status) {
+						report[TRANSACTIONS_KEY] = serializedTransactions.length;
+					}
+				}
+			}
+
+			// Import categories
+			if (parsedImportObject.hasOwnProperty(CATEGORIES_KEY)) {
+				const userCategoriesKey = AsyncStorageManager.categoriesKey(userId);
+				const serializedCategories = parsedImportObject[CATEGORIES_KEY];
+
+				if (serializedCategories.length) {
+					let result = await AsyncStorageManager.storeImportedDataWithMerge(
+						userCategoriesKey,
+						serializedCategories
+					);
+					if (result.status) {
+						report[CATEGORIES_KEY] = serializedCategories.length;
+					}
+				}
+			}
+
+			// Import budgets
+			if (parsedImportObject.hasOwnProperty(BUDGETS_KEY)) {
+				const userBudgetsKey = AsyncStorageManager.budgetsKey(userId);
+				const serializedBudgets = parsedImportObject[BUDGETS_KEY];
+
+				if (serializedBudgets.length) {
+					let result = await AsyncStorageManager.storeImportedDataWithMerge(
+						userBudgetsKey,
+						serializedBudgets
+					);
+					if (result.status) {
+						report[BUDGETS_KEY] = serializedBudgets.length;
+					}
+				}
+			}
+
+			const importEndTime = Date.now();
+
+			console.log(
+				`${TAG}.importData():: Import took ${(importEndTime - importStartTime) /
+					1000} sec`
+			);
+			console.log(`${TAG}.importData():: Imported data:`, report);
+
+			return success();
+		} catch (e) {
+			return failed(`${TAG}.importData()::Error: ${e.message}`);
+		}
+	}
+
+	static async storeImportedDataWithMerge(key, serializedData) {
+		try {
+			console.log(
+				`${TAG}.storeImportedDataWithMerge::${key} serializedData:`,
+				serializedData
+			);
+
+			let previouslyAddedData = (await AsyncStorage.getItem(key)) || '[]';
+			previouslyAddedData = JSON.parse(previouslyAddedData);
+
+			console.log(
+				`${TAG}.storeImportedDataWithMerge()::${key} previouslyAddedData.length: ${
+					previouslyAddedData.length
+				}`
+			);
+
+			const mergedData = [...serializedData, ...previouslyAddedData];
+			const uniqueData = [...new Set(mergedData)];
+
+			console.log(
+				`${TAG}.storeImportedDataWithMerge::${key} uniqueData:`,
+				uniqueData
+			);
+
+			await AsyncStorage.setItem(key, JSON.stringify(uniqueData));
+
+			return success();
+		} catch (e) {
+			return failed(
+				`${TAG}.storeImportedDataWithMerge()::Error:${key}: ${e.message}`
+			);
+		}
+	}
 }
 
 // helpers
@@ -429,10 +602,11 @@ export const ASM_STATUS = {
 };
 
 // build succes response
-function success() {
+function success(payload = []) {
 	return {
 		status: ASM_STATUS.SUCCESS,
 		msg: '',
+		payload: payload,
 	};
 }
 
@@ -441,5 +615,6 @@ function failed(msg) {
 	return {
 		status: ASM_STATUS.FAILED,
 		msg: msg,
+		payload: [],
 	};
 }
