@@ -9,6 +9,8 @@ import {
 	datetime as dateTimeFormat,
 } from '@utils/dateFormats';
 
+import { success, failed } from '@utils/task_statuses';
+
 const TRANSACTIONS_KEY = 'transactions';
 const CATEGORIES_KEY = 'categories';
 const BUDGETS_KEY = 'budgets';
@@ -409,26 +411,4 @@ export default class AsyncStorageManager {
 		console.warn(`${TAG}::WARNING: Clear AsyncStorage requested!`);
 		await AsyncStorage.clear();
 	}
-}
-
-// helpers
-export const ASM_STATUS = {
-	SUCCESS: 1,
-	FAILED: 0,
-};
-
-// build succes response
-function success() {
-	return {
-		status: ASM_STATUS.SUCCESS,
-		msg: '',
-	};
-}
-
-// build failed response
-function failed(msg) {
-	return {
-		status: ASM_STATUS.FAILED,
-		msg: msg,
-	};
 }
