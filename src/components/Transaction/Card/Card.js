@@ -25,7 +25,7 @@ export default class TransactionCard extends Component {
 	renderComment = comment => {
 		return (
 			<Theme.View style={styles.descriptionContainer}>
-				<Theme.Text style={styles.descriptionContainer} numberOfLines={3}>
+				<Theme.Text style={styles.descriptionText} numberOfLines={2}>
 					{comment}
 				</Theme.Text>
 			</Theme.View>

@@ -46,9 +46,17 @@ export default class AsyncStorageManager {
 		targetCategoryId = null,
 		userId = null
 	) {
-		if (!(budget && targetCategoryId && !userId)) return [];
+		console.log(
+			`${TAG}.getTransactionsByBudgetAndCategory():: budget:${budget}, targetCategoryId: ${targetCategoryId}, userId: ${userId}`
+		);
+		if (!(budget && targetCategoryId && userId)) return [];
 
 		const transactions = await AsyncStorageManager.getTransactions(userId);
+		console.log(
+			`${TAG}.getTransactionsByBudgetAndCategory():transactions.length: ${
+				transactions.length
+			}`
+		);
 
 		const budgetStartDate = moment(budget.startDate, dateFormat);
 		const budgetEndDate = moment(budget.endDate, dateFormat);

@@ -19,12 +19,14 @@ const BudgetsStack = createStackNavigator({
 	BudgetsScreen,
 	BudgetOverviewScreen,
 	TransactionsOverviewByCategory,
+	EditTransactionScreen,
 });
 
 const CategoryStack = createStackNavigator(
 	{
 		CategoryScreen,
 		EditCategoryScreen,
+		AddCategoryScreen,
 	},
 	{
 		initialRouteName: 'CategoryScreen',
@@ -35,6 +37,7 @@ const TransactionsStack = createStackNavigator(
 	{
 		TransactionsScreen,
 		EditTransactionScreen,
+		AddTransactionScreen,
 	},
 	{
 		initialRouteName: 'TransactionsScreen',
@@ -43,19 +46,27 @@ const TransactionsStack = createStackNavigator(
 
 export default createDrawerNavigator(
 	{
-		BudgetsStack,
+		Budgets: {
+			screen: BudgetsStack,
+		},
 		Transactions: {
 			screen: TransactionsStack,
 		},
 		Categories: {
 			screen: CategoryStack,
 		},
+		'New Transaction': {
+			screen: AddTransactionScreen,
+		},
+		'New Category': {
+			screen: AddCategoryScreen,
+		},
+		'New budget': {
+			screen: AddBudgetScreen,
+		},
 		LoginScreen,
-		AddBudgetScreen,
-		AddCategoryScreen,
-		AddTransactionScreen,
 	},
 	{
-		initialRouteName: 'BudgetsStack',
+		initialRouteName: 'Budgets',
 	}
 );
