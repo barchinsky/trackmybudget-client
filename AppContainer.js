@@ -20,18 +20,22 @@ import store from '@redux/store';
 // 	updateBudget,
 // } from '@api/budget';
 
-import { fetchCategoriesSuccess } from '@redux/actions/categories/fetch';
-import { updateCategory } from '@redux/actions/categories/update';
-import Category from '@models/category';
+// import { fetchCategoriesSuccess } from '@redux/actions/categories/fetch';
+// import { updateCategory } from '@redux/actions/categories/update';
+// import Category from '@models/category';
+//
+// import { fetchTransactionsSuccess } from '@redux/actions/transactions/fetch';
+// import { createTransaction } from '@redux/actions/transactions/create';
+// import { deleteTransaction } from '@redux/actions/transactions/delete';
+// import { updateTransaction } from '@redux/actions/transactions/update';
+// import Transaction from '@models/transaction';
 
-import { fetchTransactionsSuccess } from '@redux/actions/transactions/fetch';
-import { createTransaction } from '@redux/actions/transactions/create';
-import { deleteTransaction } from '@redux/actions/transactions/delete';
-import { updateTransaction } from '@redux/actions/transactions/update';
-import Transaction from '@models/transaction';
+// import DataManager from '@utils/AsyncStorageManager/AsyncStorageManager';
+// import FileSystemManager from '@utils/FileSystemManager/FileSystemManager';
 
-const token =
-	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YWRiN2FiM2VlOTNiODE0MzI3M2Q3Y2UiLCJpYXQiOjE1MjQ0MzA1NjZ9.mj8mETN1quZhD7bRFoxOcDoILUrEdljhp28FW9TucrQ';
+// FileSystemManager.saveData('Ololo', 'test.tbud');
+// const token =
+// 	'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1YWRiN2FiM2VlOTNiODE0MzI3M2Q3Y2UiLCJpYXQiOjE1MjQ0MzA1NjZ9.mj8mETN1quZhD7bRFoxOcDoILUrEdljhp28FW9TucrQ';
 
 // saveUserLoginAndToken('1', '2')
 // 	.then(err => {
@@ -149,6 +153,23 @@ store.subscribe(() => {
 // store.dispatch(deleteTransaction(tran1));
 // tran1.comment = 'Lidl food updated';
 // store.dispatch(updateTransaction(tran1));
+// const imData =
+// 	'{"transactions":["{\\"_id\\":1536501792736,\\"_userId\\":\\"testid\\",\\"_comment\\":\\"t2\\",\\"_date\\":\\"2018-09-09 16:03\\",\\"_amount\\":\\"1\\",\\"_categoryId\\":1536501760601,\\"_category\\":null}","{\\"_id\\":1536501781461,\\"_userId\\":\\"testid\\",\\"_comment\\":\\"t1\\",\\"_date\\":\\"2018-09-09 16:03\\",\\"_amount\\":\\"1\\",\\"_categoryId\\":1536436773424,\\"_category\\":null}"],"categories":["{\\"_name\\":\\"Food\\",\\"_userId\\":\\"testid\\",\\"_color\\":\\"#00c7ff\\",\\"_id\\":1536501760601}","{\\"_name\\":\\"Cat1\\",\\"_userId\\":\\"testid\\",\\"_color\\":\\"#98ff00\\",\\"_id\\":1536436773424}"],"budgets":["{\\"id\\":1536437031017,\\"name\\":\\"Aug\\",\\"startDate\\":\\"2018/09/08\\",\\"endDate\\":\\"2018/10/09\\",\\"spentAmount\\":10,\\"estimate\\":150,\\"categoryIdToEstimateMap\\":{\\"1536436773424\\":150}}"]}';
+
+// DataManager.__clear__();
+
+// function test() {
+// 	setTimeout(async () => {
+// 		// const res = await DataManager.exportData('testid');
+// 		// const res = await DataManager.importData(imData, 'testid');
+// 		// console.log('-------------------------test:', res);
+// 		const res = await FileSystemManager.loadData('test.tbud');
+// 		console.log(res);
+// 		FileSystemManager.listDir();
+// 	}, 2000);
+// }
+//
+// test();
 
 export default class AppContainer extends React.Component {
 	render() {

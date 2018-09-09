@@ -1,5 +1,10 @@
-import { createStackNavigator, createDrawerNavigator } from 'react-navigation';
+import {
+	createStackNavigator,
+	createDrawerNavigator,
+	createSwitchNavigator,
+} from 'react-navigation';
 
+import AuthLoadingScreen from '@screens/AuthLoading/AuthLoading';
 import LoginScreen from '@screens/Login/Login';
 
 import BudgetsScreen from '@screens/Home/Home';
@@ -44,7 +49,7 @@ const TransactionsStack = createStackNavigator(
 	}
 );
 
-export default createDrawerNavigator(
+export const AppStack = createDrawerNavigator(
 	{
 		Budgets: {
 			screen: BudgetsStack,
@@ -64,9 +69,21 @@ export default createDrawerNavigator(
 		'New budget': {
 			screen: AddBudgetScreen,
 		},
-		LoginScreen,
 	},
 	{
 		initialRouteName: 'Budgets',
+	}
+);
+
+export default createSwitchNavigator(
+	{
+		AuthLoading: {
+			screen: AuthLoadingScreen,
+		},
+		App: AppStack,
+		Auth: LoginScreen,
+	},
+	{
+		initialRouteName: 'AuthLoading',
 	}
 );
