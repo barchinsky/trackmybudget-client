@@ -5,22 +5,19 @@ export default createStyle({
 		flex: 1,
 		//flexDirection: 'column',
 		justifyContent: 'center',
-		alignItems: 'stretch',
+		alignItems: 'center',
 		backgroundColor: '@backgroundColor',
 	},
 	loginForm: {
 		//flex: 1,
 		justifyContent: 'center',
 		alignItems: 'stretch',
-		margin: 50,
+		minWidth: '80%',
 		// backgroundColor: 'green'
 	},
 	logoContainer: {
-		// flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		//width: 100,
-		// height: 100,
 		margin: 50,
 		backgroundColor: '@backgroundColor',
 	},
@@ -29,7 +26,6 @@ export default createStyle({
 	},
 	textInput: {
 		backgroundColor: '@inputFieldBgColor',
-		//minWidth: 300,
 	},
 	errorText: {
 		color: 'red',
