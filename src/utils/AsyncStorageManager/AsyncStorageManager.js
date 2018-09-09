@@ -9,6 +9,8 @@ import {
 	datetime as dateTimeFormat,
 } from '@utils/dateFormats';
 
+import { success, failed } from '@utils/task_statuses';
+
 const TRANSACTIONS_KEY = 'transactions';
 const CATEGORIES_KEY = 'categories';
 const BUDGETS_KEY = 'budgets';
@@ -602,11 +604,10 @@ export const ASM_STATUS = {
 };
 
 // build succes response
-function success(payload = []) {
+function success() {
 	return {
 		status: ASM_STATUS.SUCCESS,
 		msg: '',
-		payload: payload,
 	};
 }
 
@@ -615,6 +616,5 @@ function failed(msg) {
 	return {
 		status: ASM_STATUS.FAILED,
 		msg: msg,
-		payload: [],
 	};
 }
