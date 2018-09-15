@@ -9,6 +9,7 @@ import TextInput from '@components/TextInput/TextInput';
 import { logIn } from '@redux/actions/account';
 import styles from './_styles';
 
+const TAG = 'LoginScreen';
 export class LoginScreen extends Component {
 	constructor(props) {
 		super(props);
@@ -16,15 +17,20 @@ export class LoginScreen extends Component {
 		this.state = {
 			login: '',
 			password: '',
+			error: null,
 		};
 	}
 
 	renderError = () => {
 		const { error } = this.props;
-		console.log('error:', error);
-		return error ? (
+		const { error: localError } = this.state;
+
+		const errorMessage = error || localError;
+		console.log(`${TAG}.renderError: Error: ${errorMessage}`);
+
+		return error || localError ? (
 			<Theme.View style={styles.errorContainer}>
-				<Theme.Text style={styles.errorText}>{error.message}</Theme.Text>
+				<Theme.Text style={styles.errorText}>{errorMessage}</Theme.Text>
 			</Theme.View>
 		) : null;
 	};
@@ -32,7 +38,7 @@ export class LoginScreen extends Component {
 	renderLogo = () => {
 		return (
 			<Theme.View style={styles.logoContainer}>
-				<Theme.Text style={styles.logoText}> TrackMyBudet </Theme.Text>
+				<Theme.Text style={styles.logoText}>Track My Budget</Theme.Text>
 			</Theme.View>
 		);
 	};
@@ -74,17 +80,15 @@ export class LoginScreen extends Component {
 		this.setState({ password: passwordText });
 	};
 
-	doLogin = () => {
+	doLogin = async () => {
 		const { login, password } = this.state;
-		this.props
-			.dispatch(logIn(login, password, true))
-			.then(() => {
-				if (this.props.error === null)
-					this.props.navigation.navigate('HomeScreen');
-			})
-			.catch(err => {
-				console.log('Login failed---------->:', err);
-			});
+		const result = await this.props.dispatch(logIn(login, password, true));
+		console.log(`${TAG}.doLogin(): result: ${result.status}`);
+		if (result.status) {
+			this.props.navigation.navigate('App');
+		} else {
+			this.setState({ error: result.msg });
+		}
 	};
 
 	render() {

@@ -1,5 +1,6 @@
 import { login } from '@api/authorization';
 import { getUserData, saveUserLoginAndToken } from '@api/local-storage';
+import { success, failed } from '@utils/task_statuses';
 
 export const LOGIN = 'LOGIN';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
@@ -66,13 +67,16 @@ export function _logIn(user, pass, rememberMe = false) {
 	};
 }
 
-export function logIn() {
-	const data = {
-		userId: 'testid',
-		token: 'testtoken',
-	};
+export function logIn(userId, token) {
 	return async dispatch => {
-		await saveUserLoginAndToken(data.userId, data.token); // save to local storage
-		dispatch(loginSuccess(data));
+		try {
+			await saveUserLoginAndToken(userId, token); // save to local storage
+			dispatch(loginSuccess({ userId, token }));
+			return success();
+		} catch (e) {
+			console.log(`redux::logIn():: Error: ${e.message}`);
+			dispatch(loginFailed(e.message));
+			return failed(e.message);
+		}
 	};
 }

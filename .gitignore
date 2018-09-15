@@ -67,3 +67,6 @@ build/
 .gradle
 local.properties
 *.iml
+
+# Android keystore
+android/app/btrack-release-key.keystore
