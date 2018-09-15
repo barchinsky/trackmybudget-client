@@ -30,7 +30,7 @@ import store from '@redux/store';
 // import { updateTransaction } from '@redux/actions/transactions/update';
 // import Transaction from '@models/transaction';
 
-// import DataManager from '@utils/AsyncStorageManager/AsyncStorageManager';
+import DataManager from '@utils/AsyncStorageManager/AsyncStorageManager';
 // import FileSystemManager from '@utils/FileSystemManager/FileSystemManager';
 
 // FileSystemManager.saveData('Ololo', 'test.tbud');
