@@ -5,6 +5,7 @@ const themes = [
 		{
 			backgroundColor: '#ffffff',
 			secondaryColor: '#b8b8b8',
+			disabledBackgroundColor: '#e7e7e7',
 			placeholderColor: '#7a807d',
 			textColor: '#000',
 			secondaryTextColor: '#2f2f2f',
@@ -17,6 +18,7 @@ const themes = [
 			cardTitleFontSize: 25,
 			cardHeight: 80,
 			deleteButtonColor: '#ff5959',
+			cardBgColor: '#cfcfcf',
 		},
 		'Light'
 	),
