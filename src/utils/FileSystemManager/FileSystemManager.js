@@ -4,13 +4,13 @@ import { success, failed } from '@utils/task_statuses';
 
 const TAG = 'FileSystemManager';
 export default class FileSystemManager {
-	static async saveData(data, path) {
-		const targetDir = Platform.select({
-			ios: RNFS.MainBundlePath,
-			android: RNFS.DocumentDirectoryPath,
-		});
+	static targetDir = Platform.select({
+		ios: RNFS.MainBundlePath,
+		android: RNFS.DocumentDirectoryPath,
+	});
 
-		const fullPath = `${targetDir}/${path}`;
+	static async saveData(data, path) {
+		const fullPath = `${FileSystemManager.targetDir}/${path}`;
 		console.log(`${TAG}.saveData(): fullPath: ${fullPath}`);
 
 		try {
@@ -23,12 +23,7 @@ export default class FileSystemManager {
 	}
 
 	static async loadData(path) {
-		const targetDir = Platform.select({
-			ios: RNFS.MainBundlePath,
-			android: RNFS.DocumentDirectoryPath,
-		});
-
-		const fullPath = `${targetDir}/${path}`;
+		const fullPath = `${FileSystemManager.targetDir}/${path}`;
 		console.log(`${TAG}.loadData(): fullPath: ${fullPath}`);
 
 		try {
@@ -40,17 +35,10 @@ export default class FileSystemManager {
 		}
 	}
 
-	static listDir(path = '') {
+	static async listDir() {
 		try {
-			const targetDir = Platform.select({
-				ios: RNFS.MainBundlePath,
-				android: RNFS.DocumentDirectoryPath,
-			});
-
-			RNFS.readDir(targetDir) // On Android, use "RNFS.DocumentDirectoryPath" (MainBundlePath is not defined)
-				.then(result => {
-					console.log('GOT RESULT', result);
-				});
+			const res = await RNFS.readDir(FileSystemManager.targetDir);
+			return success(res);
 		} catch (e) {
 			return failed(`${TAG}.listDir():: Error: ${e.message}`);
 		}
