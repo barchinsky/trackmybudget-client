@@ -20,6 +20,10 @@ import AddTransactionScreen from '@screens/Add/Transaction/Transaction';
 import EditTransactionScreen from '@screens/Edit/Transaction/Transaction';
 import TransactionsOverviewByCategory from '@screens/TransactionsOverviewByCategory/TransactionsOverviewByCategory';
 
+import SettingsScreen from '@screens/Settings/Settings';
+import ExportScreen from '@screens/Export/Export';
+import ImportScreen from '@screens/Import/Import';
+
 const BudgetsStack = createStackNavigator({
 	BudgetsScreen,
 	BudgetOverviewScreen,
@@ -49,7 +53,13 @@ const TransactionsStack = createStackNavigator(
 	}
 );
 
-export const AppStack = createDrawerNavigator(
+const SettingsStack = createStackNavigator({
+	SettingsScreen,
+	ExportScreen,
+	ImportScreen,
+});
+
+export const AppDrawer = createDrawerNavigator(
 	{
 		Budgets: {
 			screen: BudgetsStack,
@@ -69,6 +79,9 @@ export const AppStack = createDrawerNavigator(
 		'New budget': {
 			screen: AddBudgetScreen,
 		},
+		Settings: {
+			screen: SettingsStack,
+		},
 	},
 	{
 		initialRouteName: 'Budgets',
@@ -80,7 +93,7 @@ export default createSwitchNavigator(
 		AuthLoading: {
 			screen: AuthLoadingScreen,
 		},
-		App: AppStack,
+		App: AppDrawer,
 		Auth: LoginScreen,
 	},
 	{
