@@ -12,6 +12,13 @@ import styles from './_styles';
 
 const TAG = 'ScreenAddCategory';
 export class ScreenAddCategory extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			isIncome: false,
+		};
+	}
 	saveCategory = async ({ name, color }) => {
 		console.log(`${TAG}::saveCategory(): name=${name}, color=${color}`);
 
@@ -35,7 +42,20 @@ export class ScreenAddCategory extends Component {
 	};
 
 	renderCategoryForm = () => {
-		return <CategoryForm onSave={this.saveCategory} />;
+		const { isIncome } = this.state;
+		return (
+			<CategoryForm
+				onSave={this.saveCategory}
+				isIncome={isIncome}
+				onCategoryTypeChange={this.onCategoryTypeChange}
+			/>
+		);
+	};
+
+	onCategoryTypeChange = () => {
+		const { isIncome } = this.state;
+
+		this.setState({ isIncome: !isIncome });
 	};
 
 	render() {
@@ -45,11 +65,11 @@ export class ScreenAddCategory extends Component {
 			</Theme.View>
 		);
 	}
-}
 
-ScreenAddCategory.navigationOptions = () => {
-	return { title: 'New Category' };
-};
+	static navigationOptions = () => {
+		return { title: 'New Category' };
+	};
+}
 
 ScreenAddCategory.propTypes = {
 	dispatch: PropTypes.func,
