@@ -4,6 +4,8 @@ import {
 	createSwitchNavigator,
 } from 'react-navigation';
 
+import { getCurrentTheme } from 'react-native-theming';
+
 import AuthLoadingScreen from '@screens/AuthLoading/AuthLoading';
 import LoginScreen from '@screens/Login/Login';
 
@@ -23,6 +25,9 @@ import TransactionsOverviewByCategory from '@screens/TransactionsOverviewByCateg
 import SettingsScreen from '@screens/Settings/Settings';
 import ExportScreen from '@screens/Export/Export';
 import ImportScreen from '@screens/Import/Import';
+
+const theme = getCurrentTheme();
+const drawerBgColor = theme.def['backgroundColor'];
 
 const BudgetsStack = createStackNavigator({
 	BudgetsScreen,
@@ -53,6 +58,18 @@ const TransactionsStack = createStackNavigator(
 	}
 );
 
+const AddTransactionStack = createStackNavigator({
+	AddTransactionScreen,
+});
+
+const AddCategoryStack = createStackNavigator({
+	AddCategoryScreen,
+});
+
+const AddBugetStack = createStackNavigator({
+	AddBudgetScreen,
+});
+
 const SettingsStack = createStackNavigator({
 	SettingsScreen,
 	ExportScreen,
@@ -71,13 +88,13 @@ export const AppDrawer = createDrawerNavigator(
 			screen: CategoryStack,
 		},
 		'New Transaction': {
-			screen: AddTransactionScreen,
+			screen: AddTransactionStack,
 		},
 		'New Category': {
-			screen: AddCategoryScreen,
+			screen: AddCategoryStack,
 		},
 		'New budget': {
-			screen: AddBudgetScreen,
+			screen: AddBugetStack,
 		},
 		Settings: {
 			screen: SettingsStack,
@@ -85,6 +102,7 @@ export const AppDrawer = createDrawerNavigator(
 	},
 	{
 		initialRouteName: 'Budgets',
+		drawerBackgroundColor: drawerBgColor,
 	}
 );
 
