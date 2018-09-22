@@ -35,7 +35,7 @@ export class ScreenAddCategory extends Component {
 
 		console.log(`${TAG}.saveCategory()::result=${result}`);
 		if (result.status) {
-			this.props.navigation.navigate('CategoryStack');
+			this.props.navigation.navigate('Categories');
 		} else {
 			console.error(`${TAG}::saveCategory()::Error:${result.msg}`);
 		}

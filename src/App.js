@@ -58,6 +58,18 @@ const TransactionsStack = createStackNavigator(
 	}
 );
 
+const AddTransactionStack = createStackNavigator({
+	AddTransactionScreen,
+});
+
+const AddCategoryStack = createStackNavigator({
+	AddCategoryScreen,
+});
+
+const AddBugetStack = createStackNavigator({
+	AddBudgetScreen,
+});
+
 const SettingsStack = createStackNavigator({
 	SettingsScreen,
 	ExportScreen,
@@ -76,13 +88,13 @@ export const AppDrawer = createDrawerNavigator(
 			screen: CategoryStack,
 		},
 		'New Transaction': {
-			screen: AddTransactionScreen,
+			screen: AddTransactionStack,
 		},
 		'New Category': {
-			screen: AddCategoryScreen,
+			screen: AddCategoryStack,
 		},
 		'New budget': {
-			screen: AddBudgetScreen,
+			screen: AddBugetStack,
 		},
 		Settings: {
 			screen: SettingsStack,
