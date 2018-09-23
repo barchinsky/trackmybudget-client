@@ -1,5 +1,3 @@
-/* @flow */
-
 import React, { Component } from 'react';
 import Theme from 'react-native-theming';
 import { PropTypes } from 'prop-types';
@@ -9,12 +7,11 @@ import moment from 'moment';
 
 import DataManager from '@utils/AsyncStorageManager/AsyncStorageManager';
 import FSManager from '@utils/FileSystemManager/FileSystemManager';
-import Touchable from '@components/Touchable/Touchable';
 import ImportFileCard from '@components/Card/ImportFile/ImportFile';
 
 import { datetime as dateTimeFormat } from '@utils/dateFormats';
 
-import styles from './_styles';
+import styles from './_styles.js';
 
 const TAG = 'ImportScreen';
 export class ImportScreen extends Component {

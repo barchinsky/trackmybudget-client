@@ -62,13 +62,13 @@ export class AddTransactionScreen extends Component {
 			</Theme.View>
 		);
 	}
-}
 
-AddTransactionScreen.navigationOptions = () => {
-	return {
-		title: 'New Transaction',
+	static navigationOptions = () => {
+		return {
+			title: 'New Transaction',
+		};
 	};
-};
+}
 
 AddTransactionScreen.propTypes = {
 	userId: PropTypes.string,

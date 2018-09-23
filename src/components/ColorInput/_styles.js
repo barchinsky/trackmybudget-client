@@ -2,25 +2,23 @@ import { createStyle } from 'react-native-theming';
 
 export default createStyle({
 	container: {
+		flex: 1,
 		flexDirection: 'row',
-		justifyContent: 'space-between',
+		justifyContent: 'center',
 		alignItems: 'center',
-		height: 60,
-		padding: 5,
-		borderBottomWidth: 1,
-		borderBottomColor: '@secondaryTextColor',
+		minHeight: 40,
+		borderTopRightRadius: 5,
+		borderTopLeftRadius: 5,
 	},
 	titleContainer: {
 		flex: 1,
 	},
 	title: {
-		fontSize: '@cardTitleFontSize',
+		fontSize: 16,
+		color: '@textColor',
+		textAlign: 'center',
 	},
-	colorContainer: {
-		width: 50,
-		height: 50,
-		borderRadius: 50,
-		borderWidth: 1,
-		borderColor: '@secondaryTextColor',
+	pickerContainer: {
+		flex: 1,
 	},
 });
