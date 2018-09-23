@@ -8,7 +8,8 @@
 		"test": "jest",
 		"postversion": "react-native-version --never-amend",
 		"rna": "react-native run-android",
-		"build-android": "npm run postversion && cd android && ./gradlew assembleRelease"
+		"bra": "npm run postversion && cd android && ./gradlew assembleRelease",
+		"bda": "cd android && ./gradlew assembleRelease"
 	},
 	"dependencies": {
 		"axios": "^0.18.0",
