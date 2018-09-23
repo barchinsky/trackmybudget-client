@@ -6,12 +6,14 @@ const TAG = 'FileSystemManager';
 export default class FileSystemManager {
 	static targetDir = Platform.select({
 		ios: RNFS.MainBundlePath,
-		android: RNFS.DocumentDirectoryPath,
+		android: RNFS.ExternalStorageDirectoryPath,
 	});
 
-	static async saveData(data, path) {
-		const fullPath = `${FileSystemManager.targetDir}/${path}`;
-		console.log(`${TAG}.saveData(): fullPath: ${fullPath}`);
+	static backupPath = `${FileSystemManager.targetDir}`;
+
+	static async saveData(data, fileName) {
+		const fullPath = `${FileSystemManager.backupPath}/${fileName}`;
+		// console.log(`${TAG}.saveData(): fullPath: ${fileName}`);
 
 		try {
 			await RNFS.writeFile(fullPath, data, 'utf8');
@@ -22,9 +24,9 @@ export default class FileSystemManager {
 		}
 	}
 
-	static async loadData(path) {
-		const fullPath = `${FileSystemManager.targetDir}/${path}`;
-		console.log(`${TAG}.loadData(): fullPath: ${fullPath}`);
+	static async loadData(fileName) {
+		const fullPath = `${FileSystemManager.backupPath}/${fileName}`;
+		// console.log(`${TAG}.loadData(): fullPath: ${fullPath}`);
 
 		try {
 			const data = await RNFS.readFile(fullPath);
