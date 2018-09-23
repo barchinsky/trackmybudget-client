@@ -7,7 +7,7 @@ export default class SplashScreen extends Component {
 	render() {
 		return (
 			<Theme.View style={styles.container}>
-				<Theme.Text style={styles.splashLogoText}>TrackMyBudet</Theme.Text>
+				<Theme.Text style={styles.splashLogoText}>Track My Budget</Theme.Text>
 			</Theme.View>
 		);
 	}
