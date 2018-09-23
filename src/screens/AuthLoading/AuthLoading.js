@@ -3,6 +3,8 @@ import { ActivityIndicator, StatusBar, AsyncStorage } from 'react-native';
 import Theme from 'react-native-theming';
 import { PropTypes } from 'prop-types';
 
+import SplashScreen from '@screens/Splash/Splash';
+
 import styles from './_styles';
 
 class AuthLoadingScreen extends React.Component {
@@ -24,12 +26,7 @@ class AuthLoadingScreen extends React.Component {
 
 	// Render any loading content that you like here
 	render() {
-		return (
-			<Theme.View style={styles.container}>
-				<ActivityIndicator size="large" color="#00e0ff" />
-				<StatusBar barStyle="default" />
-			</Theme.View>
-		);
+		return <SplashScreen />;
 	}
 }
 
