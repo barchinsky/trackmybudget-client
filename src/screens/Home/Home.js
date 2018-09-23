@@ -97,7 +97,7 @@ export class Home extends Component {
 
 		// if (true) return <BudgetCategoryCard category={cat1} readOnly={true} />;
 
-		return isLoaded ? this.renderBudets() : <SplashScreen />;
+		return isLoaded ? this.renderBudets() : null;
 	}
 
 	render() {

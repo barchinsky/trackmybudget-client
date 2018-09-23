@@ -1,44 +1,49 @@
 {
-  "name": "trackmybudget",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "rna": "react-native run-android",
-    "start": "node node_modules/react-native/local-cli/cli.js start",
-    "test": "jest"
-  },
-  "dependencies": {
-    "axios": "^0.18.0",
-    "moment": "^2.22.1",
-    "react": "16.3.1",
-    "react-native": "0.55.4",
-    "react-native-color-picker": "^0.4.0",
-    "react-native-datepicker": "^1.7.2",
-    "react-native-fs": "^2.11.15",
-    "react-native-i18n": "^2.0.12",
-    "react-native-modal-datetime-picker": "^5.1.0",
-    "react-native-progress-bar-animated": "^1.0.6",
-    "react-native-theming": "^1.0.11",
-    "react-navigation": "^2.0.4",
-    "react-redux": "^5.0.7",
-    "redux": "^4.0.0",
-    "redux-thunk": "^2.2.0"
-  },
-  "devDependencies": {
-    "babel-eslint": "^8.2.3",
-    "babel-jest": "22.4.3",
-    "babel-preset-react-native": "4.0.0",
-    "eslint": "^4.19.1",
-    "eslint-config-airbnb": "^16.1.0",
-    "eslint-plugin-import": "^2.10.0",
-    "eslint-plugin-jsx-a11y": "^6.0.3",
-    "eslint-plugin-react": "^7.7.0",
-    "eslint-plugin-react-native": "^3.2.1",
-    "jest": "22.4.3",
-    "react-test-renderer": "16.3.1",
-    "redux-logger": "^3.0.6"
-  },
-  "jest": {
-    "preset": "react-native"
-  }
+	"name": "trackmybudget",
+	"version": "1.0.0",
+	"private": true,
+	"scripts": {
+		"rna": "react-native run-android",
+		"start": "node node_modules/react-native/local-cli/cli.js start",
+		"test": "jest",
+		"postversion": "react-native-version --never-amend",
+		"rna": "react-native run-android",
+		"bra": "npm run postversion && cd android && ./gradlew assembleRelease",
+		"bda": "cd android && ./gradlew assembleRelease"
+	},
+	"dependencies": {
+		"axios": "^0.18.0",
+		"moment": "^2.22.1",
+		"react": "16.3.1",
+		"react-native": "0.55.4",
+		"react-native-color-picker": "^0.4.0",
+		"react-native-datepicker": "^1.7.2",
+		"react-native-fs": "^2.11.15",
+		"react-native-i18n": "^2.0.12",
+		"react-native-modal-datetime-picker": "^5.1.0",
+		"react-native-progress-bar-animated": "^1.0.6",
+		"react-native-theming": "^1.0.11",
+		"react-navigation": "^2.0.4",
+		"react-redux": "^5.0.7",
+		"redux": "^4.0.0",
+		"redux-thunk": "^2.2.0"
+	},
+	"devDependencies": {
+		"babel-eslint": "^8.2.3",
+		"babel-jest": "22.4.3",
+		"babel-preset-react-native": "4.0.0",
+		"eslint": "^4.19.1",
+		"eslint-config-airbnb": "^16.1.0",
+		"eslint-plugin-import": "^2.10.0",
+		"eslint-plugin-jsx-a11y": "^6.0.3",
+		"eslint-plugin-react": "^7.7.0",
+		"eslint-plugin-react-native": "^3.2.1",
+		"jest": "22.4.3",
+		"react-native-version": "^2.6.5",
+		"react-test-renderer": "16.3.1",
+		"redux-logger": "^3.0.6"
+	},
+	"jest": {
+		"preset": "react-native"
+	}
 }

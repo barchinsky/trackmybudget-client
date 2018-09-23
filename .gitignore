@@ -62,6 +62,8 @@ typings/
 
 # Android/IntelliJ
 #
+android/build/**
+android/.gradle/
 build/
 .idea
 .gradle

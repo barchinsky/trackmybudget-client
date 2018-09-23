@@ -8,10 +8,7 @@ import { Button, Picker } from 'react-native';
 import InputLabel from '@components/InputLabel/InputLabel';
 import TextInput from '@components/TextInput/TextInput';
 
-import {
-	date as dateFormat,
-	datetime as datetimeFormat,
-} from '@utils/dateFormats';
+import { datetime as datetimeFormat } from '@utils/dateFormats';
 
 import styles from './_styles';
 
@@ -24,7 +21,7 @@ export default class TransactionForm extends Component {
 			comment: '',
 			date: moment()
 				.format(datetimeFormat),
-			amount: '0',
+			amount: 0,
 			category: null,
 		};
 	}
@@ -82,6 +79,7 @@ export default class TransactionForm extends Component {
 
 	renderAmountInput = () => {
 		const { amount } = this.state;
+		const { transactionAmountPlaceholder } = this.props;
 
 		return (
 			<Theme.View>
@@ -90,7 +88,8 @@ export default class TransactionForm extends Component {
 					onChangeText={this.onChangeAmount}
 					value={'' + amount}
 					numberOfLines={1}
-					keyboardType={'number-pad'}
+					keyboardType={'numeric'}
+					placeholder={transactionAmountPlaceholder}
 				/>
 			</Theme.View>
 		);
@@ -103,8 +102,9 @@ export default class TransactionForm extends Component {
 		}
 	};
 
-	renderCommentInput = () => {
+	renderDescriptionInput = () => {
 		const { comment } = this.state;
+		const { transactionDescPlaceholder } = this.props;
 
 		return (
 			<Theme.View>
@@ -113,7 +113,7 @@ export default class TransactionForm extends Component {
 					onChangeText={this.onChangeDescription}
 					value={comment}
 					numberOfLines={1}
-					keyboardType={'number-pad'}
+					placeholder={transactionDescPlaceholder}
 				/>
 			</Theme.View>
 		);
@@ -131,7 +131,7 @@ export default class TransactionForm extends Component {
 				<Picker
 					selectedValue={this.state.category}
 					style={{ height: 50, width: '100%' }}
-					onValueChange={(itemValue, itemIndex) => {
+					onValueChange={itemValue => {
 						this.setState({ category: itemValue });
 					}}
 				>
@@ -171,7 +171,7 @@ export default class TransactionForm extends Component {
 	render() {
 		return (
 			<Theme.View style={styles.container}>
-				{this.renderCommentInput()}
+				{this.renderDescriptionInput()}
 				{this.renderAmountInput()}
 				{this.renderCategoryInput()}
 				{this.renderDateInput()}
@@ -187,8 +187,11 @@ TransactionForm.propTypes = {
 	categories: PropTypes.array,
 	onSubmit: PropTypes.func,
 	onDelete: PropTypes.func,
+	transactionDescPlaceholder: PropTypes.string,
+	transactionAmountPlaceholder: PropTypes.string,
 };
 
 TransactionForm.defaultProps = {
-	categories: [{ name: 'Please, add category', id: -1 }],
+	transactionDescPlaceholder: 'Transaction details',
+	transactionAmountPlaceholder: 'Transaction amount',
 };

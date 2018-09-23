@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import Theme from 'react-native-theming';
 import { PropTypes } from 'prop-types';
+import { Modal } from 'react-native';
 import { ColorPicker, toHsv } from 'react-native-color-picker';
 
 import Touchable from '@components/Touchable/Touchable';
@@ -31,16 +32,46 @@ export default class ColorPickerInput extends Component {
 		);
 	};
 
-	renderColorPreview = () => {
+	renderCard = () => {
 		const { color } = this.props;
 
 		return (
-			<Theme.View style={[styles.colorContainer, { backgroundColor: color }]} />
+			<Touchable
+				style={[styles.container, { backgroundColor: color }]}
+				onPress={this.onPress}
+			>
+				{this.renderTitle()}
+			</Touchable>
 		);
 	};
 
 	onPress = () => {
 		this.setState({ displayPicker: true });
+	};
+
+	renderPicker = () => {
+		const { color, displayPicker } = this.state;
+		const { pickerBgColor } = this.props;
+
+		return (
+			<Modal
+				animationType="slide"
+				transparent={false}
+				visible={displayPicker}
+				onRequestClose={() => {
+					this.closeModal();
+				}}
+			>
+				<Theme.View style={styles.pickerContainer}>
+					<ColorPicker
+						color={color}
+						onColorSelected={this.onColorSelected}
+						onColorChange={this.onColorChange}
+						style={{ flex: 1, backgroundColor: pickerBgColor }}
+					/>
+				</Theme.View>
+			</Modal>
+		);
 	};
 
 	onColorSelected = newColor => {
@@ -55,25 +86,8 @@ export default class ColorPickerInput extends Component {
 		this.setState({ color });
 	};
 
-	renderCard = () => {
-		return (
-			<Touchable style={styles.container} onPress={this.onPress}>
-				{this.renderTitle()}
-				{this.renderColorPreview()}
-			</Touchable>
-		);
-	};
-
-	renderPicker = () => {
-		const { color } = this.state;
-		return (
-			<ColorPicker
-				color={color}
-				onColorSelected={this.onColorSelected}
-				onColorChange={this.onColorChange}
-				style={{ flex: 1, backgroundColor: 'black' }}
-			/>
-		);
+	closeModal = () => {
+		this.setState({ displayPicker: false });
 	};
 
 	render() {
@@ -86,6 +100,7 @@ export default class ColorPickerInput extends Component {
 ColorPickerInput.propTypes = {
 	name: PropTypes.string,
 	color: PropTypes.string,
+	pickerBgColor: PropTypes.string,
 	onColorSelected: PropTypes.func,
 };
 

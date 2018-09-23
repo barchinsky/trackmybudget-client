@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Theme from 'react-native-theming';
-import { Button } from 'react-native';
+import Theme, { getCurrentTheme } from 'react-native-theming';
+import { Button, Switch } from 'react-native';
 import { PropTypes } from 'prop-types';
 
 import InputLabel from '@components/InputLabel/InputLabel';
@@ -37,11 +37,28 @@ export default class CategoryForm extends Component {
 
 	renderTitle = () => {
 		const { name } = this.state;
+		const { categoryNamePlaceholder } = this.props;
 
 		return (
 			<Theme.View styles={styles.titleContainer}>
 				<InputLabel text={'Name:'} />
-				<TextInput onChangeText={this.onChangeName} value={name} />
+				<TextInput
+					onChangeText={this.onChangeName}
+					value={name}
+					placeholder={categoryNamePlaceholder}
+				/>
+			</Theme.View>
+		);
+	};
+
+	renderCategoryTypeInput = () => {
+		return (
+			<Theme.View style={styles.categoryTypeContainer}>
+				<InputLabel text={'Is income?'} />
+				<Switch
+					onValueChange={this.props.onCategoryTypeChange}
+					value={this.props.isIncome}
+				/>
 			</Theme.View>
 		);
 	};
@@ -57,13 +74,17 @@ export default class CategoryForm extends Component {
 
 	renderColorSelector = () => {
 		const { color } = this.state;
+		const theme = getCurrentTheme();
+		const backgroundColor = theme.def['backgroundColor'];
 		// console.log('color:', color);
 		return (
 			<Theme.View style={styles.colorInputContainer}>
+				<InputLabel text={'Color:'} />
 				<ColorInput
 					onColorSelected={this.onColorSelected}
 					name={color}
 					color={color}
+					pickerBgColor={backgroundColor}
 				/>
 			</Theme.View>
 		);
@@ -99,6 +120,7 @@ export default class CategoryForm extends Component {
 			<Theme.View style={styles.container}>
 				{this.renderTitle()}
 				{this.renderColorSelector()}
+				{this.renderCategoryTypeInput()}
 				{this.renderSubmitButton()}
 				{this.renderDeleteButton()}
 			</Theme.View>
@@ -110,4 +132,11 @@ CategoryForm.propTypes = {
 	onSave: PropTypes.func,
 	onDelete: PropTypes.func,
 	category: PropTypes.object,
+	categoryNamePlaceholder: PropTypes.string,
+	isIncome: PropTypes.bool,
+	onCategoryTypeChange: PropTypes.func,
+};
+
+CategoryForm.defaultProps = {
+	categoryNamePlaceholder: 'Category name',
 };
