@@ -9,6 +9,10 @@ import DataManager from '@utils/AsyncStorageManager/AsyncStorageManager';
 import FSManager from '@utils/FileSystemManager/FileSystemManager';
 import ImportFileCard from '@components/Card/ImportFile/ImportFile';
 
+import { fetchCategories } from '@redux/actions/categories/fetch';
+import { fetchTransactions } from '@redux/actions/transactions/fetch';
+import { fetchBudgets } from '@redux/actions/budgets/fetch';
+
 import { datetime as dateTimeFormat } from '@utils/dateFormats';
 
 import styles from './_styles.js';
@@ -61,10 +65,18 @@ export class ImportScreen extends Component {
 
 		// get only budget tracker files
 		const btFiles = formattedList.filter(item => {
-			return item.name.contains('BudgetTracker');
+			// console.log('item:', item, item.name);
+			const isExportFile = item.name.includes('BudgetTracker');
+			return isExportFile;
 		});
 
-		return btFiles;
+		const sortedByDate = btFiles.sort((item1, item2) => {
+			const date1 = moment(item1.ctime, dateTimeFormat);
+			const date2 = moment(item2.ctime, dateTimeFormat);
+			return date2.diff(date1, 'seconds');
+		});
+
+		return sortedByDate;
 	};
 
 	renderImportFileList = () => {
@@ -120,6 +132,13 @@ export class ImportScreen extends Component {
 				return;
 			}
 
+			const refreshStack = [
+				this.props.dispatch(fetchBudgets()),
+				this.props.dispatch(fetchCategories()),
+				this.props.dispatch(fetchTransactions()),
+			];
+			await Promise.all(refreshStack);
+
 			console.log(`${TAG}.onImportFileSelected(): Import Done!`);
 		} catch (e) {
 			console.log(`${TAG}: Import failed: ${e.message}`);
@@ -158,6 +177,7 @@ export class ImportScreen extends Component {
 
 ImportScreen.propTypes = {
 	userId: PropTypes.string,
+	dispatch: PropTypes.func,
 };
 
 function mapStateToProps(state) {
