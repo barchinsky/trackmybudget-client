@@ -122,11 +122,11 @@ export class BudgetOverviewScreen extends Component {
 		const categoryEstimate = categoryIdToEstimateMap[categoryId];
 		const totalAmount = categoryIdTotalAmountMap[categoryId];
 
-		console.log(
-			`categoryId:${categoryId}, categoryEstimate:${categoryEstimate}, transactions.length:${
-				transactions.length
-			}, totalAmount:${totalAmount}`
-		);
+		// console.log(
+		// 	`categoryId:${categoryId}, categoryEstimate:${categoryEstimate}, transactions.length:${
+		// 		transactions.length
+		// 	}, totalAmount:${totalAmount}`
+		// );
 
 		this.props.navigation.navigate('TransactionsOverviewByCategory', {
 			category,
