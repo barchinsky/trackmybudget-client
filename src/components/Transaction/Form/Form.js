@@ -3,51 +3,89 @@ import Theme from 'react-native-theming';
 import { PropTypes } from 'prop-types';
 import DatePicker from 'react-native-datepicker';
 import moment from 'moment';
-import { Button, Picker } from 'react-native';
+import { Picker } from 'react-native';
 
 import InputLabel from '@components/InputLabel/InputLabel';
 import TextInput from '@components/TextInput/TextInput';
+import Button from '@components/Button/Button';
 
+import Category from '@models/category';
 import { datetime as datetimeFormat } from '@utils/dateFormats';
 
 import styles from './_styles';
 
+const TAG = 'TransactionForm';
 export default class TransactionForm extends Component {
 	constructor(props) {
 		super(props);
 
+		this.defaultCategory = new Category({
+			_name: 'Please, select category',
+			_id: -1,
+			_color: '#fff',
+		});
+
 		this.state = {
-			id: Date.now(),
-			comment: '',
-			date: moment()
-				.format(datetimeFormat),
+			id: null,
+			comment: null,
+			date: null,
 			amount: 0,
-			category: null,
+			category: this.defaultCategory,
+			categories: [],
 		};
 	}
 
-	static getDerivedStateFromProps(props, state) {
-		const { category, amount, comment, date } = props.transaction;
-		console.log('category:', category);
-		if (
-			category != state.category ||
-			amount != state.amount ||
-			comment != state.comment ||
-			date != state.date
-		) {
-			// console.log('getDerivedStateFromProps;', props);
-			return {
-				category: category
-					? category
-					: { name: 'Please, add category', id: -1 },
-				amount,
-				comment,
-				date: moment(date, datetimeFormat)
-					.format(datetimeFormat),
-			};
-		}
+	// static getDerivedStateFromProps(props, state) {
+	// 	const { category, amount, comment, date } = props.transaction;
+	// 	// console.log('category:', category);
+	// 	if (
+	// 		category != state.category ||
+	// 		amount != state.amount ||
+	// 		comment != state.comment ||
+	// 		date != state.date
+	// 	) {
+	// 		// console.log('getDerivedStateFromProps;', props);
+	// 		return {
+	// 			category: category
+	// 				? category
+	// 				: { name: 'Please, add category', id: -1 },
+	// 			amount,
+	// 			comment,
+	// 			date: moment(date, datetimeFormat)
+	// 				.format(datetimeFormat),
+	// 		};
+	// 	}
+	//
+	// 	return null;
+	// }
 
-		return null;
+	componentDidMount() {
+		// console.log(`${TAG}::componentDidMount():this.props:`, this.props);
+		const { transaction, categories } = this.props;
+
+		const id = transaction.id || Date.now();
+		const comment = transaction.comment || '';
+		const tranDate = transaction.date || new Date();
+		const date = moment(tranDate)
+			.format(datetimeFormat);
+		const amount = transaction.amount || '';
+
+		// display prompt to select category in case no category passed in
+		const categoriesList = transaction.category
+			? categories
+			: [this.defaultCategory, ...categories];
+		const category = transaction.category || this.defaultCategory;
+
+		// console.log(`${TAG}:category:`, category);
+
+		this.setState({
+			id,
+			comment,
+			date,
+			amount,
+			categories: categoriesList,
+			category,
+		});
 	}
 
 	renderDateInput = () => {
@@ -96,7 +134,7 @@ export default class TransactionForm extends Component {
 	};
 
 	onChangeAmount = amount => {
-		if (amount == '') this.setState({ amount });
+		if (!amount) this.setState({ amount });
 		if (Number.parseFloat(amount)) {
 			this.setState({ amount });
 		}
@@ -125,12 +163,19 @@ export default class TransactionForm extends Component {
 
 	renderCategoryInput = () => {
 		// console.log('renderCategoryInput():', this.state.category);
+		const currentCategory = this.state.category;
+		// console.log(`${TAG}:currentCategory:`, currentCategory);
+
 		return (
 			<Theme.View>
 				<InputLabel text="Category:" />
 				<Picker
-					selectedValue={this.state.category}
-					style={{ height: 50, width: '100%' }}
+					selectedValue={currentCategory}
+					style={{
+						height: 50,
+						width: '100%',
+						backgroundColor: currentCategory.color,
+					}}
 					onValueChange={itemValue => {
 						this.setState({ category: itemValue });
 					}}
@@ -142,7 +187,7 @@ export default class TransactionForm extends Component {
 	};
 
 	renderCategoryPickerItems = () => {
-		const { categories } = this.props;
+		const { categories } = this.state;
 		// categories.unshift({ name: 'Please, select a category' });
 
 		return categories.map(category => (
@@ -151,7 +196,11 @@ export default class TransactionForm extends Component {
 	};
 
 	renderSubmitButton = () => {
-		return <Button onPress={this.onPressSubmit} title="Save" />;
+		return (
+			<Theme.View style={styles.buttonContainer}>
+				<Button onPress={this.onPressSubmit} title="Save" />
+			</Theme.View>
+		);
 	};
 
 	onPressSubmit = () => {
@@ -161,7 +210,15 @@ export default class TransactionForm extends Component {
 	renderDeleteButton = () => {
 		if (!this.props.onDelete) return null;
 
-		return <Button onPress={this.onPressDelete} title="Delete" />;
+		return (
+			<Theme.View style={styles.buttonContainer}>
+				<Button
+					onPress={this.onPressDelete}
+					color="@deleteButtonColor"
+					title="Delete"
+				/>
+			</Theme.View>
+		);
 	};
 
 	onPressDelete = () => {

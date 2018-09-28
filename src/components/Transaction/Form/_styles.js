@@ -14,4 +14,10 @@ export default createStyle({
 		width: '100%',
 		height: 50,
 	},
+	buttonContainer: {
+		paddingVertical: 5,
+	},
+	deleteButton: {
+		backgroundColor: '@deleteButtonColor',
+	},
 });
