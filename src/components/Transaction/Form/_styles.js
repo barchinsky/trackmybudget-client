@@ -20,4 +20,21 @@ export default createStyle({
 	deleteButton: {
 		backgroundColor: '@deleteButtonColor',
 	},
+	input: {
+		backgroundColor: '@textInputBgColor',
+		borderRadius: '@textInputBorderRadius',
+		paddingVertical: 5,
+	},
+	invalidInput: {
+		backgroundColor: '@invalidInputBgColor',
+	},
+	lableWithHintContainer: {
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		alignItems: 'center',
+	},
+	invalidHintText: {
+		fontSize: 12,
+		color: 'red',
+	},
 });
