@@ -61,7 +61,7 @@ export class BudgetOverviewScreen extends Component {
 				(accum, t) => accum + +t.amount,
 				0
 			);
-			categoryIdTotalAmountMap[categoryId] = totalAmount;
+			categoryIdTotalAmountMap[categoryId] = (totalAmount * 1000) / 1000;
 		}
 		// console.log(categoryIdTotalAmountMap, categoryIdTransactionsMap);
 
