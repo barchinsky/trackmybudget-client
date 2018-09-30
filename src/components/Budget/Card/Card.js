@@ -4,9 +4,9 @@ import { PropTypes } from 'prop-types';
 import moment from 'moment';
 import { Dimensions } from 'react-native';
 
-import ProgressBarAnimated from 'react-native-progress-bar-animated';
+import ProgressBar from '@components/ProgressBar/ProgressBar';
 
-import { date, datetime } from '@utils/dateFormats';
+import { date, datetime, humanDate } from '@utils/dateFormats';
 
 import Touchable from '@components/Touchable/Touchable';
 
@@ -40,14 +40,15 @@ export default class BudgetCard extends Component {
 	renderBudgetDates = () => {
 		const { startDate, endDate } = this.props.budget;
 		const formattedFrom = moment(startDate, datetime)
-			.format(date);
+			.format(humanDate);
 
 		const formattedTo = moment(endDate, datetime)
-			.format(date);
+			.format(humanDate);
 		return (
 			<Theme.View style={styles.budgetDatesContainer}>
-				<Theme.Text style={styles.dateTitle}>From:{formattedFrom}</Theme.Text>
-				<Theme.Text style={styles.dateTitle}>To:{formattedTo}</Theme.Text>
+				<Theme.Text style={styles.dateTitle}>{formattedFrom}</Theme.Text>
+				<Theme.Text style={styles.dateTitle}>{' - '}</Theme.Text>
+				<Theme.Text style={styles.dateTitle}>{formattedTo}</Theme.Text>
 			</Theme.View>
 		);
 	};
@@ -66,7 +67,13 @@ export default class BudgetCard extends Component {
 		const data = `${spentAmount}/${estimate}`;
 		return (
 			<Theme.View style={styles.rightContainer}>
-				<Theme.Text numberOfLines={2}>{data}</Theme.Text>
+				<Theme.Text
+					adjustsFontSizeToFit={true}
+					style={styles.amountText}
+					numberOfLines={2}
+				>
+					{data}
+				</Theme.Text>
 			</Theme.View>
 		);
 	};
@@ -82,12 +89,7 @@ export default class BudgetCard extends Component {
 		const barWidth = Dimensions.get('screen').width;
 		return (
 			<Theme.View style={styles.progressBarContainer}>
-				<ProgressBarAnimated
-					width={barWidth}
-					value={progress}
-					borderColor="white"
-					borderRadius={0}
-				/>
+				<ProgressBar barWidth={barWidth} progress={progress} />
 			</Theme.View>
 		);
 	};
