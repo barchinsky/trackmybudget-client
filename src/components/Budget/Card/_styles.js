@@ -39,12 +39,17 @@ export default createStyle({
 		color: '@secondaryTextColor',
 		fontSize: 14,
 		paddingRight: 4,
+		fontWeight: '400',
 	},
 	rightContainer: {
 		justifyContent: 'center',
 		alignItems: 'center',
 		width: 100,
 		padding: 4,
+	},
+	amountText: {
+		fontSize: 16,
+		fontWeight: '500',
 	},
 	progressBarContainer: {
 		flex: 0,

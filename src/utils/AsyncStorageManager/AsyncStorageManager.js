@@ -278,21 +278,20 @@ export default class AsyncStorageManager {
 				const amount = transactionDate.isBetween(budgetStartDate, budgetEndDate)
 					? +transaction.amount
 					: 0;
-
 				return acc + amount;
 			}, 0);
-			budget.spentAmount = spentAmount;
+			budget.spentAmount = spentAmount.toFixed(2);
 
 			// console.log('getBudget()::spentAmount::', spentAmount);
 
 			return budget;
 		});
 
-		console.log(
-			`${TAG}.getBudgets(): budgetsWithSpenAmount.length=${
-				budgetsWithSpenAmount.length
-			}`
-		);
+		// console.log(
+		// 	`${TAG}.getBudgets(): budgetsWithSpenAmount.length=${
+		// 		budgetsWithSpenAmount.length
+		// 	}`
+		// );
 
 		return budgetsWithSpenAmount || [];
 	}
