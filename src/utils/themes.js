@@ -18,6 +18,9 @@ const themes = [
 			cardHeight: 80,
 			deleteButtonColor: '#ff5959',
 			cardBgColor: '#cfcfcf',
+			textInputBgColor: '#f5f5f5',
+			textInputBorderRadius: 5,
+			invalidInputBgColor: '#f9baba',
 		},
 		'Light'
 	),

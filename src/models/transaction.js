@@ -2,7 +2,7 @@ import moment from 'moment';
 import { datetime } from '@utils/dateFormats';
 
 export default class Transaction {
-	constructor({ _id, _userId, _comment, _date, _amount, _categoryId }) {
+	constructor({ _id, _userId, _comment, _date, _amount, _categoryId } = {}) {
 		this._id = _id;
 		this._userId = _userId;
 		this._comment = _comment;

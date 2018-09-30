@@ -3,51 +3,70 @@ import Theme from 'react-native-theming';
 import { PropTypes } from 'prop-types';
 import DatePicker from 'react-native-datepicker';
 import moment from 'moment';
-import { Button, Picker } from 'react-native';
+import { Picker } from 'react-native';
 
 import InputLabel from '@components/InputLabel/InputLabel';
 import TextInput from '@components/TextInput/TextInput';
+import Button from '@components/Button/Button';
 
+import Category from '@models/category';
 import { datetime as datetimeFormat } from '@utils/dateFormats';
 
 import styles from './_styles';
 
+const TAG = 'TransactionForm';
 export default class TransactionForm extends Component {
 	constructor(props) {
 		super(props);
 
+		this.defaultCategory = new Category({
+			_name: 'Please, select category',
+			_id: -1,
+			_color: '#fff',
+		});
+
+		this.amountExp = /^[0-9]+(\.[0-9]{0,2})?/;
+
 		this.state = {
-			id: Date.now(),
-			comment: '',
-			date: moment()
-				.format(datetimeFormat),
+			id: null,
+			comment: null,
+			date: null,
 			amount: 0,
-			category: null,
+			category: this.defaultCategory,
+			categories: [],
+			isAmountValid: true,
+			isDescriptiontValid: true,
+			isCategoryValid: true,
 		};
 	}
 
-	static getDerivedStateFromProps(props, state) {
-		const { category, amount, comment, date } = props.transaction;
-		console.log('category:', category);
-		if (
-			category != state.category ||
-			amount != state.amount ||
-			comment != state.comment ||
-			date != state.date
-		) {
-			// console.log('getDerivedStateFromProps;', props);
-			return {
-				category: category
-					? category
-					: { name: 'Please, add category', id: -1 },
-				amount,
-				comment,
-				date: moment(date, datetimeFormat)
-					.format(datetimeFormat),
-			};
-		}
+	componentDidMount() {
+		// console.log(`${TAG}::componentDidMount():this.props:`, this.props);
+		const { transaction, categories } = this.props;
 
-		return null;
+		const id = transaction.id || Date.now();
+		const comment = transaction.comment || '';
+		const tranDate = transaction.date || new Date();
+		const date = moment(tranDate)
+			.format(datetimeFormat);
+		const amount = transaction.amount || '';
+
+		// display prompt to select category in case no category passed in
+		const categoriesList = transaction.category
+			? categories
+			: [this.defaultCategory, ...categories];
+		const category = transaction.category || this.defaultCategory;
+
+		// console.log(`${TAG}:category:`, category);
+
+		this.setState({
+			id,
+			comment,
+			date,
+			amount,
+			categories: categoriesList,
+			category,
+		});
 	}
 
 	renderDateInput = () => {
@@ -78,13 +97,27 @@ export default class TransactionForm extends Component {
 	};
 
 	renderAmountInput = () => {
-		const { amount } = this.state;
+		const { amount, isAmountValid } = this.state;
 		const { transactionAmountPlaceholder } = this.props;
+
+		const amountLable = 'Amount:';
+		let invalidHint;
+
+		if (!isAmountValid) {
+			invalidHint = this.getAmountHint(amount);
+		}
+		const lable = !isAmountValid ? (
+			this.renderLabelWithHint(amountLable, invalidHint)
+		) : (
+			<InputLabel text={amountLable} />
+		);
 
 		return (
 			<Theme.View>
-				<InputLabel text="Amount:" />
+				{lable}
 				<TextInput
+					style={[styles.input, isAmountValid ? null : styles.invalidInput]}
+					underlineColorAndroid="transparent"
 					onChangeText={this.onChangeAmount}
 					value={'' + amount}
 					numberOfLines={1}
@@ -95,21 +128,73 @@ export default class TransactionForm extends Component {
 		);
 	};
 
-	onChangeAmount = amount => {
-		if (amount == '') this.setState({ amount });
-		if (Number.parseFloat(amount)) {
-			this.setState({ amount });
+	getAmountHint = amount => {
+		if (!amount.length) {
+			return 'Amount can\'t be empty';
 		}
+
+		if (!Number.parseFloat(amount)) {
+			return 'Amount should be a valid number';
+		}
+
+		return '';
+	};
+
+	onChangeAmount = amount => {
+		console.log(`${TAG}.onChangeAmount():amount: ${amount}`);
+		this.isAmountValid(amount);
+		const matchRes = this.amountExp.exec(amount);
+		const a = matchRes ? matchRes[0] : amount;
+		console.log(`${TAG}.onChangeAmount:a:${a}`);
+		this.setState({ amount: a });
+	};
+
+	isAmountValid = amount => {
+		let isAmountValid = false;
+		console.log(`${TAG}.isAmountValid(): amount:${amount}`);
+		if (!this.amountExp.test(amount)) {
+			this.setState({ isAmountValid });
+			return isAmountValid;
+		}
+
+		isAmountValid = true;
+		this.setState({ isAmountValid });
+		return isAmountValid;
+	};
+
+	renderLabelWithHint = (lable, hint) => {
+		return (
+			<Theme.View style={styles.lableWithHintContainer}>
+				<InputLabel text={lable} />
+				<Theme.Text style={styles.invalidHintText}>{hint}</Theme.Text>
+			</Theme.View>
+		);
 	};
 
 	renderDescriptionInput = () => {
-		const { comment } = this.state;
+		const { comment, isDescriptiontValid } = this.state;
 		const { transactionDescPlaceholder } = this.props;
+
+		const descriptionLable = 'Description:';
+		const invalidHint = 'Can\'t be empty';
+
+		console.log(`${TAG}.renderDescriptionInput():: isDescriptiontValid: `);
+
+		const lable = !isDescriptiontValid ? (
+			this.renderLabelWithHint(descriptionLable, invalidHint)
+		) : (
+			<InputLabel text={descriptionLable} />
+		);
 
 		return (
 			<Theme.View>
-				<InputLabel text="Description:" />
+				{lable}
 				<TextInput
+					style={[
+						styles.input,
+						isDescriptiontValid ? null : styles.invalidInput,
+					]}
+					underlineColorAndroid="transparent"
 					onChangeText={this.onChangeDescription}
 					value={comment}
 					numberOfLines={1}
@@ -120,19 +205,47 @@ export default class TransactionForm extends Component {
 	};
 
 	onChangeDescription = comment => {
+		this.isValidDescription(comment);
 		this.setState({ comment });
 	};
 
+	isValidDescription = description => {
+		const isDescriptiontValid = !!description && description.length; // description should not be empty
+		console.log(
+			`${TAG}.isValidDescription(): ${isDescriptiontValid}`,
+			isDescriptiontValid
+		);
+		this.setState({ isDescriptiontValid });
+		return isDescriptiontValid;
+	};
+
 	renderCategoryInput = () => {
+		const categoryLable = 'Category:';
+		const invalidHint = 'Please, select category!';
 		// console.log('renderCategoryInput():', this.state.category);
+		const { category: currentCategory, isCategoryValid } = this.state;
+		// console.log(`${TAG}:currentCategory:`, currentCategory);
+		const lable = isCategoryValid ? (
+			<InputLabel text={categoryLable} />
+		) : (
+			this.renderLabelWithHint(categoryLable, invalidHint)
+		);
+
 		return (
 			<Theme.View>
-				<InputLabel text="Category:" />
+				{lable}
 				<Picker
-					selectedValue={this.state.category}
-					style={{ height: 50, width: '100%' }}
-					onValueChange={itemValue => {
-						this.setState({ category: itemValue });
+					selectedValue={currentCategory}
+					style={{
+						height: 50,
+						width: '100%',
+						backgroundColor: isCategoryValid
+							? currentCategory.color
+							: styles.invalidInputBgColor,
+					}}
+					onValueChange={category => {
+						this.isCategoryValid(category);
+						this.setState({ category });
 					}}
 				>
 					{this.renderCategoryPickerItems()}
@@ -142,7 +255,7 @@ export default class TransactionForm extends Component {
 	};
 
 	renderCategoryPickerItems = () => {
-		const { categories } = this.props;
+		const { categories } = this.state;
 		// categories.unshift({ name: 'Please, select a category' });
 
 		return categories.map(category => (
@@ -150,18 +263,49 @@ export default class TransactionForm extends Component {
 		));
 	};
 
+	isCategoryValid = category => {
+		const isCategoryValid = category.id != -1;
+		this.setState({ isCategoryValid });
+
+		return isCategoryValid;
+	};
+
 	renderSubmitButton = () => {
-		return <Button onPress={this.onPressSubmit} title="Save" />;
+		return (
+			<Theme.View style={styles.buttonContainer}>
+				<Button onPress={this.onPressSubmit} title="Save" />
+			</Theme.View>
+		);
 	};
 
 	onPressSubmit = () => {
-		if (this.props.onSubmit) this.props.onSubmit(this.state);
+		console.log(`${TAG}:onPressSubmit:${this.isInputsValid()}`);
+		if (this.props.onSubmit && this.isInputsValid()) {
+			this.props.onSubmit(this.state);
+		}
+	};
+
+	isInputsValid = () => {
+		const { comment, amount, category } = this.state;
+		return (
+			this.isValidDescription(comment) &&
+			this.isAmountValid(amount) &&
+			this.isCategoryValid(category)
+		);
 	};
 
 	renderDeleteButton = () => {
 		if (!this.props.onDelete) return null;
 
-		return <Button onPress={this.onPressDelete} title="Delete" />;
+		return (
+			<Theme.View style={styles.buttonContainer}>
+				<Button
+					onPress={this.onPressDelete}
+					color="@deleteButtonColor"
+					title="Delete"
+				/>
+			</Theme.View>
+		);
 	};
 
 	onPressDelete = () => {
@@ -192,6 +336,6 @@ TransactionForm.propTypes = {
 };
 
 TransactionForm.defaultProps = {
-	transactionDescPlaceholder: 'Transaction details',
-	transactionAmountPlaceholder: 'Transaction amount',
+	transactionDescPlaceholder: 'Details of transaction',
+	transactionAmountPlaceholder: 'Amount spent',
 };

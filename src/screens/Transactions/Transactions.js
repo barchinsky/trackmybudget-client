@@ -31,6 +31,8 @@ export class TransactionsScreen extends Component {
 		const transactionsArray = transactions.data;
 		const categoriesArray = categories.data;
 
+		if (!transactionsArray.length) return this.renderNoTransactions();
+
 		const transactionsWithCategories = transactionsArray.map(transaction => {
 			const tranCategory = categoriesArray.find(
 				category => category.id === transaction.categoryId
@@ -40,13 +42,11 @@ export class TransactionsScreen extends Component {
 			return transaction;
 		});
 
-		if (!transactions.data.length) return this.renderNoTransactions();
-
 		return this.renderTransactions(transactionsWithCategories);
 	};
 
 	transactionSelected = transaction => {
-		console.log('TransactionsScreen::transaction slected:', transaction);
+		console.log('TransactionsScreen::transaction selected:', transaction);
 		this.props.navigation.navigate('EditTransactionScreen', { transaction });
 	};
 

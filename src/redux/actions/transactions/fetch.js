@@ -25,14 +25,14 @@ export const fetchTransactionFailed = error => {
 };
 
 export const fetchTransactions = () => {
-	console.log('redux::fetchTranasctions()');
+	// console.log('redux::fetchTranasctions()');
 	return async (dispatch, getState) => {
 		dispatch(fetchingTransactions());
 
 		try {
 			const userId = getState().userData.userId;
 			const transactions = await ASM.getTransactions(userId);
-			console.log('redux::fetchTransactions(): length:', transactions.length);
+			// console.log('redux::fetchTransactions(): length:', transactions.length);
 			dispatch(fetchTransactionsSuccess(transactions));
 			return 1;
 		} catch (e) {

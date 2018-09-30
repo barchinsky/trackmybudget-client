@@ -41,16 +41,7 @@ export class AddTransactionScreen extends Component {
 
 	render() {
 		const { categories } = this.props;
-		const amount = 0;
-		const date = moment()
-			.format(dateFormat);
-		const category = categories[0];
-
-		const defaultTransaction = new Transaction({
-			_date: date,
-			_amount: amount,
-		});
-		defaultTransaction.category = category;
+		const defaultTransaction = new Transaction();
 
 		return (
 			<Theme.View style={styles.container}>
