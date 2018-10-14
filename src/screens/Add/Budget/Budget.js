@@ -17,8 +17,8 @@ export class ScreenAddBudget extends Component {
 		budget.id = id;
 		const isSuccess = await this.props.dispatch(addBudget(budget));
 
-		if (isSuccess) {
-			this.props.navigation.navigate('BudgetsStack');
+		if (isSuccess.status) {
+			this.props.navigation.navigate('Budgets');
 		}
 
 		console.warn('isSuccess:', isSuccess);
