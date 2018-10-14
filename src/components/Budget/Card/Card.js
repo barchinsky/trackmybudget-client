@@ -70,7 +70,7 @@ export default class BudgetCard extends Component {
 				<Theme.Text
 					adjustsFontSizeToFit={true}
 					style={styles.amountText}
-					numberOfLines={2}
+					numberOfLines={1}
 				>
 					{data}
 				</Theme.Text>
