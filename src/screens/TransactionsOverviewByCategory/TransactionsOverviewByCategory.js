@@ -37,15 +37,15 @@ export default class TransactionsOverviewByCategory extends Component {
 
 	static getDerivedStateFromProps(props, state) {
 		const category = props.navigation.getParam('category');
-		const transactions = props.navigation.getParam('transactions');
-		const totalAmountSpent = props.navigation.getParam('totalAmount');
-		const estimate = props.navigation.getParam('categoryEstimate');
+		const transactions = props.navigation.getParam('transactions') || [];
+		const totalAmountSpent = props.navigation.getParam('totalAmount') || 0;
+		const estimate = props.navigation.getParam('categoryEstimate') || 0;
 
-		console.log(
-			`${TAG}.getDerivedStateFromProps():: transactions.length: ${
-				transactions.length
-			}`
-		);
+		// console.log(
+		// 	`${TAG}.getDerivedStateFromProps():: transactions.length: ${
+		// 		transactions.length
+		// 	}`
+		// );
 
 		let newState = {};
 		if (category != state.category) {
@@ -73,7 +73,7 @@ export default class TransactionsOverviewByCategory extends Component {
 		}
 
 		if (newState != {}) {
-			console.log(`${TAG}.getDerivedStateFromProps::newState:`, newState);
+			// console.log(`${TAG}.getDerivedStateFromProps::newState:`, newState);
 			return newState;
 		}
 
@@ -81,14 +81,15 @@ export default class TransactionsOverviewByCategory extends Component {
 	}
 
 	componentDidUpdate(prevProps) {
-		const transactions = this.props.navigation.getParam('transactions');
-		const prevTransactions = prevProps.navigation.getParam('transactions');
+		const transactions = this.props.navigation.getParam('transactions') || [];
+		const prevTransactions =
+			prevProps.navigation.getParam('transactions') || [];
 
-		console.log(
-			`${TAG}.componentDidUpdate():: transactions.length:${
-				transactions.length
-			}, prevTransactions.length:${prevTransactions.length}`
-		);
+		// console.log(
+		// 	`${TAG}.componentDidUpdate():: transactions.length:${
+		// 		transactions.length
+		// 	}, prevTransactions.length:${prevTransactions.length}`
+		// );
 	}
 
 	renderHeader = () => {
