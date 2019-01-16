@@ -50,6 +50,7 @@ export default createStyle({
 	amountText: {
 		fontSize: 16,
 		fontWeight: '500',
+		color: "@textColor"
 	},
 	progressBarContainer: {
 		flex: 0,
