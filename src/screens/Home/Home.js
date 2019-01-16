@@ -108,7 +108,7 @@ export class Home extends Component {
 }
 
 Home.navigationOptions = () => {
-	return { title: 'Budgets' };
+	return { title: 'Budgets', headerTintColor:"black" };
 };
 
 Home.propTypes = {
