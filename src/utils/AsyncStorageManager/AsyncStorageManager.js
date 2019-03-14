@@ -6,7 +6,7 @@ import Budget from '@models/budget';
 import moment from 'moment';
 import {
 	date as dateFormat,
-	datetime as dateTimeFormat,
+	datetime as dateTimeFormat
 } from '@utils/dateFormats';
 
 import { success, failed } from '@utils/task_statuses';
@@ -36,7 +36,13 @@ export default class AsyncStorageManager {
 				userTransactionsKey,
 				Transaction
 			);
-			return transactions;
+
+			return transactions.sort((t1, t2) => {
+				const t1Date = moment(t1.date, dateTimeFormat);
+				const t2Date = moment(t2.date, dateTimeFormat);
+
+				return t1Date >= t2Date ? -1 : 1;
+			});
 		} catch (e) {
 			console.error(`${TAG}::getTransactions()::Error: ${e.message}`);
 			return failed(e.message);
@@ -128,8 +134,8 @@ export default class AsyncStorageManager {
 	static async updateTransaction(transaction, userId) {
 		try {
 			const transactions = await AsyncStorageManager.getTransactions(userId);
-			const updatedTransactions = transactions.map(
-				t => (t.id === transaction.id ? transaction : t)
+			const updatedTransactions = transactions.map(t =>
+				t.id === transaction.id ? transaction : t
 			);
 			const result = await AsyncStorageManager._updateTransactions(
 				updatedTransactions,
@@ -203,8 +209,8 @@ export default class AsyncStorageManager {
 	static async updateCategory(category, userId) {
 		try {
 			const categories = await AsyncStorageManager.getCategories(userId);
-			const updatedCategories = categories.map(
-				c => (c.id === category.id ? category : c)
+			const updatedCategories = categories.map(c =>
+				c.id === category.id ? category : c
 			);
 			const result = await AsyncStorageManager._updateCategories(
 				updatedCategories,
@@ -489,7 +495,7 @@ export default class AsyncStorageManager {
 		const report = {
 			[TRANSACTIONS_KEY]: 0,
 			[CATEGORIES_KEY]: 0,
-			[BUDGETS_KEY]: 0,
+			[BUDGETS_KEY]: 0
 		};
 
 		try {
